@@ -35,6 +35,7 @@ async function callOpenRouter(
   systemPrompt: string,
   userPrompt: string,
   maxTokens: number,
+  model: string,
 ): Promise<string> {
   const openai = new OpenAI({
     apiKey: process.env.OPENROUTER_API_KEY,
@@ -45,9 +46,7 @@ async function callOpenRouter(
     },
   });
   const completion = await openai.chat.completions.create({
-    // No hardcoded default — free models rotate on OpenRouter. User must pick
-    // one from https://openrouter.ai/models?q=free and set OPENROUTER_MODEL.
-    model: process.env.OPENROUTER_MODEL || 'openai/gpt-4o-mini',
+    model,
     messages: [
       { role: 'system', content: systemPrompt },
       { role: 'user', content: userPrompt },
@@ -56,6 +55,17 @@ async function callOpenRouter(
     max_tokens: maxTokens,
   });
   return completion.choices[0]?.message?.content || '';
+}
+
+// Parse OPENROUTER_MODELS (comma-separated) first, then fall back to the
+// singular OPENROUTER_MODEL. Empty list means no OpenRouter models configured.
+function getOpenRouterModels(): string[] {
+  const multi = process.env.OPENROUTER_MODELS;
+  if (multi) {
+    return multi.split(',').map((m) => m.trim()).filter(Boolean);
+  }
+  const single = process.env.OPENROUTER_MODEL;
+  return single ? [single] : ['openai/gpt-4o-mini'];
 }
 
 function formatError(err: unknown): { status: number; message: string } {
@@ -121,35 +131,47 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   }
 
-  // ---------- 2. Fall back to OpenRouter ----------
+  // ---------- 2. Fall back to OpenRouter (cycles through models) ----------
   if (hasOpenRouter) {
-    try {
-      const result = await callOpenRouter(systemPrompt, userPrompt, maxTokens);
-      return res.status(200).json({
-        result,
-        provider: hasAnthropic ? 'openrouter-fallback' : 'openrouter',
-      });
-    } catch (err) {
-      const { status, message } = formatError(err);
-      console.error(`[ai] OpenRouter failed (${status}: ${message})`);
-      let hint = '';
-      if (status === 402) {
-        hint =
-          ' — Free tier exhausted. Add credits at https://openrouter.ai/settings/credits or switch models via OPENROUTER_MODEL.';
-      } else if (status === 401) {
-        hint = ' — Check your OPENROUTER_API_KEY at https://openrouter.ai/keys.';
-      } else if (status === 429) {
-        hint = ' — Rate limited. Wait a moment or switch free models.';
-      } else if (/No endpoints found/i.test(message)) {
-        hint =
-          ' — This model ID is invalid or deprecated. Pick a current free model at https://openrouter.ai/models?q=free';
+    const models = getOpenRouterModels();
+    let lastError: { status: number; message: string; model: string } | null = null;
+
+    for (const model of models) {
+      try {
+        const result = await callOpenRouter(systemPrompt, userPrompt, maxTokens, model);
+        return res.status(200).json({
+          result,
+          provider: hasAnthropic ? 'openrouter-fallback' : 'openrouter',
+          model,
+        });
+      } catch (err) {
+        const { status, message } = formatError(err);
+        lastError = { status, message, model };
+        console.warn(`[ai] OpenRouter model "${model}" failed (${status}: ${message})`);
+        // 401 = bad key — every model will fail the same way, stop cycling.
+        if (status === 401) break;
+        // Otherwise try the next model (rate limit, free-tier exhausted, deprecated, etc.)
       }
-      // Show BOTH errors so the user knows Anthropic was tried first
-      const prefix = anthropicError
-        ? `Anthropic failed first (${anthropicError.status}: ${anthropicError.message}). Fallback OpenRouter also failed: `
-        : 'OpenRouter: ';
-      return res.status(status).json({ error: `${prefix}${message}${hint}` });
     }
+
+    const { status, message, model } = lastError!;
+    let hint = '';
+    if (status === 402) {
+      hint =
+        ' — Free tier exhausted on all models. Add credits at https://openrouter.ai/settings/credits or add more models to OPENROUTER_MODELS.';
+    } else if (status === 401) {
+      hint = ' — Check your OPENROUTER_API_KEY at https://openrouter.ai/keys.';
+    } else if (status === 429) {
+      hint =
+        ' — All configured free models are rate-limited. Wait a moment or add more models to OPENROUTER_MODELS.';
+    } else if (/No endpoints found/i.test(message)) {
+      hint =
+        ' — Model IDs invalid or deprecated. Pick current free models at https://openrouter.ai/models?q=free';
+    }
+    const prefix = anthropicError
+      ? `Anthropic failed first (${anthropicError.status}: ${anthropicError.message}). All ${models.length} OpenRouter model(s) failed, last was "${model}": `
+      : `OpenRouter (tried ${models.length} model(s), last was "${model}"): `;
+    return res.status(status).json({ error: `${prefix}${message}${hint}` });
   }
 
   // Should be unreachable
