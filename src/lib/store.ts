@@ -7,6 +7,10 @@ interface AppState {
   currentPage: NavPage;
   setCurrentPage: (page: NavPage) => void;
 
+  // Mobile sidebar drawer (ephemeral — not persisted)
+  mobileSidebarOpen: boolean;
+  setMobileSidebarOpen: (open: boolean) => void;
+
   // User profile
   userProfile: {
     name: string;
@@ -54,7 +58,10 @@ export const useStore = create<AppState>()(
   persist(
     (set) => ({
       currentPage: 'leads',
-      setCurrentPage: (page) => set({ currentPage: page }),
+      setCurrentPage: (page) => set({ currentPage: page, mobileSidebarOpen: false }),
+
+      mobileSidebarOpen: false,
+      setMobileSidebarOpen: (open) => set({ mobileSidebarOpen: open }),
 
       userProfile: {
         name: '',

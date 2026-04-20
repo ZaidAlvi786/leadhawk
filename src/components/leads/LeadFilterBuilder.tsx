@@ -149,7 +149,7 @@ export default function LeadFilterBuilder({ onMessageForFilter }: LeadFilterBuil
         <p className="text-xs mb-3" style={{ color: '#475569' }}>
           Describe your ideal client — AI will extract the perfect Sales Navigator filters
         </p>
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <textarea
             className="input-field text-sm flex-1 resize-none"
             rows={2}
@@ -158,7 +158,7 @@ export default function LeadFilterBuilder({ onMessageForFilter }: LeadFilterBuil
             onChange={(e) => setAiDescription(e.target.value)}
           />
           <button
-            className="btn-primary flex items-center gap-2 self-stretch px-4 flex-shrink-0"
+            className="btn-primary flex items-center gap-2 justify-center sm:self-stretch px-4 flex-shrink-0"
             onClick={handleAIGenerate}
             disabled={loadingAI}
           >
@@ -400,7 +400,7 @@ export default function LeadFilterBuilder({ onMessageForFilter }: LeadFilterBuil
           </h3>
           <div className="space-y-2">
             {filters.map((f) => (
-              <div key={f.id} className="glass-card p-4 flex items-center gap-4">
+              <div key={f.id} className="glass-card p-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium text-white">{f.name}</div>
                   <div className="text-xs mt-0.5 flex flex-wrap gap-1" style={{ color: '#475569' }}>
@@ -415,7 +415,7 @@ export default function LeadFilterBuilder({ onMessageForFilter }: LeadFilterBuil
                     ))}
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <button
                     className="btn-primary text-xs px-3 py-1.5 flex items-center gap-1"
                     onClick={() => window.open(buildSalesNavURL(f), '_blank')}

@@ -27,8 +27,8 @@ export default function LeadsPage() {
   return (
     <div className="flex-1 flex flex-col min-h-0">
       {/* Hero banner */}
-      <div className="px-8 py-5 border-b" style={{ borderColor: 'rgba(99,102,241,0.1)' }}>
-        <div className="flex items-start justify-between">
+      <div className="px-4 md:px-8 py-5 border-b" style={{ borderColor: 'rgba(99,102,241,0.1)' }}>
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #6366f1, #06b6d4)' }}>
@@ -64,8 +64,8 @@ export default function LeadsPage() {
       </div>
 
       {/* Workflow steps */}
-      <div className="px-8 py-4 border-b" style={{ borderColor: 'rgba(99,102,241,0.08)' }}>
-        <div className="flex items-center gap-0">
+      <div className="px-4 md:px-8 py-4 border-b" style={{ borderColor: 'rgba(99,102,241,0.08)' }}>
+        <div className="grid grid-cols-2 gap-3 sm:flex sm:items-center sm:gap-0">
           {[
             { n: '1', label: 'Describe Ideal Lead', sub: 'AI extracts filters' },
             { n: '2', label: 'Open Sales Navigator', sub: 'Filters pre-applied' },
@@ -84,7 +84,7 @@ export default function LeadsPage() {
                 </div>
               </div>
               {i < 3 && (
-                <div className="flex-1 mx-3 h-px" style={{ background: 'linear-gradient(90deg, rgba(99,102,241,0.3), rgba(6,182,212,0.1))' }} />
+                <div className="hidden sm:block flex-1 mx-3 h-px" style={{ background: 'linear-gradient(90deg, rgba(99,102,241,0.3), rgba(6,182,212,0.1))' }} />
               )}
             </React.Fragment>
           ))}
@@ -92,8 +92,8 @@ export default function LeadsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="px-8 pt-4 pb-0">
-        <div className="flex gap-1 p-1 rounded-xl w-fit" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+      <div className="px-4 md:px-8 pt-4 pb-0">
+        <div className="flex flex-wrap gap-1 p-1 rounded-xl max-w-full" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', width: 'fit-content' }}>
           {TABS.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -117,7 +117,7 @@ export default function LeadsPage() {
       </div>
 
       {/* Tab content */}
-      <div className="flex-1 overflow-y-auto px-8 py-6">
+      <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6">
         {activeTab === 'filters' && <LeadFilterBuilder onMessageForFilter={handleMessageForFilter} />}
         {activeTab === 'messages' && <MessageTemplateGenerator prefill={prefill} onPrefillConsumed={() => setPrefill(null)} />}
       </div>

@@ -1,6 +1,7 @@
 import type { AppProps } from 'next/app';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from '@/lib/auth';
 import '@/styles/globals.css';
@@ -32,6 +33,9 @@ function AuthGate({ children }: { children: React.ReactNode }) {
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <AuthProvider>
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+      </Head>
       <AuthGate>
         <Component {...pageProps} />
       </AuthGate>

@@ -105,8 +105,8 @@ export default function SequencesPage() {
   return (
     <div className="flex-1 flex flex-col min-h-0">
       {/* Hero */}
-      <div className="px-8 py-5 border-b" style={{ borderColor: 'rgba(99,102,241,0.1)' }}>
-        <div className="flex items-start justify-between">
+      <div className="px-4 md:px-8 py-5 border-b" style={{ borderColor: 'rgba(99,102,241,0.1)' }}>
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' }}>
@@ -131,8 +131,8 @@ export default function SequencesPage() {
       </div>
 
       {/* Strategy bar */}
-      <div className="px-8 py-4 border-b" style={{ borderColor: 'rgba(99,102,241,0.08)' }}>
-        <div className="flex items-center gap-6">
+      <div className="px-4 md:px-8 py-4 border-b" style={{ borderColor: 'rgba(99,102,241,0.08)' }}>
+        <div className="flex flex-wrap items-center gap-3 md:gap-6">
           {DEFAULT_STEPS.map((s, i) => {
             const meta = STEP_LABELS[s.type];
             return (
@@ -148,18 +148,18 @@ export default function SequencesPage() {
                   </div>
                 </div>
                 {i < DEFAULT_STEPS.length - 1 && (
-                  <div className="flex-1 h-px max-w-16" style={{ background: 'rgba(99,102,241,0.2)' }} />
+                  <div className="hidden sm:block flex-1 h-px max-w-16" style={{ background: 'rgba(99,102,241,0.2)' }} />
                 )}
               </React.Fragment>
             );
           })}
-          <div className="ml-auto text-xs px-3 py-1.5 rounded-lg" style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981', border: '1px solid rgba(16,185,129,0.2)' }}>
+          <div className="w-full md:w-auto md:ml-auto text-xs px-3 py-1.5 rounded-lg" style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981', border: '1px solid rgba(16,185,129,0.2)' }}>
             80% of replies come from follow-ups
           </div>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-8 py-6 space-y-6">
+      <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 space-y-6">
         {/* Generator Form */}
         <div className="glass-card p-5">
           <div className="flex items-center gap-2 mb-4">
@@ -220,7 +220,7 @@ export default function SequencesPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex flex-wrap items-center gap-2 mb-4">
             <label className="text-xs font-medium" style={{ color: '#64748b', fontFamily: 'Syne' }}>Steps:</label>
             {[3, 4, 5].map((n) => (
               <button
@@ -348,7 +348,7 @@ export default function SequencesPage() {
                 const isExpanded = expandedSeq === seq.id;
                 return (
                   <div key={seq.id} className="glass-card overflow-hidden">
-                    <div className="p-4 flex items-center gap-4">
+                    <div className="p-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-medium text-white">{seq.name}</span>
