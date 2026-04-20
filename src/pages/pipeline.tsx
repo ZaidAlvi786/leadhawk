@@ -130,8 +130,8 @@ export default function PipelinePage() {
   return (
     <div className="flex-1 flex flex-col min-h-0">
       {/* Hero */}
-      <div className="px-8 py-5 border-b" style={{ borderColor: 'rgba(99,102,241,0.1)' }}>
-        <div className="flex items-start justify-between">
+      <div className="px-4 md:px-8 py-5 border-b" style={{ borderColor: 'rgba(99,102,241,0.1)' }}>
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #10b981, #06b6d4)' }}>
@@ -147,14 +147,14 @@ export default function PipelinePage() {
             </p>
           </div>
 
-          <div className="hidden lg:flex items-center gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:flex items-center gap-2 md:gap-3">
             {[
               { label: 'Active Leads', value: totalActive.toString(), color: '#6366f1' },
               { label: 'Won', value: wonCount.toString(), color: '#10b981' },
               { label: 'Lost', value: lostCount.toString(), color: '#ef4444' },
               { label: 'Follow-ups Due', value: needsFollowUp.length.toString(), color: '#f59e0b' },
             ].map((stat) => (
-              <div key={stat.label} className="px-4 py-2.5 rounded-xl text-center" style={{
+              <div key={stat.label} className="px-3 md:px-4 py-2 md:py-2.5 rounded-xl text-center" style={{
                 background: 'rgba(255,255,255,0.03)',
                 border: '1px solid rgba(255,255,255,0.07)',
               }}>
@@ -167,7 +167,7 @@ export default function PipelinePage() {
       </div>
 
       {/* Actions */}
-      <div className="px-8 py-4 border-b flex items-center gap-3" style={{ borderColor: 'rgba(99,102,241,0.08)' }}>
+      <div className="px-4 md:px-8 py-4 border-b flex flex-wrap items-center gap-3" style={{ borderColor: 'rgba(99,102,241,0.08)' }}>
         <button className="btn-primary flex items-center gap-2" onClick={() => setShowAddForm(!showAddForm)}>
           <Plus size={14} />
           Add Lead
@@ -181,12 +181,12 @@ export default function PipelinePage() {
         )}
       </div>
 
-      <div className="flex-1 overflow-y-auto px-8 py-6 space-y-6">
+      <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 space-y-6">
         {/* Add Lead Form */}
         {showAddForm && (
           <div className="glass-card p-5 animate-fadeUp" style={{ border: '1px solid rgba(16,185,129,0.2)' }}>
             <h3 className="text-sm font-medium mb-4" style={{ color: '#6ee7b7', fontFamily: 'Syne' }}>Add New Lead</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-4">
               <input className="input-field text-sm" placeholder="First Name *" value={addForm.firstName}
                 onChange={(e) => setAddForm({ ...addForm, firstName: e.target.value })} />
               <input className="input-field text-sm" placeholder="Last Name" value={addForm.lastName}
@@ -200,8 +200,8 @@ export default function PipelinePage() {
               <input className="input-field text-sm" placeholder="Industry" value={addForm.industry}
                 onChange={(e) => setAddForm({ ...addForm, industry: e.target.value })} />
             </div>
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+              <div className="flex flex-wrap items-center gap-2">
                 <label className="text-xs" style={{ color: '#64748b' }}>Source:</label>
                 {SOURCES.map((s) => (
                   <button key={s.id} onClick={() => setAddForm({ ...addForm, source: s.id })}
@@ -215,9 +215,9 @@ export default function PipelinePage() {
                   </button>
                 ))}
               </div>
-              <div className="ml-auto flex gap-2">
-                <button className="btn-secondary text-sm" onClick={() => setShowAddForm(false)}>Cancel</button>
-                <button className="btn-primary text-sm" onClick={handleAdd}>Add to Pipeline</button>
+              <div className="sm:ml-auto flex gap-2">
+                <button className="btn-secondary text-sm flex-1 sm:flex-initial" onClick={() => setShowAddForm(false)}>Cancel</button>
+                <button className="btn-primary text-sm flex-1 sm:flex-initial" onClick={handleAdd}>Add to Pipeline</button>
               </div>
             </div>
           </div>
@@ -322,22 +322,22 @@ export default function PipelinePage() {
                           {/* Actions */}
                           <div className="flex items-center gap-1 pt-1 border-t" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
                             <button onClick={() => moveBack(lead)} title="Move back"
-                              className="w-6 h-6 flex items-center justify-center rounded"
+                              className="w-8 h-8 sm:w-7 sm:h-7 flex items-center justify-center rounded"
                               style={{ background: 'rgba(255,255,255,0.04)' }}>
                               <ChevronLeft size={10} color="#475569" />
                             </button>
                             <button onClick={() => moveForward(lead)} title="Move forward"
-                              className="w-6 h-6 flex items-center justify-center rounded"
+                              className="w-8 h-8 sm:w-7 sm:h-7 flex items-center justify-center rounded"
                               style={{ background: 'rgba(255,255,255,0.04)' }}>
                               <ChevronRight size={10} color="#475569" />
                             </button>
                             <button onClick={() => markContacted(lead)} title="Mark contacted"
-                              className="w-6 h-6 flex items-center justify-center rounded"
+                              className="w-8 h-8 sm:w-7 sm:h-7 flex items-center justify-center rounded"
                               style={{ background: 'rgba(99,102,241,0.1)' }}>
                               <MessageSquare size={10} color="#a5b4fc" />
                             </button>
                             <button onClick={() => setEditingNotes(lead.id)} title="Add notes"
-                              className="w-6 h-6 flex items-center justify-center rounded"
+                              className="w-8 h-8 sm:w-7 sm:h-7 flex items-center justify-center rounded"
                               style={{ background: 'rgba(255,255,255,0.04)' }}>
                               <StickyNote size={10} color="#475569" />
                             </button>
@@ -345,7 +345,7 @@ export default function PipelinePage() {
                               onClick={() => handleSuggest(lead)}
                               disabled={suggestingFor === lead.id}
                               title="AI suggest next action"
-                              className="w-6 h-6 flex items-center justify-center rounded"
+                              className="w-8 h-8 sm:w-7 sm:h-7 flex items-center justify-center rounded"
                               style={{ background: 'rgba(139,92,246,0.1)' }}>
                               {suggestingFor === lead.id ? (
                                 <div className="w-3 h-3 rounded-full border border-purple-400 border-t-transparent animate-spin" />
@@ -355,17 +355,17 @@ export default function PipelinePage() {
                             </button>
                             <div className="ml-auto flex items-center gap-1">
                               <button onClick={() => movePipelineLead(lead.id, 'closed-won')} title="Mark as Won"
-                                className="w-6 h-6 flex items-center justify-center rounded text-xs font-bold"
+                                className="w-8 h-8 sm:w-7 sm:h-7 flex items-center justify-center rounded text-xs font-bold"
                                 style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981' }}>
                                 W
                               </button>
                               <button onClick={() => movePipelineLead(lead.id, 'closed-lost')} title="Mark as Lost"
-                                className="w-6 h-6 flex items-center justify-center rounded text-xs font-bold"
+                                className="w-8 h-8 sm:w-7 sm:h-7 flex items-center justify-center rounded text-xs font-bold"
                                 style={{ background: 'rgba(239,68,68,0.1)', color: '#ef4444' }}>
                                 L
                               </button>
                               <button onClick={() => { deletePipelineLead(lead.id); toast.success('Removed'); }} title="Delete"
-                                className="w-6 h-6 flex items-center justify-center rounded"
+                                className="w-8 h-8 sm:w-7 sm:h-7 flex items-center justify-center rounded"
                                 style={{ background: 'rgba(244,63,94,0.1)' }}>
                                 <Trash2 size={9} color="#f87171" />
                               </button>
