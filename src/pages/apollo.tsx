@@ -219,8 +219,8 @@ export default function ApolloPage() {
   return (
     <div className="flex-1 flex flex-col min-h-0">
       {/* Hero */}
-      <div className="px-8 py-5 border-b" style={{ borderColor: 'rgba(99,102,241,0.1)' }}>
-        <div className="flex items-start justify-between">
+      <div className="px-4 md:px-8 py-5 border-b" style={{ borderColor: 'rgba(99,102,241,0.1)' }}>
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)' }}>
@@ -236,12 +236,12 @@ export default function ApolloPage() {
             </p>
           </div>
 
-          <div className="hidden lg:flex items-center gap-3">
+          <div className="grid grid-cols-2 lg:flex items-center gap-2 md:gap-3">
             {[
               { label: 'Leads Imported', value: leads.length.toString(), color: '#f59e0b' },
               { label: 'Messages Ready', value: messagesGenerated.toString(), color: '#10b981' },
             ].map((stat) => (
-              <div key={stat.label} className="px-4 py-2.5 rounded-xl text-center" style={{
+              <div key={stat.label} className="px-3 md:px-4 py-2 md:py-2.5 rounded-xl text-center" style={{
                 background: 'rgba(255,255,255,0.03)',
                 border: '1px solid rgba(255,255,255,0.07)',
               }}>
@@ -254,8 +254,8 @@ export default function ApolloPage() {
       </div>
 
       {/* Workflow */}
-      <div className="px-8 py-4 border-b" style={{ borderColor: 'rgba(99,102,241,0.08)' }}>
-        <div className="flex items-center gap-0">
+      <div className="px-4 md:px-8 py-4 border-b" style={{ borderColor: 'rgba(99,102,241,0.08)' }}>
+        <div className="grid grid-cols-2 gap-3 sm:flex sm:items-center sm:gap-0">
           {[
             { n: '1', label: 'Export from Apollo', sub: 'Download CSV' },
             { n: '2', label: 'Import Here', sub: 'Upload CSV file' },
@@ -274,7 +274,7 @@ export default function ApolloPage() {
                 </div>
               </div>
               {i < 3 && (
-                <div className="flex-1 mx-3 h-px" style={{ background: 'linear-gradient(90deg, rgba(245,158,11,0.3), rgba(239,68,68,0.1))' }} />
+                <div className="hidden sm:block flex-1 mx-3 h-px" style={{ background: 'linear-gradient(90deg, rgba(245,158,11,0.3), rgba(239,68,68,0.1))' }} />
               )}
             </React.Fragment>
           ))}
@@ -282,7 +282,7 @@ export default function ApolloPage() {
       </div>
 
       {/* Actions bar */}
-      <div className="px-8 py-4 flex flex-wrap items-center gap-3">
+      <div className="px-4 md:px-8 py-4 flex flex-wrap items-center gap-3">
         <input
           type="file"
           ref={fileInputRef}
@@ -347,7 +347,7 @@ export default function ApolloPage() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto px-8 pb-6">
+      <div className="flex-1 overflow-y-auto px-4 md:px-8 pb-6">
         {leads.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20">
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
@@ -370,7 +370,7 @@ export default function ApolloPage() {
           <div className="space-y-3">
             {leads.map((lead) => (
               <div key={lead.id} className="glass-card p-4">
-                <div className="flex items-start gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4">
                   {/* Lead info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
