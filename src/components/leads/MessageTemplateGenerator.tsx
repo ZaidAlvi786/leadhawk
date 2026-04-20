@@ -182,7 +182,7 @@ export default function MessageTemplateGenerator({ prefill, onPrefillConsumed }:
       {/* Generated Message */}
       {generatedMsg && (
         <div className="glass-card p-5 animate-fadeUp" style={{ border: '1px solid rgba(16,185,129,0.2)' }}>
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
             <div className="flex items-center gap-2">
               <Star size={14} color="#10b981" />
               <span className="text-sm font-medium" style={{ color: '#6ee7b7', fontFamily: 'Syne' }}>
@@ -247,9 +247,9 @@ export default function MessageTemplateGenerator({ prefill, onPrefillConsumed }:
           <div className="space-y-3">
             {templates.map((t) => (
               <div key={t.id} className="glass-card p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-white">{t.name}</span>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                  <div className="flex items-center flex-wrap gap-2 min-w-0">
+                    <span className="text-sm font-medium text-white truncate">{t.name}</span>
                     <span className="tag tag-indigo">{t.tone}</span>
                     {t.responseRate && (
                       <span className="tag tag-green flex items-center gap-1">
@@ -258,7 +258,7 @@ export default function MessageTemplateGenerator({ prefill, onPrefillConsumed }:
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-shrink-0">
                     <button onClick={() => { navigator.clipboard.writeText(t.body); toast.success('Copied!'); }}
                       className="w-7 h-7 flex items-center justify-center rounded-lg"
                       style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.2)' }}>
