@@ -250,12 +250,12 @@ export default function LinkedInPostGenerator() {
       {/* Generated Post Preview */}
       {generated && (
         <div className="glass-card p-5 animate-fadeUp" style={{ border: '1px solid rgba(6,182,212,0.2)' }}>
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
             <div className="flex items-center gap-2">
               <Eye size={14} color="#06b6d4" />
               <span className="text-sm font-medium" style={{ color: '#67e8f9', fontFamily: 'Syne' }}>Post Preview</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="tag tag-cyan flex items-center gap-1">
                 <TrendingUp size={10} />
                 Est. 2K+ impressions
@@ -463,7 +463,7 @@ export default function LinkedInPostGenerator() {
           <div className="space-y-3">
             {posts.map((p) => (
               <div key={p.id} className="glass-card p-4">
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="tag tag-cyan text-xs">{p.postType}</span>
