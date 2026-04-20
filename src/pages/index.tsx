@@ -44,10 +44,8 @@ export default function Home() {
             style={{ background: 'radial-gradient(circle, #06b6d4, transparent)', filter: 'blur(60px)' }} />
         </div>
 
-        {/* Sidebar */}
-        <div className="relative z-10">
-          <Sidebar />
-        </div>
+        {/* Sidebar — self-positioned (fixed on mobile, static on md+) */}
+        <Sidebar />
 
         {/* Main */}
         <div className="flex-1 flex flex-col min-w-0 relative z-10">
