@@ -1,5 +1,5 @@
 import React from 'react';
-import { Target, TrendingUp, Settings, Zap, ChevronRight, BarChart2, Send, Mail, Users } from 'lucide-react';
+import { Target, TrendingUp, Settings, Zap, ChevronRight, Send, Mail, Users, X } from 'lucide-react';
 import { useStore } from '@/lib/store';
 import type { NavPage } from '@/lib/types';
 
@@ -47,16 +47,31 @@ const navItems = [
 ];
 
 export default function Sidebar() {
-  const { currentPage, setCurrentPage } = useStore();
+  const { currentPage, setCurrentPage, mobileSidebarOpen, setMobileSidebarOpen } = useStore();
 
   return (
-    <aside className="w-64 flex-shrink-0 flex flex-col" style={{
-      background: 'linear-gradient(180deg, #0a1628 0%, #080f1e 100%)',
-      borderRight: '1px solid rgba(99,102,241,0.12)',
-      minHeight: '100vh',
-    }}>
+    <>
+      {/* Mobile backdrop */}
+      {mobileSidebarOpen && (
+        <div
+          onClick={() => setMobileSidebarOpen(false)}
+          className="fixed inset-0 z-40 md:hidden"
+          style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}
+        />
+      )}
+
+      <aside
+        className={`w-64 flex-shrink-0 flex flex-col fixed md:static inset-y-0 left-0 z-50 transition-transform duration-300 md:translate-x-0 ${
+          mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+        }`}
+        style={{
+          background: 'linear-gradient(180deg, #0a1628 0%, #080f1e 100%)',
+          borderRight: '1px solid rgba(99,102,241,0.12)',
+          minHeight: '100vh',
+        }}
+      >
       {/* Logo */}
-      <div className="p-6 pb-4">
+      <div className="p-6 pb-4 flex items-start justify-between">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{
             background: 'linear-gradient(135deg, #6366f1, #06b6d4)',
@@ -73,6 +88,15 @@ export default function Sidebar() {
             </div>
           </div>
         </div>
+        {/* Close button (mobile only) */}
+        <button
+          onClick={() => setMobileSidebarOpen(false)}
+          className="md:hidden w-8 h-8 rounded-lg flex items-center justify-center -mr-2"
+          style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.15)' }}
+          aria-label="Close menu"
+        >
+          <X size={16} color="#6366f1" />
+        </button>
       </div>
 
       {/* Divider */}
@@ -166,5 +190,6 @@ export default function Sidebar() {
         </div>
       </div>
     </aside>
+    </>
   );
 }
