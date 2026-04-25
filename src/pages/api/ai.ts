@@ -69,15 +69,11 @@ async function callOpenRouter(
   return completion.choices[0]?.message?.content || '';
 }
 
-// Parse OPENROUTER_MODELS (comma-separated) first, then fall back to the
-// singular OPENROUTER_MODEL. Empty list means no OpenRouter models configured.
+// Read either OPENROUTER_MODELS or OPENROUTER_MODEL — both treated as comma-separated
+// lists, so a CSV value works regardless of which name was set in the deploy env.
 function getOpenRouterModels(): string[] {
-  const multi = process.env.OPENROUTER_MODELS;
-  if (multi) {
-    return multi.split(',').map((m) => m.trim()).filter(Boolean);
-  }
-  const single = process.env.OPENROUTER_MODEL;
-  return single ? [single] : ['openai/gpt-4o-mini'];
+  const raw = process.env.OPENROUTER_MODELS || process.env.OPENROUTER_MODEL || 'openai/gpt-4o-mini';
+  return raw.split(',').map((m) => m.trim()).filter(Boolean);
 }
 
 function formatError(err: unknown): { status: number; message: string } {
