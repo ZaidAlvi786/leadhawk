@@ -26,8 +26,7 @@
     "zustand": "^4.5.2",
     "openai": "^4.52.0",
     "axios": "^1.7.2",
-    "@supabase/supabase-js": "^2.45.0",
-    "@anthropic-ai/sdk": "^0.30.0"
+    "@supabase/supabase-js": "^2.45.0"
   },
   "devDependencies": {
     "@types/node": "^20.14.0",

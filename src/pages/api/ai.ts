@@ -1,34 +1,46 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import Anthropic from '@anthropic-ai/sdk';
 import OpenAI from 'openai';
 
 // =============================================
 // AI provider router with automatic fallback
 //
 // Priority:
-//   1. Anthropic direct API (if ANTHROPIC_API_KEY is set)
-//   2. OpenRouter free model (if OPENROUTER_API_KEY is set)
+//   1. Google Gemini (if GOOGLE_API_KEY is set) — generous free tier, recommended
+//   2. OpenRouter free models (if OPENROUTER_API_KEY is set) — cycles through OPENROUTER_MODELS
 //
-// If Anthropic fails for any reason (quota, outage, invalid key),
-// we silently retry with OpenRouter so the UI stays responsive.
+// Each provider is tried in order until one succeeds.
 // =============================================
 
-async function callAnthropic(
+async function callGemini(
   systemPrompt: string,
   userPrompt: string,
   maxTokens: number,
 ): Promise<string> {
-  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
-  const response = await client.messages.create({
-    model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6',
-    max_tokens: maxTokens,
-    system: systemPrompt,
-    messages: [{ role: 'user', content: userPrompt }],
+  const model = process.env.GOOGLE_MODEL || 'gemini-2.5-flash';
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GOOGLE_API_KEY}`;
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: systemPrompt }] },
+      contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
+      generationConfig: { maxOutputTokens: maxTokens, temperature: 0.7 },
+    }),
   });
-  // content is an array of blocks — grab the first text block
-  const block = response.content[0];
-  if (block && block.type === 'text') return block.text;
-  return '';
+
+  if (!response.ok) {
+    const body = await response.text();
+    let parsed: { error?: { message?: string } } = {};
+    try { parsed = JSON.parse(body); } catch { /* non-JSON */ }
+    const err = new Error(parsed?.error?.message || body) as Error & { status: number };
+    err.status = response.status;
+    throw err;
+  }
+
+  const data = await response.json();
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+  return text || '';
 }
 
 async function callOpenRouter(
@@ -91,43 +103,39 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ error: 'Missing prompts' });
   }
 
-  const hasAnthropic = !!process.env.ANTHROPIC_API_KEY;
+  const hasGemini = !!process.env.GOOGLE_API_KEY;
   const hasOpenRouter = !!process.env.OPENROUTER_API_KEY;
 
-  if (!hasAnthropic && !hasOpenRouter) {
+  if (!hasGemini && !hasOpenRouter) {
     return res.status(500).json({
       error:
-        'No AI key configured. Add ANTHROPIC_API_KEY (preferred) or OPENROUTER_API_KEY to .env.local',
+        'No AI key configured. Add GOOGLE_API_KEY (free tier, recommended) or OPENROUTER_API_KEY to .env.local',
     });
   }
 
   const maxTokens = parseInt(process.env.OPENROUTER_MAX_TOKENS || '800', 10);
 
-  // Track why Anthropic failed (if it did) so we can surface it to the UI
-  // alongside any OpenRouter fallback failure.
-  let anthropicError: { status: number; message: string } | null = null;
+  // Track Gemini's failure (if it failed) so the final error message can include it.
+  let geminiError: { status: number; message: string } | null = null;
 
-  // ---------- 1. Try Anthropic first ----------
-  if (hasAnthropic) {
+  // ---------- 1. Try Google Gemini first (free tier) ----------
+  if (hasGemini) {
     try {
-      const result = await callAnthropic(systemPrompt, userPrompt, maxTokens);
-      return res.status(200).json({ result, provider: 'anthropic' });
+      const result = await callGemini(systemPrompt, userPrompt, maxTokens);
+      return res.status(200).json({ result, provider: 'gemini' });
     } catch (err) {
-      anthropicError = formatError(err);
-      console.warn(
-        `[ai] Anthropic failed (${anthropicError.status}: ${anthropicError.message}) — falling back to OpenRouter`,
-      );
+      geminiError = formatError(err);
+      console.warn(`[ai] Gemini failed (${geminiError.status}: ${geminiError.message}) — trying next provider`);
       if (!hasOpenRouter) {
         let hint = '';
-        if (anthropicError.status === 401)
-          hint = ' — Check your ANTHROPIC_API_KEY at https://console.anthropic.com/';
-        else if (anthropicError.status === 429)
-          hint = ' — Anthropic rate limit. Add OPENROUTER_API_KEY for auto-fallback.';
-        return res.status(anthropicError.status).json({
-          error: `Anthropic: ${anthropicError.message}${hint}`,
+        if (geminiError.status === 400 && /api key/i.test(geminiError.message))
+          hint = ' — Check your GOOGLE_API_KEY at https://aistudio.google.com/apikey';
+        else if (geminiError.status === 429)
+          hint = ' — Gemini quota exhausted. Add OPENROUTER_API_KEY for fallback or wait for quota reset.';
+        return res.status(geminiError.status).json({
+          error: `Gemini: ${geminiError.message}${hint}`,
         });
       }
-      // fall through to OpenRouter
     }
   }
 
@@ -141,7 +149,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const result = await callOpenRouter(systemPrompt, userPrompt, maxTokens, model);
         return res.status(200).json({
           result,
-          provider: hasAnthropic ? 'openrouter-fallback' : 'openrouter',
+          provider: hasGemini ? 'openrouter-fallback' : 'openrouter',
           model,
         });
       } catch (err) {
@@ -168,8 +176,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       hint =
         ' — Model IDs invalid or deprecated. Pick current free models at https://openrouter.ai/models?q=free';
     }
-    const prefix = anthropicError
-      ? `Anthropic failed first (${anthropicError.status}: ${anthropicError.message}). All ${models.length} OpenRouter model(s) failed, last was "${model}": `
+    const prefix = geminiError
+      ? `Gemini failed first (${geminiError.status}: ${geminiError.message}). All ${models.length} OpenRouter model(s) failed, last was "${model}": `
       : `OpenRouter (tried ${models.length} model(s), last was "${model}"): `;
     return res.status(status).json({ error: `${prefix}${message}${hint}` });
   }
