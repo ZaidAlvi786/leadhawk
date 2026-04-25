@@ -28,15 +28,36 @@ export interface GeneratePlanParams {
   weekCount: number;
 }
 
-async function callAI(systemPrompt: string, userPrompt: string): Promise<string> {
+interface CallAIOptions {
+  responseFormat?: 'json' | 'text';
+  maxTokens?: number;
+}
+
+async function callAI(systemPrompt: string, userPrompt: string, options: CallAIOptions = {}): Promise<string> {
   const res = await fetch('/api/ai', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ systemPrompt, userPrompt }),
+    body: JSON.stringify({ systemPrompt, userPrompt, ...options }),
   });
   const data = await res.json().catch(() => ({ error: 'AI request failed' }));
   if (!res.ok) throw new Error(data.error || `AI request failed (${res.status})`);
   return data.result;
+}
+
+// Robust JSON extraction — handles markdown code fences, leading/trailing prose,
+// and partial wrapping. Falls back to whatever's between the first `{` and last `}`.
+function extractJSON(raw: string): string {
+  if (!raw) return raw;
+  // Strip ```json ... ``` or ``` ... ``` fences
+  const fenced = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+  if (fenced) return fenced[1].trim();
+  // Otherwise carve out the first JSON-looking object/array
+  const first = raw.search(/[{[]/);
+  const lastObj = raw.lastIndexOf('}');
+  const lastArr = raw.lastIndexOf(']');
+  const last = Math.max(lastObj, lastArr);
+  if (first !== -1 && last > first) return raw.slice(first, last + 1);
+  return raw.trim();
 }
 
 export async function generateOutreachMessage(params: GenerateMessageParams): Promise<string> {
@@ -91,10 +112,9 @@ Format rules:
 
 Return JSON only: { "hook": "first 2 lines", "content": "full post text", "hashtags": ["tag1","tag2"] }`;
 
-  const raw = await callAI(system, user);
+  const raw = await callAI(system, user, { responseFormat: 'json', maxTokens: 2000 });
   try {
-    const clean = raw.replace(/```json|```/g, '').trim();
-    return JSON.parse(clean);
+    return JSON.parse(extractJSON(raw));
   } catch {
     return { hook: '', content: raw, hashtags: [] };
   }
@@ -131,10 +151,10 @@ Return JSON: {
   "monetizationTips": ["tip1"]
 }`;
 
-  const raw = await callAI(system, user);
+  // Growth plans are big (multi-week, nested actions) — needs more headroom.
+  const raw = await callAI(system, user, { responseFormat: 'json', maxTokens: 4000 });
   try {
-    const clean = raw.replace(/```json|```/g, '').trim();
-    return JSON.parse(clean);
+    return JSON.parse(extractJSON(raw));
   } catch {
     return { error: 'Failed to parse plan', raw };
   }
@@ -166,10 +186,9 @@ Return JSON: {
 
 Never return placeholders like "city, country" or "industry1".`;
 
-  const raw = await callAI(system, user);
+  const raw = await callAI(system, user, { responseFormat: 'json', maxTokens: 1200 });
   try {
-    const clean = raw.replace(/```json|```/g, '').trim();
-    return JSON.parse(clean);
+    return JSON.parse(extractJSON(raw));
   } catch {
     return {};
   }
@@ -239,10 +258,10 @@ Return JSON:
   ]
 }`;
 
-  const raw = await callAI(system, user);
+  // Email sequences scale with step count — give per-step headroom.
+  const raw = await callAI(system, user, { responseFormat: 'json', maxTokens: Math.max(2000, numSteps * 600) });
   try {
-    const clean = raw.replace(/```json|```/g, '').trim();
-    return JSON.parse(clean);
+    return JSON.parse(extractJSON(raw));
   } catch {
     return { steps: [] };
   }
