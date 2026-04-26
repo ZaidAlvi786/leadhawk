@@ -15,9 +15,18 @@ async function callGemini(
   systemPrompt: string,
   userPrompt: string,
   maxTokens: number,
+  json: boolean,
 ): Promise<string> {
   const model = process.env.GOOGLE_MODEL || 'gemini-2.5-flash';
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GOOGLE_API_KEY}`;
+
+  // When `json` is true, ask Gemini for structured JSON directly — avoids markdown
+  // code fences and truncation surprises. Otherwise free-form text.
+  const generationConfig: Record<string, unknown> = {
+    maxOutputTokens: maxTokens,
+    temperature: 0.7,
+  };
+  if (json) generationConfig.responseMimeType = 'application/json';
 
   const response = await fetch(url, {
     method: 'POST',
@@ -25,7 +34,7 @@ async function callGemini(
     body: JSON.stringify({
       systemInstruction: { parts: [{ text: systemPrompt }] },
       contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
-      generationConfig: { maxOutputTokens: maxTokens, temperature: 0.7 },
+      generationConfig,
     }),
   });
 
@@ -48,6 +57,7 @@ async function callOpenRouter(
   userPrompt: string,
   maxTokens: number,
   model: string,
+  json: boolean,
 ): Promise<string> {
   const openai = new OpenAI({
     apiKey: process.env.OPENROUTER_API_KEY,
@@ -65,6 +75,7 @@ async function callOpenRouter(
     ],
     temperature: 0.7,
     max_tokens: maxTokens,
+    ...(json ? { response_format: { type: 'json_object' as const } } : {}),
   });
   return completion.choices[0]?.message?.content || '';
 }
@@ -93,11 +104,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { systemPrompt, userPrompt } = req.body;
+  const { systemPrompt, userPrompt, responseFormat, maxTokens: requestedMax } = req.body as {
+    systemPrompt?: string;
+    userPrompt?: string;
+    responseFormat?: 'json' | 'text';
+    maxTokens?: number;
+  };
 
   if (!systemPrompt || !userPrompt) {
     return res.status(400).json({ error: 'Missing prompts' });
   }
+
+  const wantsJSON = responseFormat === 'json';
 
   const hasGemini = !!process.env.GOOGLE_API_KEY;
   const hasOpenRouter = !!process.env.OPENROUTER_API_KEY;
@@ -109,7 +127,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   }
 
-  const maxTokens = parseInt(process.env.OPENROUTER_MAX_TOKENS || '800', 10);
+  // Per-request override > env default. Bump default for JSON to give the model
+  // headroom — incomplete JSON breaks parsing, and 800 tokens is too tight for
+  // a full LinkedIn post + hashtags.
+  const envDefault = parseInt(process.env.OPENROUTER_MAX_TOKENS || '800', 10);
+  const maxTokens = requestedMax ?? (wantsJSON ? Math.max(envDefault, 2000) : envDefault);
 
   // Track Gemini's failure (if it failed) so the final error message can include it.
   let geminiError: { status: number; message: string } | null = null;
@@ -117,7 +139,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // ---------- 1. Try Google Gemini first (free tier) ----------
   if (hasGemini) {
     try {
-      const result = await callGemini(systemPrompt, userPrompt, maxTokens);
+      const result = await callGemini(systemPrompt, userPrompt, maxTokens, wantsJSON);
       return res.status(200).json({ result, provider: 'gemini' });
     } catch (err) {
       geminiError = formatError(err);
@@ -142,7 +164,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     for (const model of models) {
       try {
-        const result = await callOpenRouter(systemPrompt, userPrompt, maxTokens, model);
+        const result = await callOpenRouter(systemPrompt, userPrompt, maxTokens, model, wantsJSON);
         return res.status(200).json({
           result,
           provider: hasGemini ? 'openrouter-fallback' : 'openrouter',

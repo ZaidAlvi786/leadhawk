@@ -91,33 +91,76 @@ Return ONLY the message text.`;
 }
 
 export async function generateLinkedInPost(params: GeneratePostParams): Promise<{ content: string; hashtags: string[]; hook: string }> {
-  const system = `You are a LinkedIn content strategist who creates viral, engaging posts for B2B professionals.
-You understand the LinkedIn algorithm, emotional hooks, and how to drive engagement.
+  const system = `You are a LinkedIn content strategist who writes viral, engaging posts for B2B professionals.
+You understand the LinkedIn algorithm, emotional hooks, and what drives engagement.
+
 Post type: ${params.postType}.
-Always return JSON with: { "hook": "...", "content": "...", "hashtags": ["..."] }`;
 
-  const user = `Create a high-performing LinkedIn post:
-- Topic: ${params.topic}
-- Industry: ${params.industry}
-- Target audience: ${params.targetAudience}
-- Author's skills: ${params.yourSkills.join(', ')}
+WRITING STYLE:
+- Sound like a real person sharing a real experience or insight — never like a copywriter
+- Open with a strong hook in the first 2 lines (everything else is hidden behind "see more")
+- Use SHORT paragraphs — 1-2 sentences each, separated by blank lines
+- Use emojis sparingly to break up sections (one per major section is plenty)
+- Include a concrete story, number, or specific example — not vague generalities
+- Avoid sales-bot phrases: "revolutionize", "game-changing", "unlock", "leverage", "synergy"
+- Vary sentence length — mix short punchy lines with longer ones
+- End with a thought-provoking question that invites comments
 
-Format rules:
-- Start with a POWERFUL hook (first 2 lines visible before "see more")
-- Use line breaks every 1-2 sentences for readability
-- Include a relatable story or insight
-- End with a thought-provoking question or clear CTA
-- 5-10 relevant hashtags
-- 150-300 words total
+LENGTH: 150-300 words total.
 
-Return JSON only: { "hook": "first 2 lines", "content": "full post text", "hashtags": ["tag1","tag2"] }`;
+HASHTAGS: End the post with 5-10 relevant hashtags on their own line(s) at the very bottom. No spaces inside tags.`;
 
-  const raw = await callAI(system, user, { responseFormat: 'json', maxTokens: 2000 });
-  try {
-    return JSON.parse(extractJSON(raw));
-  } catch {
-    return { hook: '', content: raw, hashtags: [] };
+  const user = `Write a LinkedIn post on this topic:
+
+TOPIC: ${params.topic}
+INDUSTRY: ${params.industry}
+TARGET AUDIENCE: ${params.targetAudience}
+AUTHOR'S EXPERTISE: ${params.yourSkills.join(', ')}
+
+Output ONLY the post text — no preamble, no JSON, no markdown code fences, no labels. Start directly with the hook line. End with hashtags on the last line(s).`;
+
+  const raw = await callAI(system, user, { maxTokens: 2000 });
+  return parseLinkedInPost(raw);
+}
+
+// Parse a plain-text LinkedIn post into hook + content + hashtags.
+// Hook = first 1-2 non-empty lines. Hashtags = #word tokens from the trailing
+// hashtag block. Content = everything between (with hashtags removed).
+function parseLinkedInPost(raw: string): { content: string; hashtags: string[]; hook: string } {
+  // Strip any stray code-fence wrappers a model might still emit
+  const text = raw
+    .replace(/^```(?:json|markdown|text)?\s*/i, '')
+    .replace(/\s*```\s*$/, '')
+    .trim();
+
+  // Pull all #hashtags out of the body. We prefer hashtags clustered at the
+  // bottom of the post — but capture inline ones too as a safety net.
+  const hashtagMatches = text.match(/#[A-Za-z0-9_]+/g) || [];
+  const hashtags = Array.from(new Set(hashtagMatches.map((t) => t.replace(/^#/, ''))));
+
+  // Find where the trailing hashtag block starts so we can strip it from content.
+  // A "hashtag block" = one or more lines near the end that are mostly hashtags.
+  const lines = text.split('\n');
+  let cutoff = lines.length;
+  for (let i = lines.length - 1; i >= 0; i--) {
+    const line = lines[i].trim();
+    if (line === '') continue;
+    // A line counts as part of the hashtag block if hashtags dominate it
+    const tagsInLine = (line.match(/#[A-Za-z0-9_]+/g) || []).length;
+    const wordsInLine = line.split(/\s+/).length;
+    if (tagsInLine > 0 && tagsInLine / wordsInLine >= 0.6) {
+      cutoff = i;
+    } else {
+      break;
+    }
   }
+  const content = lines.slice(0, cutoff).join('\n').trim();
+
+  // Hook = first 1-2 non-empty lines of content (whichever is shorter)
+  const contentLines = content.split('\n').filter((l) => l.trim());
+  const hook = contentLines.slice(0, 2).join('\n').trim();
+
+  return { content, hashtags, hook };
 }
 
 export async function generateGrowthPlan(params: GeneratePlanParams): Promise<object> {
