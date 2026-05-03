@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Wand2, Copy, Save, Trash2, MessageSquare, TrendingUp, Star } from 'lucide-react';
+import { Wand2, Copy, Save, Trash2, MessageSquare, TrendingUp, Star, Sparkles } from 'lucide-react';
 import { useStore } from '@/lib/store';
 import { useTemplates } from '@/lib/useTemplates';
 import { generateOutreachMessage } from '@/lib/ai';
 import { TONES } from '@/lib/utils';
-import type { MessageTemplate } from '@/lib/types';
+import type { MessageTemplate, LeadBrief } from '@/lib/types';
 import toast from 'react-hot-toast';
 
 interface Props {
@@ -13,8 +13,10 @@ interface Props {
 }
 
 export default function MessageTemplateGenerator({ prefill, onPrefillConsumed }: Props) {
-  const { userProfile } = useStore();
+  const { userProfile, leadBriefs } = useStore();
   const { templates, addTemplate, deleteTemplate, loading: templatesLoading } = useTemplates();
+  const [mode, setMode] = useState<'brief' | 'manual'>('manual');
+  const [selectedBriefId, setSelectedBriefId] = useState<string>('');
   const [form, setForm] = useState({
     leadTitle: '',
     leadCompany: '',
@@ -35,11 +37,30 @@ export default function MessageTemplateGenerator({ prefill, onPrefillConsumed }:
       onPrefillConsumed?.();
     }
   }, [prefill, onPrefillConsumed]);
+
+  // Auto-populate form when brief is selected
+  useEffect(() => {
+    if (selectedBriefId && mode === 'brief') {
+      const brief = leadBriefs.find((b) => b.id === selectedBriefId);
+      if (brief) {
+        setForm({
+          leadName: brief.leadName,
+          leadTitle: brief.leadRole || '',
+          leadCompany: brief.leadCompany || '',
+          leadIndustry: '',
+          tone: 'professional',
+        });
+      }
+    }
+  }, [selectedBriefId, mode, leadBriefs]);
+
   const [generatedMsg, setGeneratedMsg] = useState('');
   const [templateName, setTemplateName] = useState('');
   const [loading, setLoading] = useState(false);
   const [editMsg, setEditMsg] = useState('');
   const [editing, setEditing] = useState(false);
+
+  const selectedBrief = selectedBriefId ? leadBriefs.find((b) => b.id === selectedBriefId) : null;
 
   const handleGenerate = async () => {
     if (!form.leadTitle || !form.leadCompany) {
@@ -53,11 +74,17 @@ export default function MessageTemplateGenerator({ prefill, onPrefillConsumed }:
         yourService: userProfile.service,
         yourName: userProfile.name || 'your name',
       });
-      setGeneratedMsg(msg);
-      setEditMsg(msg);
+
+      // If brief mode, append the personalization note
+      const finalMsg = mode === 'brief' && selectedBrief
+        ? `${msg}\n\n[💡 Generated with: ${selectedBrief.archetype} archetype brief]`
+        : msg;
+
+      setGeneratedMsg(finalMsg);
+      setEditMsg(finalMsg);
       toast.success('Message generated!');
     } catch {
-      toast.error('Failed. Check OPENROUTER_API_KEY in .env.local');
+      toast.error('Failed. Check API key in .env.local');
     }
     setLoading(false);
   };
@@ -84,6 +111,34 @@ export default function MessageTemplateGenerator({ prefill, onPrefillConsumed }:
 
   return (
     <div className="space-y-6">
+      {/* Mode Selector */}
+      <div className="flex gap-2">
+        <button
+          onClick={() => setMode('manual')}
+          className="px-4 py-2 rounded-lg text-sm font-medium transition-all"
+          style={{
+            background: mode === 'manual' ? 'rgba(99,102,241,0.2)' : 'rgba(99,102,241,0.05)',
+            color: mode === 'manual' ? '#a5b4fc' : '#64748b',
+            border: `1px solid ${mode === 'manual' ? 'rgba(99,102,241,0.3)' : 'rgba(99,102,241,0.1)'}`,
+          }}
+        >
+          Manual Entry
+        </button>
+        <button
+          onClick={() => setMode('brief')}
+          disabled={leadBriefs.length === 0}
+          className="px-4 py-2 rounded-lg text-sm font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          style={{
+            background: mode === 'brief' ? 'rgba(99,102,241,0.2)' : 'rgba(99,102,241,0.05)',
+            color: mode === 'brief' ? '#a5b4fc' : '#64748b',
+            border: `1px solid ${mode === 'brief' ? 'rgba(99,102,241,0.3)' : 'rgba(99,102,241,0.1)'}`,
+          }}
+        >
+          <Sparkles size={14} />
+          Use Lead Brief ({leadBriefs.length})
+        </button>
+      </div>
+
       {/* Generator Form */}
       <div className="glass-card p-5">
         <div className="flex items-center gap-2 mb-4">
@@ -92,6 +147,40 @@ export default function MessageTemplateGenerator({ prefill, onPrefillConsumed }:
             AI Message Generator
           </h3>
         </div>
+
+        {/* Brief Selector (if in brief mode) */}
+        {mode === 'brief' && leadBriefs.length > 0 && (
+          <div className="mb-4">
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>
+              Select Lead Brief
+            </label>
+            <select
+              value={selectedBriefId}
+              onChange={(e) => setSelectedBriefId(e.target.value)}
+              className="input-field text-sm w-full"
+            >
+              <option value="">-- Choose a brief --</option>
+              {leadBriefs.map((brief) => (
+                <option key={brief.id} value={brief.id}>
+                  {brief.leadName} • {brief.leadCompany || 'Unknown Company'}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {mode === 'brief' && selectedBrief && (
+          <div
+            className="mb-4 p-3 rounded-lg space-y-2"
+            style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.15)' }}
+          >
+            <p className="text-xs font-semibold" style={{ color: '#a5b4fc' }}>📋 Brief: {selectedBrief.leadName}</p>
+            <p className="text-xs text-gray-400">{selectedBrief.summary}</p>
+            <div className="text-xs text-gray-400">
+              <strong>Approach:</strong> {selectedBrief.bestApproach}
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
@@ -103,6 +192,7 @@ export default function MessageTemplateGenerator({ prefill, onPrefillConsumed }:
               placeholder="CTO, VP of Engineering, Head of Product..."
               value={form.leadTitle}
               onChange={(e) => setForm({ ...form, leadTitle: e.target.value })}
+              disabled={mode === 'brief' && selectedBriefId !== ''}
             />
           </div>
           <div>
@@ -114,6 +204,7 @@ export default function MessageTemplateGenerator({ prefill, onPrefillConsumed }:
               placeholder="Company name or type"
               value={form.leadCompany}
               onChange={(e) => setForm({ ...form, leadCompany: e.target.value })}
+              disabled={mode === 'brief' && selectedBriefId !== ''}
             />
           </div>
           <div>
@@ -136,6 +227,7 @@ export default function MessageTemplateGenerator({ prefill, onPrefillConsumed }:
               placeholder="John (for personalization)"
               value={form.leadName}
               onChange={(e) => setForm({ ...form, leadName: e.target.value })}
+              disabled={mode === 'brief' && selectedBriefId !== ''}
             />
           </div>
         </div>
@@ -168,14 +260,14 @@ export default function MessageTemplateGenerator({ prefill, onPrefillConsumed }:
         <button
           className="btn-primary flex items-center gap-2 w-full justify-center"
           onClick={handleGenerate}
-          disabled={loading}
+          disabled={loading || (mode === 'brief' && !selectedBriefId)}
         >
           {loading ? (
             <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
           ) : (
             <Wand2 size={15} />
           )}
-          {loading ? 'Generating High-Response Message...' : 'Generate AI Message'}
+          {loading ? 'Generating...' : 'Generate AI Message'}
         </button>
       </div>
 
