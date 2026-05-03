@@ -7,6 +7,9 @@ import ApolloPage from '@/pages/apollo';
 import SequencesPage from '@/pages/sequences';
 import PipelinePage from '@/pages/pipeline';
 import LinkedInGrowthPage from '@/pages/linkedin-growth';
+import TwitterGrowthPage from '@/pages/twitter-growth';
+import AnalyticsPage from '@/pages/analytics';
+import TemplatesPage from '@/pages/templates';
 import ProfileSetup from '@/components/shared/ProfileSetup';
 import { useStore } from '@/lib/store';
 import { X } from 'lucide-react';
@@ -56,6 +59,9 @@ export default function Home() {
             {currentPage === 'sequences' && <SequencesPage />}
             {currentPage === 'pipeline' && <PipelinePage />}
             {currentPage === 'linkedin-growth' && <LinkedInGrowthPage />}
+            {currentPage === 'twitter-growth' && <TwitterGrowthPage />}
+            {currentPage === 'analytics' && <AnalyticsPage />}
+            {currentPage === 'templates' && <TemplatesPage />}
           </main>
         </div>
       </div>
