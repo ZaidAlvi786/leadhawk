@@ -1,7 +1,8 @@
 import React, { useState, useCallback } from 'react';
-import { Target, MessageSquare, Filter, Zap } from 'lucide-react';
+import { Target, MessageSquare, Filter, Zap, Sparkles } from 'lucide-react';
 import LeadFilterBuilder from '@/components/leads/LeadFilterBuilder';
 import MessageTemplateGenerator from '@/components/leads/MessageTemplateGenerator';
+import LeadBriefGenerator from '@/components/leads/LeadBriefGenerator';
 
 export interface LeadPrefill {
   leadTitle: string;
@@ -12,6 +13,7 @@ export interface LeadPrefill {
 
 const TABS = [
   { id: 'filters', label: 'Filter Builder', icon: Filter, description: 'Build & save Sales Navigator filters' },
+  { id: 'briefs', label: 'Lead Briefs', icon: Sparkles, description: 'AI intelligence for personalization' },
   { id: 'messages', label: 'Message Templates', icon: MessageSquare, description: 'AI outreach that gets responses' },
 ];
 
@@ -119,6 +121,7 @@ export default function LeadsPage() {
       {/* Tab content */}
       <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6">
         {activeTab === 'filters' && <LeadFilterBuilder onMessageForFilter={handleMessageForFilter} />}
+        {activeTab === 'briefs' && <LeadBriefGenerator />}
         {activeTab === 'messages' && <MessageTemplateGenerator prefill={prefill} onPrefillConsumed={() => setPrefill(null)} />}
       </div>
     </div>
