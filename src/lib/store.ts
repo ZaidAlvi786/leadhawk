@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { LeadFilter, LinkedInPost, GrowthPlan, NavPage, EmailSequence, PipelineLead, PipelineStage } from './types';
+import type { LeadFilter, LinkedInPost, GrowthPlan, NavPage, EmailSequence, PipelineLead, PipelineStage, LeadBrief, Tweet, TwitterThread, TwitterGrowthPlan, MessageOutcome } from './types';
+import type { TrendingTopic } from './topicEngine';
 
 interface AppState {
   // Navigation
@@ -29,16 +30,40 @@ interface AppState {
   deleteFilter: (id: string) => void;
   setActiveFilter: (filter: LeadFilter | null) => void;
 
+  // Lead Briefs (Intelligence)
+  leadBriefs: LeadBrief[];
+  addLeadBrief: (brief: LeadBrief) => void;
+  updateLeadBrief: (id: string, brief: Partial<LeadBrief>) => void;
+  deleteLeadBrief: (id: string) => void;
+
   // LinkedIn Posts
   posts: LinkedInPost[];
   addPost: (post: LinkedInPost) => void;
   deletePost: (id: string) => void;
+
+  // Trending Topics (for post generation)
+  trendingTopics: { linkedin: TrendingTopic[]; twitter: TrendingTopic[] };
+  setTrendingTopics: (platform: 'linkedin' | 'twitter', topics: TrendingTopic[]) => void;
+  lastTopicRefresh: { linkedin: string; twitter: string };
+  setLastTopicRefresh: (platform: 'linkedin' | 'twitter', timestamp: string) => void;
 
   // Growth Plans
   growthPlans: GrowthPlan[];
   activePlan: GrowthPlan | null;
   addGrowthPlan: (plan: GrowthPlan) => void;
   setActivePlan: (plan: GrowthPlan | null) => void;
+
+  // Twitter / X Data
+  tweets: Tweet[];
+  addTweet: (tweet: Tweet) => void;
+  deleteTweet: (id: string) => void;
+
+  twitterThreads: TwitterThread[];
+  addTwitterThread: (thread: TwitterThread) => void;
+  deleteTwitterThread: (id: string) => void;
+
+  twitterGrowthPlans: TwitterGrowthPlan[];
+  addTwitterGrowthPlan: (plan: TwitterGrowthPlan) => void;
 
   // Email Sequences
   sequences: EmailSequence[];
@@ -52,6 +77,11 @@ interface AppState {
   updatePipelineLead: (id: string, lead: Partial<PipelineLead>) => void;
   movePipelineLead: (id: string, stage: PipelineStage) => void;
   deletePipelineLead: (id: string) => void;
+
+  // Message Outcomes (Analytics)
+  outcomes: MessageOutcome[];
+  addOutcome: (outcome: MessageOutcome) => void;
+  updateOutcome: (id: string, outcome: Partial<MessageOutcome>) => void;
 }
 
 export const useStore = create<AppState>()(
@@ -75,47 +105,88 @@ export const useStore = create<AppState>()(
 
       filters: [],
       activeFilter: null,
-      addFilter: (filter) => set((s) => ({ filters: [...s.filters, filter] })),
-      updateFilter: (id, filter) =>
+      addFilter: (filter: LeadFilter) => set((s) => ({ filters: [...s.filters, filter] })),
+      updateFilter: (id: string, filter: Partial<LeadFilter>) =>
         set((s) => ({ filters: s.filters.map((f) => (f.id === id ? { ...f, ...filter } : f)) })),
-      deleteFilter: (id) =>
+      deleteFilter: (id: string) =>
         set((s) => ({ filters: s.filters.filter((f) => f.id !== id) })),
-      setActiveFilter: (filter) => set({ activeFilter: filter }),
+      setActiveFilter: (filter: LeadFilter | null) => set({ activeFilter: filter }),
+
+      leadBriefs: [],
+      addLeadBrief: (brief: LeadBrief) => set((s) => ({ leadBriefs: [brief, ...s.leadBriefs] })),
+      updateLeadBrief: (id: string, brief: Partial<LeadBrief>) =>
+        set((s) => ({ leadBriefs: s.leadBriefs.map((b) => (b.id === id ? { ...b, ...brief } : b)) })),
+      deleteLeadBrief: (id: string) =>
+        set((s) => ({ leadBriefs: s.leadBriefs.filter((b) => b.id !== id) })),
 
       posts: [],
-      addPost: (post) => set((s) => ({ posts: [post, ...s.posts] })),
-      deletePost: (id) => set((s) => ({ posts: s.posts.filter((p) => p.id !== id) })),
+      addPost: (post: LinkedInPost) => set((s) => ({ posts: [post, ...s.posts] })),
+      deletePost: (id: string) => set((s) => ({ posts: s.posts.filter((p) => p.id !== id) })),
+
+      trendingTopics: { linkedin: [], twitter: [] },
+      setTrendingTopics: (platform: 'linkedin' | 'twitter', topics: TrendingTopic[]) =>
+        set((s) => ({
+          trendingTopics: { ...s.trendingTopics, [platform]: topics },
+        })),
+      lastTopicRefresh: { linkedin: '1970-01-01', twitter: '1970-01-01' },
+      setLastTopicRefresh: (platform: 'linkedin' | 'twitter', timestamp: string) =>
+        set((s) => ({
+          lastTopicRefresh: { ...s.lastTopicRefresh, [platform]: timestamp },
+        })),
 
       growthPlans: [],
       activePlan: null,
-      addGrowthPlan: (plan) => set((s) => ({ growthPlans: [...s.growthPlans, plan] })),
-      setActivePlan: (plan) => set({ activePlan: plan }),
+      addGrowthPlan: (plan: GrowthPlan) => set((s) => ({ growthPlans: [...s.growthPlans, plan] })),
+      setActivePlan: (plan: GrowthPlan | null) => set({ activePlan: plan }),
+
+      tweets: [],
+      addTweet: (tweet: Tweet) => set((s) => ({ tweets: [tweet, ...s.tweets] })),
+      deleteTweet: (id: string) => set((s) => ({ tweets: s.tweets.filter((t) => t.id !== id) })),
+
+      twitterThreads: [],
+      addTwitterThread: (thread: TwitterThread) => set((s) => ({ twitterThreads: [thread, ...s.twitterThreads] })),
+      deleteTwitterThread: (id: string) => set((s) => ({ twitterThreads: s.twitterThreads.filter((t) => t.id !== id) })),
+
+      twitterGrowthPlans: [],
+      addTwitterGrowthPlan: (plan: TwitterGrowthPlan) => set((s) => ({ twitterGrowthPlans: [...s.twitterGrowthPlans, plan] })),
 
       sequences: [],
-      addSequence: (seq) => set((s) => ({ sequences: [...s.sequences, seq] })),
-      updateSequence: (id, seq) =>
+      addSequence: (seq: EmailSequence) => set((s) => ({ sequences: [...s.sequences, seq] })),
+      updateSequence: (id: string, seq: Partial<EmailSequence>) =>
         set((s) => ({ sequences: s.sequences.map((s2) => (s2.id === id ? { ...s2, ...seq } : s2)) })),
-      deleteSequence: (id) =>
+      deleteSequence: (id: string) =>
         set((s) => ({ sequences: s.sequences.filter((s2) => s2.id !== id) })),
 
       pipelineLeads: [],
-      addPipelineLead: (lead) => set((s) => ({ pipelineLeads: [...s.pipelineLeads, lead] })),
-      updatePipelineLead: (id, lead) =>
+      addPipelineLead: (lead: PipelineLead) => set((s) => ({ pipelineLeads: [...s.pipelineLeads, lead] })),
+      updatePipelineLead: (id: string, lead: Partial<PipelineLead>) =>
         set((s) => ({ pipelineLeads: s.pipelineLeads.map((l) => (l.id === id ? { ...l, ...lead, updatedAt: new Date().toISOString() } : l)) })),
-      movePipelineLead: (id, stage) =>
+      movePipelineLead: (id: string, stage: PipelineStage) =>
         set((s) => ({ pipelineLeads: s.pipelineLeads.map((l) => (l.id === id ? { ...l, stage, updatedAt: new Date().toISOString() } : l)) })),
-      deletePipelineLead: (id) =>
+      deletePipelineLead: (id: string) =>
         set((s) => ({ pipelineLeads: s.pipelineLeads.filter((l) => l.id !== id) })),
+
+      outcomes: [],
+      addOutcome: (outcome: MessageOutcome) => set((s) => ({ outcomes: [outcome, ...s.outcomes] })),
+      updateOutcome: (id: string, outcome: Partial<MessageOutcome>) =>
+        set((s) => ({ outcomes: s.outcomes.map((o) => (o.id === id ? { ...o, ...outcome } : o)) })),
     }),
     {
       name: 'leadhawk-storage',
       partialize: (state) => ({
         userProfile: state.userProfile,
         filters: state.filters,
+        leadBriefs: state.leadBriefs,
         posts: state.posts,
+        trendingTopics: state.trendingTopics,
+        lastTopicRefresh: state.lastTopicRefresh,
         growthPlans: state.growthPlans,
+        tweets: state.tweets,
+        twitterThreads: state.twitterThreads,
+        twitterGrowthPlans: state.twitterGrowthPlans,
         sequences: state.sequences,
         pipelineLeads: state.pipelineLeads,
+        outcomes: state.outcomes,
       }),
     }
   )

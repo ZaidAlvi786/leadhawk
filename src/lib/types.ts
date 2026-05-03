@@ -142,4 +142,115 @@ export interface PipelineLead {
   updatedAt: string;
 }
 
-export type NavPage = 'leads' | 'linkedin-growth' | 'apollo' | 'sequences' | 'pipeline';
+// =============================================
+// Lead Intelligence Engine
+// =============================================
+
+export type LeadArchetype =
+  | 'founder_ceo'
+  | 'marketing_leader'
+  | 'sales_leader'
+  | 'agency_owner'
+  | 'engineering_manager'
+  | 'product_manager'
+  | 'freelancer_creator'
+  | 'operations_leader'
+  | 'other';
+
+export interface ArchetypeProfile {
+  archetype: LeadArchetype;
+  label: string;
+  commonPains: string[];
+  toneGuidelines: string;
+  hookPatterns: string[];
+  avoidList: string[];
+}
+
+export interface LeadBrief {
+  id: string;
+  leadName: string;
+  leadCompany?: string;
+  leadRole?: string;
+  linkedinUrl?: string;
+  archetype: LeadArchetype;
+  summary: string;              // 2-3 sentence overview
+  recentActivity: string[];     // bullets: recent posts, news, signals
+  painPoints: string[];         // inferred pain points
+  personalizationHooks: string[]; // 3-5 specific opener angles
+  bestApproach: string;         // recommended outreach style
+  redFlags: string[];           // things to avoid
+  generatedAt: string;
+}
+
+// =============================================
+// X / Twitter Growth
+// =============================================
+
+export interface Tweet {
+  id: string;
+  content: string;
+  hook: string;
+  postType: 'single' | 'thread-part' | 'reply';
+  estimatedEngagement: number;
+  createdAt: string;
+}
+
+export interface TwitterThread {
+  id: string;
+  hook: string;          // First tweet (hook line)
+  setup: string[];       // 2-3 tweets building context
+  insights: string[];    // 3-5 tweets with actionable insights
+  cta: string;          // Final call-to-action tweet
+  threadType: 'educational' | 'story' | 'tips' | 'debate' | 'thread';
+  estimatedReach: number;
+  createdAt: string;
+}
+
+export interface TwitterGrowthPlan {
+  id: string;
+  week: number;
+  theme: string;
+  goals: string[];
+  actions: TwitterAction[];
+  suggestedTopics: string[];
+  targetFollowers: number;
+  targetEngagementRate: number;
+}
+
+export interface TwitterAction {
+  id: string;
+  type: 'tweet' | 'reply' | 'retweet' | 'space' | 'follow' | 'engage';
+  description: string;
+  frequency: string;
+  priority: 'high' | 'medium' | 'low';
+  completed?: boolean;
+}
+
+// =============================================
+// Outcome Tracking & Analytics
+// =============================================
+
+export interface MessageOutcome {
+  id: string;
+  messageId?: string;
+  leadName: string;
+  channel: 'linkedin' | 'email' | 'twitter';
+  status: 'sent' | 'opened' | 'replied' | 'meeting_booked' | 'closed_won' | 'closed_lost' | 'no_response';
+  sentAt: string;
+  respondedAt?: string;
+  notes?: string;
+}
+
+export interface TemplateStats {
+  templateId: string;
+  templateName: string;
+  channel: 'linkedin' | 'email' | 'twitter';
+  sent: number;
+  opened: number;
+  replied: number;
+  replyRate: number;
+  meetingRate: number;
+  closeRate: number;
+}
+
+export type NavPage = 'leads' | 'linkedin-growth' | 'apollo' | 'sequences' | 'pipeline' | 'twitter-growth' | 'analytics' | 'templates';

@@ -1,30 +1,16 @@
-import React, { useState, useCallback } from 'react';
-import { Target, MessageSquare, Filter, Zap, Sparkles } from 'lucide-react';
-import LeadFilterBuilder from '@/components/leads/LeadFilterBuilder';
-import MessageTemplateGenerator from '@/components/leads/MessageTemplateGenerator';
-import LeadBriefGenerator from '@/components/leads/LeadBriefGenerator';
-
-export interface LeadPrefill {
-  leadTitle: string;
-  leadCompany: string;
-  leadIndustry: string;
-  leadName: string;
-}
+import React, { useState } from 'react';
+import { Share2, Zap, MessageSquare, TrendingUp, Plus } from 'lucide-react';
+import TweetGenerator from '@/components/twitter/TweetGenerator';
+import TwitterThreadBuilder from '@/components/twitter/TwitterThreadBuilder';
+import TwitterGrowthPlanGenerator from '@/components/twitter/TwitterGrowthPlanGenerator';
 
 const TABS = [
-  { id: 'filters', label: 'Filter Builder', icon: Filter, description: 'Build & save Sales Navigator filters' },
-  { id: 'briefs', label: 'Lead Briefs', icon: Sparkles, description: 'AI intelligence for personalization' },
-  { id: 'messages', label: 'Message Templates', icon: MessageSquare, description: 'AI outreach that gets responses' },
+  { id: 'tweets', label: 'Tweet Generator', icon: Share2, description: 'Single tweets & threads' },
+  { id: 'growth', label: 'Growth Plan', icon: TrendingUp, description: '4/8/12-week strategy' },
 ];
 
-export default function LeadsPage() {
-  const [activeTab, setActiveTab] = useState('filters');
-  const [prefill, setPrefill] = useState<LeadPrefill | null>(null);
-
-  const handleMessageForFilter = useCallback((data: LeadPrefill) => {
-    setPrefill(data);
-    setActiveTab('messages');
-  }, []);
+export default function TwitterGrowthPage() {
+  const [activeTab, setActiveTab] = useState('tweets');
 
   return (
     <div className="flex-1 flex flex-col min-h-0">
@@ -33,25 +19,27 @@ export default function LeadsPage() {
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #6366f1, #06b6d4)' }}>
-                <Target size={13} color="white" />
+              <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #06b6d4, #0ea5e9)' }}>
+                <Share2 size={13} color="white" />
               </div>
-              <span className="text-xs font-medium tag tag-indigo">Sales Navigator Integration</span>
+              <span className="text-xs font-medium tag" style={{ background: 'rgba(6,182,212,0.2)', color: '#06b6d4', border: '1px solid rgba(6,182,212,0.3)' }}>
+                X / Twitter Growth
+              </span>
             </div>
             <h2 className="text-lg font-semibold text-white mb-0.5" style={{ fontFamily: 'Syne' }}>
-              Find & Convert Your Ideal Clients
+              Grow Your X / Twitter Presence
             </h2>
             <p className="text-sm" style={{ color: '#475569' }}>
-              Build precise filters → Open in Sales Navigator → Send AI-crafted messages that get replies
+              Generate viral tweets, threads, and growth strategies optimized for engagement
             </p>
           </div>
 
-          {/* Stats row */}
+          {/* Stats */}
           <div className="hidden lg:flex items-center gap-3">
             {[
-              { label: 'Avg Response Rate', value: '23%', color: '#10b981' },
-              { label: 'Time Saved', value: '4h/day', color: '#6366f1' },
-              { label: 'Filter Accuracy', value: '94%', color: '#06b6d4' },
+              { label: 'Avg Engagement', value: '12%', color: '#06b6d4' },
+              { label: 'Follower Growth', value: '5-10%/mo', color: '#6366f1' },
+              { label: 'Best Time', value: '9-11 AM', color: '#10b981' },
             ].map((stat) => (
               <div key={stat.label} className="px-4 py-2.5 rounded-xl text-center" style={{
                 background: 'rgba(255,255,255,0.03)',
@@ -69,15 +57,15 @@ export default function LeadsPage() {
       <div className="px-4 md:px-8 py-4 border-b" style={{ borderColor: 'rgba(99,102,241,0.08)' }}>
         <div className="grid grid-cols-2 gap-3 sm:flex sm:items-center sm:gap-0">
           {[
-            { n: '1', label: 'Describe Ideal Lead', sub: 'AI extracts filters' },
-            { n: '2', label: 'Open Sales Navigator', sub: 'Filters pre-applied' },
-            { n: '3', label: 'Generate Message', sub: 'Personalized outreach' },
-            { n: '4', label: 'Send & Get Clients', sub: 'High response rate' },
+            { n: '1', label: 'Generate Tweet', sub: 'Single or thread' },
+            { n: '2', label: 'Edit & Customize', sub: 'Make it yours' },
+            { n: '3', label: 'Copy & Post', sub: 'Share on Twitter' },
+            { n: '4', label: 'Track Growth', sub: 'Watch engagement' },
           ].map((step, i) => (
             <React.Fragment key={step.n}>
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-                  style={{ background: 'linear-gradient(135deg, #6366f1, #06b6d4)', color: 'white', fontFamily: 'Syne' }}>
+                  style={{ background: 'linear-gradient(135deg, #06b6d4, #0ea5e9)', color: 'white', fontFamily: 'Syne' }}>
                   {step.n}
                 </div>
                 <div>
@@ -86,7 +74,7 @@ export default function LeadsPage() {
                 </div>
               </div>
               {i < 3 && (
-                <div className="hidden sm:block flex-1 mx-3 h-px" style={{ background: 'linear-gradient(90deg, rgba(99,102,241,0.3), rgba(6,182,212,0.1))' }} />
+                <div className="hidden sm:block flex-1 mx-3 h-px" style={{ background: 'linear-gradient(90deg, rgba(6,182,212,0.3), rgba(6,182,212,0.1))' }} />
               )}
             </React.Fragment>
           ))}
@@ -120,9 +108,13 @@ export default function LeadsPage() {
 
       {/* Tab content */}
       <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6">
-        {activeTab === 'filters' && <LeadFilterBuilder onMessageForFilter={handleMessageForFilter} />}
-        {activeTab === 'briefs' && <LeadBriefGenerator />}
-        {activeTab === 'messages' && <MessageTemplateGenerator prefill={prefill} onPrefillConsumed={() => setPrefill(null)} />}
+        {activeTab === 'tweets' && (
+          <div className="space-y-6">
+            <TweetGenerator />
+            <TwitterThreadBuilder />
+          </div>
+        )}
+        {activeTab === 'growth' && <TwitterGrowthPlanGenerator />}
       </div>
     </div>
   );

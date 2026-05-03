@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { Wand2, ExternalLink, Copy, Trash2, Hash, Eye, TrendingUp, Zap, Image, Download, Lightbulb } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Wand2, ExternalLink, Copy, Trash2, Hash, Eye, TrendingUp, Zap, Image, Download, Lightbulb, RefreshCw, Flame } from 'lucide-react';
 import { useStore } from '@/lib/store';
 import { generateLinkedInPost } from '@/lib/ai';
 import { buildLinkedInPostURL, isPostTooLongForURL, INDUSTRIES } from '@/lib/utils';
 import { generatePostImage, downloadImage, IMAGE_STYLE_OPTIONS, IMAGE_FAMILIES, type ImageStyle } from '@/lib/postImage';
 import { TOPIC_SUGGESTIONS, TOPIC_CATEGORIES } from '@/lib/postTopics';
+import { generateTrendingTopics, filterExpiredTopics, type TrendingTopic } from '@/lib/topicEngine';
 import type { LinkedInPost } from '@/lib/types';
 import toast from 'react-hot-toast';
 
@@ -18,7 +19,7 @@ const POST_TYPES = [
 ];
 
 export default function LinkedInPostGenerator() {
-  const { posts, addPost, deletePost, userProfile } = useStore();
+  const { posts, addPost, deletePost, userProfile, trendingTopics, setTrendingTopics, lastTopicRefresh, setLastTopicRefresh } = useStore();
   const [form, setForm] = useState({
     topic: '',
     postType: 'thought-leadership' as LinkedInPost['postType'],
@@ -34,6 +35,44 @@ export default function LinkedInPostGenerator() {
   const [topicCategory, setTopicCategory] = useState<string>('trending');
   const [topicSearch, setTopicSearch] = useState('');
   const [imageFamily, setImageFamily] = useState<string>('all');
+  const [loadingTopics, setLoadingTopics] = useState(false);
+  const [topicRefreshCooldown, setTopicRefreshCooldown] = useState(0);
+
+  // Load and refresh trending topics on mount
+  useEffect(() => {
+    const linkedinTopics = filterExpiredTopics(trendingTopics.linkedin);
+    if (linkedinTopics.length === 0) {
+      loadTrendingTopics();
+    }
+  }, []);
+
+  // Cooldown timer
+  useEffect(() => {
+    if (topicRefreshCooldown <= 0) return;
+    const timer = setTimeout(() => setTopicRefreshCooldown(topicRefreshCooldown - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [topicRefreshCooldown]);
+
+  const loadTrendingTopics = async () => {
+    setLoadingTopics(true);
+    try {
+      const topics = await generateTrendingTopics({
+        niche: userProfile.service,
+        audience: userProfile.targetAudience,
+        expertiseAreas: userProfile.skills,
+        recentPostThemes: posts.slice(0, 5).map((p) => p.hook),
+      });
+      setTrendingTopics('linkedin', topics);
+      setLastTopicRefresh('linkedin', new Date().toISOString());
+      setTopicRefreshCooldown(3600); // 1 hour cooldown
+      toast.success('🔥 Trending topics loaded!');
+    } catch (err) {
+      toast.error('Failed to load trending topics. Using curated list.');
+      console.error(err);
+    } finally {
+      setLoadingTopics(false);
+    }
+  };
 
   const handleGenerate = async () => {
     if (!form.topic) { toast.error('Enter a topic first'); return; }
@@ -117,14 +156,82 @@ export default function LinkedInPostGenerator() {
           </div>
         </div>
 
+        {/* Trending Topics */}
+        {filterExpiredTopics(trendingTopics.linkedin).length > 0 && (
+          <div className="mb-4 p-4 rounded-xl" style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.15)' }}>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Flame size={14} color="#10b981" />
+                <span className="text-xs font-medium" style={{ color: '#10b981', fontFamily: 'Syne' }}>
+                  🔥 Trending Now (AI-Generated)
+                </span>
+              </div>
+              <button
+                onClick={loadTrendingTopics}
+                disabled={topicRefreshCooldown > 0 || loadingTopics}
+                className="text-xs px-2 py-1 rounded flex items-center gap-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  background: 'rgba(16,185,129,0.15)',
+                  color: '#10b981',
+                }}
+              >
+                <RefreshCw size={12} style={{ transform: loadingTopics ? 'rotate(180deg)' : 'none', transition: 'all 0.3s' }} />
+                {topicRefreshCooldown > 0 ? `${Math.ceil(topicRefreshCooldown / 60)}m` : 'Refresh'}
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              {filterExpiredTopics(trendingTopics.linkedin).map((topic) => (
+                <button
+                  key={topic.id}
+                  onClick={() => setForm({ ...form, topic: topic.title })}
+                  className="p-3 rounded-lg text-left transition-all hover:bg-opacity-30"
+                  style={{
+                    background: 'rgba(16,185,129,0.1)',
+                    border: '1px solid rgba(16,185,129,0.2)',
+                  }}
+                >
+                  <div className="flex items-start justify-between gap-2 mb-1">
+                    <p className="text-xs font-semibold text-gray-200 flex-1">{topic.title}</p>
+                    <span className="text-xs px-1.5 py-0.5 rounded-full font-bold flex-shrink-0" style={{ background: 'rgba(16,185,129,0.2)', color: '#10b981' }}>
+                      {topic.trendScore}/10
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-400 mb-1">{topic.angle}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-500">📊 {topic.viralPattern}</span>
+                    <span className="text-xs text-gray-500">👥 {topic.audienceFit}/10</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Topic Suggestions */}
         <div className="mb-4 p-4 rounded-xl" style={{ background: 'rgba(99,102,241,0.04)', border: '1px solid rgba(99,102,241,0.12)' }}>
-          <div className="flex items-center gap-2 mb-3">
-            <Lightbulb size={14} color="#a5b4fc" />
-            <span className="text-xs font-medium" style={{ color: '#a5b4fc', fontFamily: 'Syne' }}>
-              Topic Ideas for Your Niche
-            </span>
-            <span className="text-xs" style={{ color: '#475569' }}>— 300+ topics, click any to use</span>
+          <div className="flex items-center justify-between gap-2 mb-3">
+            <div className="flex items-center gap-2">
+              <Lightbulb size={14} color="#a5b4fc" />
+              <span className="text-xs font-medium" style={{ color: '#a5b4fc', fontFamily: 'Syne' }}>
+                Topic Ideas for Your Niche
+              </span>
+              <span className="text-xs" style={{ color: '#475569' }}>— 300+ topics, click any to use</span>
+            </div>
+            <button
+              onClick={loadTrendingTopics}
+              disabled={loadingTopics || topicRefreshCooldown > 0}
+              className="p-1.5 rounded-lg transition-all text-xs flex items-center gap-1"
+              style={{
+                background: loadingTopics ? 'rgba(99,102,241,0.2)' : topicRefreshCooldown > 0 ? 'rgba(255,255,255,0.04)' : 'rgba(99,102,241,0.15)',
+                border: '1px solid rgba(99,102,241,0.3)',
+                color: '#a5b4fc',
+              }}
+              title={topicRefreshCooldown > 0 ? `Refresh available in ${topicRefreshCooldown}s` : 'Generate AI topics for your niche'}
+            >
+              <RefreshCw size={12} className={loadingTopics ? 'animate-spin' : ''} />
+              {topicRefreshCooldown > 0 ? `${topicRefreshCooldown}s` : 'Refresh'}
+            </button>
           </div>
 
           {/* Search box */}
