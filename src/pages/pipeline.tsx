@@ -7,6 +7,10 @@ import { useStore } from '@/lib/store';
 import { suggestNextAction } from '@/lib/ai';
 import type { PipelineLead, PipelineStage, LeadSource } from '@/lib/types';
 import toast from 'react-hot-toast';
+import SequenceStartDialog from '@/components/pipeline/SequenceStartDialog';
+import SequenceProgressDisplay from '@/components/pipeline/SequenceProgressDisplay';
+import BulkImportDialog from '@/components/pipeline/BulkImportDialog';
+import DailyActionQueue from '@/components/pipeline/DailyActionQueue';
 
 const STAGES: { id: PipelineStage; label: string; color: string; bgColor: string }[] = [
   { id: 'new', label: 'New', color: '#64748b', bgColor: 'rgba(100,116,139,0.15)' },
@@ -37,8 +41,10 @@ export default function PipelinePage() {
     movePipelineLead, deletePipelineLead,
   } = useStore();
   const [showAddForm, setShowAddForm] = useState(false);
+  const [showBulkImport, setShowBulkImport] = useState(false);
   const [suggestingFor, setSuggestingFor] = useState<string | null>(null);
   const [editingNotes, setEditingNotes] = useState<string | null>(null);
+  const [sequenceDialogLead, setSequenceDialogLead] = useState<PipelineLead | null>(null);
   const [addForm, setAddForm] = useState({
     firstName: '',
     lastName: '',
@@ -112,6 +118,11 @@ export default function PipelinePage() {
     const followUp = new Date(Date.now() + 3 * 86400000).toISOString().split('T')[0];
     update.nextFollowUp = followUp;
     updatePipelineLead(lead.id, update);
+
+    // If transitioning to "contacted" and no sequence linked, show dialog
+    if (lead.stage === 'new' && !lead.sequenceId && lead.email) {
+      setTimeout(() => setSequenceDialogLead({...lead, stage: 'contacted'}), 300);
+    }
     toast.success('Marked as contacted — follow-up set for 3 days');
   };
 
@@ -172,6 +183,10 @@ export default function PipelinePage() {
           <Plus size={14} />
           Add Lead
         </button>
+        <button className="btn-secondary flex items-center gap-2 text-sm" onClick={() => setShowBulkImport(true)}>
+          <Mail size={14} />
+          Bulk Import
+        </button>
         {needsFollowUp.length > 0 && (
           <div className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs animate-pulse"
             style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)', color: '#fcd34d' }}>
@@ -182,6 +197,9 @@ export default function PipelinePage() {
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 space-y-6">
+        {/* Daily Action Queue */}
+        <DailyActionQueue />
+
         {/* Add Lead Form */}
         {showAddForm && (
           <div className="glass-card p-5 animate-fadeUp" style={{ border: '1px solid rgba(16,185,129,0.2)' }}>
@@ -300,6 +318,11 @@ export default function PipelinePage() {
                             </div>
                           )}
 
+                          {/* Sequence Progress */}
+                          {lead.sequenceId && (
+                            <SequenceProgressDisplay lead={lead} />
+                          )}
+
                           {/* Notes */}
                           {editingNotes === lead.id ? (
                             <textarea
@@ -336,6 +359,13 @@ export default function PipelinePage() {
                               style={{ background: 'rgba(99,102,241,0.1)' }}>
                               <MessageSquare size={10} color="#a5b4fc" />
                             </button>
+                            {!lead.sequenceId && lead.email && (
+                              <button onClick={() => setSequenceDialogLead(lead)} title="Start sequence"
+                                className="w-8 h-8 sm:w-7 sm:h-7 flex items-center justify-center rounded"
+                                style={{ background: 'rgba(99,102,241,0.1)' }}>
+                                <Mail size={10} color="#a5b4fc" />
+                              </button>
+                            )}
                             <button onClick={() => setEditingNotes(lead.id)} title="Add notes"
                               className="w-8 h-8 sm:w-7 sm:h-7 flex items-center justify-center rounded"
                               style={{ background: 'rgba(255,255,255,0.04)' }}>
@@ -428,6 +458,21 @@ export default function PipelinePage() {
           </div>
         )}
       </div>
+
+      {/* Sequence Start Dialog */}
+      {sequenceDialogLead && (
+        <SequenceStartDialog
+          leadId={sequenceDialogLead.id}
+          leadName={`${sequenceDialogLead.firstName} ${sequenceDialogLead.lastName}`}
+          leadEmail={sequenceDialogLead.email}
+          onClose={() => setSequenceDialogLead(null)}
+        />
+      )}
+
+      {/* Bulk Import Dialog */}
+      {showBulkImport && (
+        <BulkImportDialog onClose={() => setShowBulkImport(false)} />
+      )}
     </div>
   );
 }
