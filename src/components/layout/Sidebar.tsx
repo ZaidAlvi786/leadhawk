@@ -1,5 +1,5 @@
 import React from 'react';
-import { Target, TrendingUp, Settings, Zap, ChevronRight, Send, Mail, Users, X } from 'lucide-react';
+import { Target, TrendingUp, Settings, Zap, ChevronRight, Send, Mail, Users, Share2, X, BarChart3, BookOpen } from 'lucide-react';
 import { useStore } from '@/lib/store';
 import type { NavPage } from '@/lib/types';
 
@@ -43,6 +43,30 @@ const navItems = [
     description: 'Monetize & Grow Your Profile',
     badge: 'AI',
     badgeColor: 'tag-indigo',
+  },
+  {
+    id: 'twitter-growth' as NavPage,
+    label: 'X / Twitter Growth',
+    icon: Share2,
+    description: 'Viral Tweets & Threads',
+    badge: 'NEW',
+    badgeColor: 'tag-cyan',
+  },
+  {
+    id: 'analytics' as NavPage,
+    label: 'Analytics',
+    icon: BarChart3,
+    description: 'Performance & Outcomes',
+    badge: 'NEW',
+    badgeColor: 'tag-indigo',
+  },
+  {
+    id: 'templates' as NavPage,
+    label: 'Message Templates',
+    icon: BookOpen,
+    description: 'Reusable Templates Library',
+    badge: 'NEW',
+    badgeColor: 'tag-cyan',
   },
 ];
 
