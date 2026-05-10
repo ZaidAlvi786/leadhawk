@@ -1,30 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { Wand2, ExternalLink, Copy, Trash2, Hash, Eye, TrendingUp, Zap, Image, Download, Lightbulb, RefreshCw, Flame } from 'lucide-react';
+// This component exists because: posts that name a real prospect's pain in
+// the prospect's language drive inbound leads from people who feel the same
+// way. Phase 4 reshaped it around 4 funnel-tied post types (pain-naming,
+// mechanism-reveal, proof, take) and a pipeline-driven topic picker that
+// replaces the killed trending-topics engine.
+
+import React, { useState } from 'react';
+import { Wand2, ExternalLink, Copy, Trash2, Hash, Eye, Image, Download, Lightbulb } from 'lucide-react';
 import { useStore } from '@/lib/store';
 import { generateLinkedInPost } from '@/lib/ai';
 import { buildLinkedInPostURL, isPostTooLongForURL, INDUSTRIES } from '@/lib/utils';
 import { generatePostImage, downloadImage, IMAGE_STYLE_OPTIONS, IMAGE_FAMILIES, type ImageStyle } from '@/lib/postImage';
 import { TOPIC_SUGGESTIONS, TOPIC_CATEGORIES } from '@/lib/postTopics';
-import { generateTrendingTopics, filterExpiredTopics, type TrendingTopic } from '@/lib/topicEngine';
-import type { LinkedInPost } from '@/lib/types';
+import { STRATEGIC_POST_TYPES, primaryIcpLabel } from '@/lib/icp';
+import type { LinkedInPost, LinkedInPostType } from '@/lib/types';
+import IcpTagPicker from '@/components/icp/IcpTagPicker';
+import PipelineTopicPicker from '@/components/icp/PipelineTopicPicker';
 import toast from 'react-hot-toast';
 
-const POST_TYPES = [
-  { value: 'thought-leadership', label: '💡 Thought Leadership', description: 'Share expertise & opinions' },
-  { value: 'case-study', label: '📊 Case Study', description: 'Show results & proof' },
-  { value: 'tips', label: '✅ Tips & Tricks', description: 'Actionable advice list' },
-  { value: 'story', label: '📖 Story', description: 'Personal journey narrative' },
-  { value: 'poll', label: '🗳️ Poll / Question', description: 'Drive engagement fast' },
-  { value: 'engagement', label: '🔥 Engagement Bait', description: 'Debate-worthy hot take' },
-];
+const STRATEGIC_TYPES: LinkedInPostType[] = ['pain-naming', 'mechanism-reveal', 'proof', 'take'];
 
 export default function LinkedInPostGenerator() {
-  const { posts, addPost, deletePost, userProfile, trendingTopics, setTrendingTopics, lastTopicRefresh, setLastTopicRefresh } = useStore();
+  const { posts, addPost, deletePost, userProfile, userPositioning } = useStore();
+  const defaultIcp = primaryIcpLabel(userPositioning);
   const [form, setForm] = useState({
     topic: '',
-    postType: 'thought-leadership' as LinkedInPost['postType'],
+    postType: 'pain-naming' as LinkedInPostType,
     industry: 'Technology',
-    targetAudience: userProfile.targetAudience,
+    targetAudience: userPositioning?.targetCompanyType || userProfile.targetAudience,
+    icpTag: defaultIcp,
+    pipelineContext: '',
   });
   const [generated, setGenerated] = useState<{ content: string; hashtags: string[]; hook: string } | null>(null);
   const [loading, setLoading] = useState(false);
@@ -32,50 +36,13 @@ export default function LinkedInPostGenerator() {
   const [editing, setEditing] = useState(false);
   const [imageStyle, setImageStyle] = useState<ImageStyle>('hook-indigo');
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [showLibrary, setShowLibrary] = useState(false);
   const [topicCategory, setTopicCategory] = useState<string>('trending');
   const [topicSearch, setTopicSearch] = useState('');
   const [imageFamily, setImageFamily] = useState<string>('all');
-  const [loadingTopics, setLoadingTopics] = useState(false);
-  const [topicRefreshCooldown, setTopicRefreshCooldown] = useState(0);
-
-  // Load and refresh trending topics on mount
-  useEffect(() => {
-    const linkedinTopics = filterExpiredTopics(trendingTopics.linkedin);
-    if (linkedinTopics.length === 0) {
-      loadTrendingTopics();
-    }
-  }, []);
-
-  // Cooldown timer
-  useEffect(() => {
-    if (topicRefreshCooldown <= 0) return;
-    const timer = setTimeout(() => setTopicRefreshCooldown(topicRefreshCooldown - 1), 1000);
-    return () => clearTimeout(timer);
-  }, [topicRefreshCooldown]);
-
-  const loadTrendingTopics = async () => {
-    setLoadingTopics(true);
-    try {
-      const topics = await generateTrendingTopics({
-        niche: userProfile.service,
-        audience: userProfile.targetAudience,
-        expertiseAreas: userProfile.skills,
-        recentPostThemes: posts.slice(0, 5).map((p) => p.hook),
-      });
-      setTrendingTopics('linkedin', topics);
-      setLastTopicRefresh('linkedin', new Date().toISOString());
-      setTopicRefreshCooldown(3600); // 1 hour cooldown
-      toast.success('🔥 Trending topics loaded!');
-    } catch (err) {
-      toast.error('Failed to load trending topics. Using curated list.');
-      console.error(err);
-    } finally {
-      setLoadingTopics(false);
-    }
-  };
 
   const handleGenerate = async () => {
-    if (!form.topic) { toast.error('Enter a topic first'); return; }
+    if (!form.topic) { toast.error('Pick a prospect pain or write your own topic first'); return; }
     setLoading(true);
     try {
       const result = await generateLinkedInPost({
@@ -84,6 +51,9 @@ export default function LinkedInPostGenerator() {
         industry: form.industry,
         targetAudience: form.targetAudience,
         yourSkills: userProfile.skills,
+        positioning: userPositioning,
+        icpTag: form.icpTag,
+        pipelineContext: form.pipelineContext || undefined,
       });
       setGenerated(result);
       setEditContent(result.content + '\n\n' + result.hashtags.map((h) => `#${h.replace('#', '')}`).join(' '));
@@ -94,7 +64,9 @@ export default function LinkedInPostGenerator() {
     setLoading(false);
   };
 
-  const finalContent = editing ? editContent : (generated ? `${generated.content}\n\n${generated.hashtags.map((h) => `#${h.replace('#', '')}`).join(' ')}` : '');
+  const finalContent = editing
+    ? editContent
+    : (generated ? `${generated.content}\n\n${generated.hashtags.map((h) => `#${h.replace('#', '')}`).join(' ')}` : '');
 
   const handlePostToLinkedIn = () => {
     if (!finalContent) return;
@@ -114,213 +86,185 @@ export default function LinkedInPostGenerator() {
       hook: generated.hook,
       hashtags: generated.hashtags,
       postType: form.postType,
-      estimatedReach: Math.floor(Math.random() * 5000) + 2000,
-      bestTimeToPost: '9:00 AM - 11:00 AM',
+      icpTag: form.icpTag,
+      // Real reach comes from LinkedIn after publish — Phase 5 will wire it.
+      estimatedReach: 0,
+      bestTimeToPost: '',
       createdAt: new Date().toISOString(),
     };
     addPost(post);
-    toast.success('Post saved!');
+    toast.success('Post saved');
   };
 
   return (
     <div className="space-y-6">
       {/* Generator */}
       <div className="glass-card p-5">
-        <div className="flex items-center gap-2 mb-4">
-          <Zap size={16} color="#a5b4fc" />
-          <h3 className="font-semibold text-sm" style={{ color: '#a5b4fc', fontFamily: 'Syne' }}>
-            AI LinkedIn Post Generator
-          </h3>
-        </div>
+        <h3 className="font-semibold text-sm mb-4" style={{ color: '#a5b4fc', fontFamily: 'Syne' }}>
+          AI LinkedIn Post Generator
+        </h3>
 
-        {/* Post type */}
+        {/* Strategic post type selector — Phase 4 */}
         <div className="mb-4">
-          <label className="text-xs font-medium block mb-2" style={{ color: '#64748b', fontFamily: 'Syne' }}>Post Type</label>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-            {POST_TYPES.map((pt) => (
-              <button
-                key={pt.value}
-                onClick={() => setForm({ ...form, postType: pt.value as LinkedInPost['postType'] })}
-                className="p-3 rounded-xl text-left transition-all"
-                style={{
-                  background: form.postType === pt.value ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.03)',
-                  border: `1px solid ${form.postType === pt.value ? 'rgba(99,102,241,0.5)' : 'rgba(255,255,255,0.07)'}`,
-                }}
-              >
-                <div className="text-xs font-medium mb-0.5" style={{ color: form.postType === pt.value ? '#a5b4fc' : '#64748b' }}>
-                  {pt.label}
-                </div>
-                <div className="text-xs" style={{ color: '#334155' }}>{pt.description}</div>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Trending Topics */}
-        {filterExpiredTopics(trendingTopics.linkedin).length > 0 && (
-          <div className="mb-4 p-4 rounded-xl" style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.15)' }}>
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <Flame size={14} color="#10b981" />
-                <span className="text-xs font-medium" style={{ color: '#10b981', fontFamily: 'Syne' }}>
-                  🔥 Trending Now (AI-Generated)
-                </span>
-              </div>
-              <button
-                onClick={loadTrendingTopics}
-                disabled={topicRefreshCooldown > 0 || loadingTopics}
-                className="text-xs px-2 py-1 rounded flex items-center gap-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{
-                  background: 'rgba(16,185,129,0.15)',
-                  color: '#10b981',
-                }}
-              >
-                <RefreshCw size={12} style={{ transform: loadingTopics ? 'rotate(180deg)' : 'none', transition: 'all 0.3s' }} />
-                {topicRefreshCooldown > 0 ? `${Math.ceil(topicRefreshCooldown / 60)}m` : 'Refresh'}
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              {filterExpiredTopics(trendingTopics.linkedin).map((topic) => (
-                <button
-                  key={topic.id}
-                  onClick={() => setForm({ ...form, topic: topic.title })}
-                  className="p-3 rounded-lg text-left transition-all hover:bg-opacity-30"
-                  style={{
-                    background: 'rgba(16,185,129,0.1)',
-                    border: '1px solid rgba(16,185,129,0.2)',
-                  }}
-                >
-                  <div className="flex items-start justify-between gap-2 mb-1">
-                    <p className="text-xs font-semibold text-gray-200 flex-1">{topic.title}</p>
-                    <span className="text-xs px-1.5 py-0.5 rounded-full font-bold flex-shrink-0" style={{ background: 'rgba(16,185,129,0.2)', color: '#10b981' }}>
-                      {topic.trendScore}/10
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-400 mb-1">{topic.angle}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-gray-500">📊 {topic.viralPattern}</span>
-                    <span className="text-xs text-gray-500">👥 {topic.audienceFit}/10</span>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Topic Suggestions */}
-        <div className="mb-4 p-4 rounded-xl" style={{ background: 'rgba(99,102,241,0.04)', border: '1px solid rgba(99,102,241,0.12)' }}>
-          <div className="flex items-center justify-between gap-2 mb-3">
-            <div className="flex items-center gap-2">
-              <Lightbulb size={14} color="#a5b4fc" />
-              <span className="text-xs font-medium" style={{ color: '#a5b4fc', fontFamily: 'Syne' }}>
-                Topic Ideas for Your Niche
-              </span>
-              <span className="text-xs" style={{ color: '#475569' }}>— 300+ topics, click any to use</span>
-            </div>
-            <button
-              onClick={loadTrendingTopics}
-              disabled={loadingTopics || topicRefreshCooldown > 0}
-              className="p-1.5 rounded-lg transition-all text-xs flex items-center gap-1"
-              style={{
-                background: loadingTopics ? 'rgba(99,102,241,0.2)' : topicRefreshCooldown > 0 ? 'rgba(255,255,255,0.04)' : 'rgba(99,102,241,0.15)',
-                border: '1px solid rgba(99,102,241,0.3)',
-                color: '#a5b4fc',
-              }}
-              title={topicRefreshCooldown > 0 ? `Refresh available in ${topicRefreshCooldown}s` : 'Generate AI topics for your niche'}
-            >
-              <RefreshCw size={12} className={loadingTopics ? 'animate-spin' : ''} />
-              {topicRefreshCooldown > 0 ? `${topicRefreshCooldown}s` : 'Refresh'}
-            </button>
-          </div>
-
-          {/* Search box */}
-          <input
-            className="input-field text-sm w-full mb-3"
-            placeholder="Search topics... (e.g. n8n, RAG, freelance, pricing)"
-            value={topicSearch}
-            onChange={(e) => setTopicSearch(e.target.value)}
-          />
-
-          {/* Category chips */}
-          <div className="flex flex-wrap gap-1.5 mb-3">
-            {TOPIC_CATEGORIES.map((cat) => {
-              const count = cat.id === 'all'
-                ? TOPIC_SUGGESTIONS.length
-                : cat.id === 'trending'
-                  ? TOPIC_SUGGESTIONS.filter((t) => t.trending).length
-                  : TOPIC_SUGGESTIONS.filter((t) => t.category === cat.id).length;
+          <label className="text-xs font-medium block mb-2" style={{ color: '#64748b', fontFamily: 'Syne' }}>
+            Post type — pick the funnel objective
+          </label>
+          <div className="grid grid-cols-2 gap-2">
+            {STRATEGIC_TYPES.map((t) => {
+              const meta = STRATEGIC_POST_TYPES[t]!;
+              const isActive = form.postType === t;
               return (
                 <button
-                  key={cat.id}
-                  onClick={() => setTopicCategory(cat.id)}
-                  className="text-xs px-2.5 py-1 rounded-lg transition-all flex items-center gap-1"
+                  key={t}
+                  onClick={() => setForm({ ...form, postType: t })}
+                  className="p-3 rounded-xl text-left transition-all"
                   style={{
-                    background: topicCategory === cat.id ? 'rgba(99,102,241,0.25)' : 'rgba(255,255,255,0.04)',
-                    border: `1px solid ${topicCategory === cat.id ? 'rgba(99,102,241,0.5)' : 'rgba(255,255,255,0.07)'}`,
-                    color: topicCategory === cat.id ? '#a5b4fc' : '#475569',
+                    background: isActive ? 'rgba(99,102,241,0.18)' : 'rgba(255,255,255,0.03)',
+                    border: `1px solid ${isActive ? 'rgba(99,102,241,0.5)' : 'rgba(255,255,255,0.07)'}`,
                   }}
                 >
-                  <span>{cat.emoji}</span>
-                  {cat.label}
-                  <span className="ml-0.5" style={{ color: '#334155', fontSize: '10px' }}>{count}</span>
+                  <div className="flex items-center gap-1.5 mb-0.5">
+                    <span>{meta.emoji}</span>
+                    <span className="text-xs font-semibold" style={{ color: isActive ? '#a5b4fc' : '#cbd5e1' }}>
+                      {meta.label}
+                    </span>
+                  </div>
+                  <div className="text-xs" style={{ color: '#64748b' }}>
+                    {meta.funnelObjective}
+                  </div>
                 </button>
               );
             })}
           </div>
-
-          {/* Topic cards — scrollable */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-80 overflow-y-auto pr-1">
-            {TOPIC_SUGGESTIONS
-              .filter((t) => {
-                if (topicCategory === 'trending') return t.trending;
-                if (topicCategory !== 'all' && t.category !== topicCategory) return false;
-                if (topicSearch && !t.topic.toLowerCase().includes(topicSearch.toLowerCase())) return false;
-                return true;
-              })
-              .slice(0, 60) // cap render to keep DOM fast
-              .map((suggestion) => (
-                <button
-                  key={suggestion.id}
-                  onClick={() => setForm({ ...form, topic: suggestion.topic, postType: suggestion.postType })}
-                  className="text-left p-2.5 rounded-lg transition-all flex items-start gap-2"
-                  style={{
-                    background: form.topic === suggestion.topic ? 'rgba(99,102,241,0.18)' : 'rgba(255,255,255,0.03)',
-                    border: `1px solid ${form.topic === suggestion.topic ? 'rgba(99,102,241,0.4)' : 'rgba(255,255,255,0.06)'}`,
-                  }}
-                >
-                  <span className="text-sm flex-shrink-0 mt-0.5">{suggestion.emoji}</span>
-                  <div className="min-w-0 flex-1">
-                    <div className="text-xs leading-relaxed" style={{ color: '#cbd5e1' }}>
-                      {suggestion.topic}
-                    </div>
-                    <div className="flex items-center gap-1.5 mt-1">
-                      <span className="text-xs" style={{ color: '#475569' }}>{suggestion.postType}</span>
-                      {suggestion.trending && (
-                        <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: 'rgba(245,158,11,0.15)', color: '#fcd34d', fontSize: '9px' }}>
-                          🔥 trending
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </button>
-              ))}
-          </div>
         </div>
 
+        {/* ICP tag */}
+        <div className="mb-4">
+          <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>
+            Target ICP
+          </label>
+          <IcpTagPicker
+            value={form.icpTag}
+            onChange={(tag) => setForm({ ...form, icpTag: tag })}
+          />
+        </div>
+
+        {/* Pipeline topic picker — replaces trending topics */}
+        <div className="mb-4">
+          <PipelineTopicPicker
+            onPick={(topic) => {
+              setForm({
+                ...form,
+                topic: topic.text.slice(0, 200),
+                pipelineContext: topic.text,
+              });
+              toast.success(`Using ${topic.leadName}'s ${topic.source} as topic`);
+            }}
+          />
+        </div>
+
+        {/* Static topic library — collapsed by default, opt-in */}
+        <div className="mb-4">
+          <button
+            onClick={() => setShowLibrary(!showLibrary)}
+            className="text-xs flex items-center gap-1 px-2 py-1 rounded-lg"
+            style={{
+              background: showLibrary ? 'rgba(99,102,241,0.12)' : 'rgba(255,255,255,0.03)',
+              color: showLibrary ? '#a5b4fc' : '#64748b',
+              border: '1px solid rgba(99,102,241,0.15)',
+            }}
+          >
+            <Lightbulb size={11} />
+            {showLibrary ? 'Hide' : 'Browse'} curated topic library ({TOPIC_SUGGESTIONS.length})
+          </button>
+
+          {showLibrary && (
+            <div className="mt-2 p-4 rounded-xl" style={{
+              background: 'rgba(99,102,241,0.04)',
+              border: '1px solid rgba(99,102,241,0.12)',
+            }}>
+              <p className="text-xs mb-2" style={{ color: '#64748b' }}>
+                Generic prompts when your pipeline is too thin to inspire one. Topics from your actual prospects (above) almost always perform better.
+              </p>
+              <input
+                className="input-field text-sm w-full mb-3"
+                placeholder="Search topics…"
+                value={topicSearch}
+                onChange={(e) => setTopicSearch(e.target.value)}
+              />
+              <div className="flex flex-wrap gap-1.5 mb-3">
+                {TOPIC_CATEGORIES.map((cat) => {
+                  const count = cat.id === 'all'
+                    ? TOPIC_SUGGESTIONS.length
+                    : cat.id === 'trending'
+                      ? TOPIC_SUGGESTIONS.filter((t) => t.trending).length
+                      : TOPIC_SUGGESTIONS.filter((t) => t.category === cat.id).length;
+                  return (
+                    <button
+                      key={cat.id}
+                      onClick={() => setTopicCategory(cat.id)}
+                      className="text-xs px-2.5 py-1 rounded-lg transition-all flex items-center gap-1"
+                      style={{
+                        background: topicCategory === cat.id ? 'rgba(99,102,241,0.25)' : 'rgba(255,255,255,0.04)',
+                        border: `1px solid ${topicCategory === cat.id ? 'rgba(99,102,241,0.5)' : 'rgba(255,255,255,0.07)'}`,
+                        color: topicCategory === cat.id ? '#a5b4fc' : '#475569',
+                      }}
+                    >
+                      <span>{cat.emoji}</span>
+                      {cat.label}
+                      <span className="ml-0.5" style={{ color: '#334155', fontSize: '10px' }}>{count}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-72 overflow-y-auto pr-1">
+                {TOPIC_SUGGESTIONS
+                  .filter((t) => {
+                    if (topicCategory === 'trending') return t.trending;
+                    if (topicCategory !== 'all' && t.category !== topicCategory) return false;
+                    if (topicSearch && !t.topic.toLowerCase().includes(topicSearch.toLowerCase())) return false;
+                    return true;
+                  })
+                  .slice(0, 60)
+                  .map((suggestion) => (
+                    <button
+                      key={suggestion.id}
+                      onClick={() => setForm({ ...form, topic: suggestion.topic, pipelineContext: '' })}
+                      className="text-left p-2.5 rounded-lg transition-all flex items-start gap-2"
+                      style={{
+                        background: form.topic === suggestion.topic ? 'rgba(99,102,241,0.18)' : 'rgba(255,255,255,0.03)',
+                        border: `1px solid ${form.topic === suggestion.topic ? 'rgba(99,102,241,0.4)' : 'rgba(255,255,255,0.06)'}`,
+                      }}
+                    >
+                      <span className="text-sm flex-shrink-0 mt-0.5">{suggestion.emoji}</span>
+                      <div className="text-xs leading-relaxed" style={{ color: '#cbd5e1' }}>
+                        {suggestion.topic}
+                      </div>
+                    </button>
+                  ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Topic + audience inputs */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div className="md:col-span-2">
             <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>
-              Post Topic *
+              Post topic *
             </label>
             <input
               className="input-field text-sm"
-              placeholder="Pick a topic above or write your own..."
+              placeholder="Pick from prospects above or write your own…"
               value={form.topic}
               onChange={(e) => setForm({ ...form, topic: e.target.value })}
             />
+            {form.pipelineContext && (
+              <p className="text-xs mt-1" style={{ color: '#10b981' }}>
+                ✓ Grounded in real pipeline context — won't be generic
+              </p>
+            )}
           </div>
-
           <div>
             <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>Industry</label>
             <select
@@ -332,12 +276,11 @@ export default function LinkedInPostGenerator() {
               {INDUSTRIES.map((i) => <option key={i} value={i} style={{ background: '#0f172a' }}>{i}</option>)}
             </select>
           </div>
-
           <div>
-            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>Target Audience</label>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>Target audience</label>
             <input
               className="input-field text-sm"
-              placeholder="CTOs, Startup Founders..."
+              placeholder="CTOs, Startup Founders…"
               value={form.targetAudience}
               onChange={(e) => setForm({ ...form, targetAudience: e.target.value })}
             />
@@ -350,11 +293,11 @@ export default function LinkedInPostGenerator() {
           disabled={loading}
         >
           {loading ? <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" /> : <Wand2 size={15} />}
-          {loading ? 'Crafting Viral Post...' : 'Generate LinkedIn Post'}
+          {loading ? 'Generating Post…' : `Generate ${STRATEGIC_POST_TYPES[form.postType]?.label || 'Post'}`}
         </button>
       </div>
 
-      {/* Generated Post Preview */}
+      {/* Preview */}
       {generated && (
         <div className="glass-card p-5 animate-fadeUp" style={{ border: '1px solid rgba(6,182,212,0.2)' }}>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
@@ -362,16 +305,11 @@ export default function LinkedInPostGenerator() {
               <Eye size={14} color="#06b6d4" />
               <span className="text-sm font-medium" style={{ color: '#67e8f9', fontFamily: 'Syne' }}>Post Preview</span>
             </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="tag tag-cyan flex items-center gap-1">
-                <TrendingUp size={10} />
-                Est. 2K+ impressions
-              </span>
-              <span className="tag tag-amber">Best: 9AM–11AM</span>
-            </div>
+            <span className="text-xs" style={{ color: '#475569' }}>
+              Reach reported by LinkedIn after you post.
+            </span>
           </div>
 
-          {/* Hook highlight */}
           {generated.hook && (
             <div className="mb-3 p-3 rounded-lg" style={{
               background: 'rgba(6,182,212,0.06)',
@@ -399,7 +337,6 @@ export default function LinkedInPostGenerator() {
             </div>
           )}
 
-          {/* Hashtags */}
           {!editing && (
             <div className="flex flex-wrap gap-1.5 mb-4">
               {generated.hashtags.map((tag) => (
@@ -411,15 +348,14 @@ export default function LinkedInPostGenerator() {
             </div>
           )}
 
-          {/* Image Generator */}
+          {/* Image */}
           <div className="mb-4 p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
             <div className="flex items-center gap-2 mb-3">
               <Image size={14} color="#a5b4fc" />
-              <span className="text-xs font-medium" style={{ color: '#a5b4fc', fontFamily: 'Syne' }}>Post Image</span>
+              <span className="text-xs font-medium" style={{ color: '#a5b4fc', fontFamily: 'Syne' }}>Post image</span>
               <span className="text-xs" style={{ color: '#475569' }}>— text cards stop the scroll on LinkedIn</span>
             </div>
 
-            {/* Family filter tabs */}
             <div className="flex flex-wrap gap-1.5 mb-3">
               {IMAGE_FAMILIES.map((f) => {
                 const count = f.id === 'all'
@@ -444,7 +380,6 @@ export default function LinkedInPostGenerator() {
               })}
             </div>
 
-            {/* Style selector */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-3 max-h-72 overflow-y-auto pr-1">
               {IMAGE_STYLE_OPTIONS
                 .filter((s) => imageFamily === 'all' || s.family === imageFamily)
@@ -479,38 +414,31 @@ export default function LinkedInPostGenerator() {
                 className="btn-secondary flex items-center gap-2 text-sm"
                 onClick={() => {
                   const hookText = generated.hook || finalContent.split('\n')[0] || 'Your key message here';
-                  // Pull the second meaningful line as subtext for extra context
                   const lines = finalContent.split('\n').map((l) => l.trim()).filter(Boolean);
                   const subtext = lines.find((l) => l !== hookText && l.length > 20 && l.length < 160);
-                  const categoryMap: Record<typeof form.postType, string> = {
-                    'thought-leadership': 'INSIGHT',
-                    'case-study': 'CASE STUDY',
-                    'tips': 'TIPS',
-                    'story': 'STORY',
-                    'poll': 'POLL',
-                    'engagement': 'HOT TAKE',
-                  };
+                  const meta = STRATEGIC_POST_TYPES[form.postType];
+                  const category = meta ? meta.label.toUpperCase() : 'POST';
                   const img = generatePostImage({
                     hookText,
                     subtext,
-                    category: categoryMap[form.postType],
+                    category,
                     authorName: userProfile.name || undefined,
                     authorTitle: userProfile.title || undefined,
                     style: imageStyle,
                   });
                   setGeneratedImage(img);
-                  toast.success('Image generated!');
+                  toast.success('Image generated');
                 }}
               >
                 <Image size={13} />
-                Generate Image
+                Generate image
               </button>
               {generatedImage && (
                 <button
                   className="btn-primary flex items-center gap-2 text-sm"
                   onClick={() => {
                     downloadImage(generatedImage, `linkedin-post-${Date.now()}.png`);
-                    toast.success('Image downloaded!');
+                    toast.success('Image downloaded');
                   }}
                 >
                   <Download size={13} />
@@ -530,7 +458,6 @@ export default function LinkedInPostGenerator() {
             <button
               className="btn-primary flex items-center gap-2 text-sm"
               onClick={() => {
-                // If image exists, download it first so user can attach it
                 if (generatedImage) {
                   downloadImage(generatedImage, `linkedin-post-${Date.now()}.png`);
                   toast('Image downloaded — attach it in the LinkedIn composer', { icon: '📎', duration: 5000 });
@@ -543,7 +470,7 @@ export default function LinkedInPostGenerator() {
             </button>
             <button
               className="btn-secondary flex items-center gap-2 text-sm"
-              onClick={() => { navigator.clipboard.writeText(finalContent); toast.success('Copied!'); }}
+              onClick={() => { navigator.clipboard.writeText(finalContent); toast.success('Copied'); }}
             >
               <Copy size={13} />
               Copy
@@ -568,46 +495,55 @@ export default function LinkedInPostGenerator() {
             Saved Posts ({posts.length})
           </h3>
           <div className="space-y-3">
-            {posts.map((p) => (
-              <div key={p.id} className="glass-card p-4">
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="tag tag-cyan text-xs">{p.postType}</span>
-                      <span className="tag tag-indigo text-xs flex items-center gap-1">
-                        <TrendingUp size={9} />
-                        {p.estimatedReach.toLocaleString()} reach
-                      </span>
+            {posts.map((p) => {
+              const meta = STRATEGIC_POST_TYPES[p.postType];
+              return (
+                <div key={p.id} className="glass-card p-4">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1 flex-wrap">
+                        <span className="tag tag-cyan text-xs">
+                          {meta ? `${meta.emoji} ${meta.label}` : p.postType}
+                        </span>
+                        {p.icpTag && (
+                          <span className="text-xs px-2 py-0.5 rounded" style={{
+                            background: 'rgba(99,102,241,0.12)',
+                            color: '#a5b4fc',
+                          }}>
+                            {p.icpTag}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs leading-relaxed line-clamp-2" style={{ color: '#64748b' }}>{p.content}</p>
                     </div>
-                    <p className="text-xs leading-relaxed line-clamp-2" style={{ color: '#64748b' }}>{p.content}</p>
-                  </div>
-                  <div className="flex items-center gap-1.5 flex-shrink-0">
-                    <button
-                      onClick={() => {
-                        if (isPostTooLongForURL(p.content)) {
-                          navigator.clipboard.writeText(p.content);
-                          toast.success('Post copied — paste it in LinkedIn!', { duration: 5000 });
-                        }
-                        window.open(buildLinkedInPostURL(p.content), '_blank');
-                      }}
-                      className="btn-primary text-xs px-2.5 py-1.5 flex items-center gap-1"
-                    >
-                      <ExternalLink size={11} /> Post
-                    </button>
-                    <button onClick={() => { navigator.clipboard.writeText(p.content); toast.success('Copied!'); }}
-                      className="w-7 h-7 flex items-center justify-center rounded-lg"
-                      style={{ background: 'rgba(6,182,212,0.1)', border: '1px solid rgba(6,182,212,0.2)' }}>
-                      <Copy size={12} color="#67e8f9" />
-                    </button>
-                    <button onClick={() => { deletePost(p.id); toast.success('Deleted'); }}
-                      className="w-7 h-7 flex items-center justify-center rounded-lg"
-                      style={{ background: 'rgba(244,63,94,0.1)', border: '1px solid rgba(244,63,94,0.2)' }}>
-                      <Trash2 size={12} color="#f87171" />
-                    </button>
+                    <div className="flex items-center gap-1.5 flex-shrink-0">
+                      <button
+                        onClick={() => {
+                          if (isPostTooLongForURL(p.content)) {
+                            navigator.clipboard.writeText(p.content);
+                            toast.success('Post copied — paste it in LinkedIn!', { duration: 5000 });
+                          }
+                          window.open(buildLinkedInPostURL(p.content), '_blank');
+                        }}
+                        className="btn-primary text-xs px-2.5 py-1.5 flex items-center gap-1"
+                      >
+                        <ExternalLink size={11} /> Post
+                      </button>
+                      <button onClick={() => { navigator.clipboard.writeText(p.content); toast.success('Copied'); }}
+                        className="w-7 h-7 flex items-center justify-center rounded-lg"
+                        style={{ background: 'rgba(6,182,212,0.1)', border: '1px solid rgba(6,182,212,0.2)' }}>
+                        <Copy size={12} color="#67e8f9" />
+                      </button>
+                      <button onClick={() => { deletePost(p.id); toast.success('Deleted'); }}
+                        className="w-7 h-7 flex items-center justify-center rounded-lg"
+                        style={{ background: 'rgba(244,63,94,0.1)', border: '1px solid rgba(244,63,94,0.2)' }}>
+                        <Trash2 size={12} color="#f87171" />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
