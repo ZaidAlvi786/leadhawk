@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Wand2, Copy, Save, Trash2, Share2, Zap } from 'lucide-react';
+import { Wand2, Copy, Save, Trash2, Zap } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useStore } from '@/lib/store';
 import { generateTweet } from '@/lib/ai';
+import { primaryIcpLabel } from '@/lib/icp';
 import type { Tweet } from '@/lib/types';
+import IcpTagPicker from '@/components/icp/IcpTagPicker';
 
 const TWEET_TYPES = [
   { value: 'single', label: '1️⃣ Single Tweet', desc: 'One powerful tweet' },
@@ -19,12 +21,19 @@ const TONES = [
 ];
 
 export default function TweetGenerator() {
-  const { tweets, addTweet, deleteTweet, userProfile } = useStore();
-  const [form, setForm] = useState({
+  const { tweets, addTweet, deleteTweet, userProfile, userPositioning } = useStore();
+  const [form, setForm] = useState<{
+    topic: string;
+    threadType: 'single' | 'thread-part' | 'reply';
+    tone: 'educational' | 'controversial' | 'humorous' | 'inspirational';
+    replyingTo: string;
+    icpTag: string | undefined;
+  }>({
     topic: '',
-    threadType: 'single' as 'single' | 'thread-part' | 'reply',
-    tone: 'educational' as 'educational' | 'controversial' | 'humorous' | 'inspirational',
+    threadType: 'single',
+    tone: 'educational',
     replyingTo: '',
+    icpTag: primaryIcpLabel(userPositioning),
   });
   const [generated, setGenerated] = useState<{ content: string; hook: string } | null>(null);
   const [loading, setLoading] = useState(false);
@@ -44,6 +53,7 @@ export default function TweetGenerator() {
         replyingTo: form.replyingTo || undefined,
         yourExpertise: userProfile.skills,
         tone: form.tone,
+        positioning: userPositioning,
       });
       setGenerated(result);
       setEditContent(result.content);
@@ -61,14 +71,17 @@ export default function TweetGenerator() {
       content: editing ? editContent : generated.content,
       hook: generated.hook,
       postType: form.threadType,
-      estimatedEngagement: Math.floor(Math.random() * 100) + 10,
+      icpTag: form.icpTag,
+      // Real engagement comes from X analytics post-publish. Phase 5 will wire
+      // outcome tracking; until then we don't fake a number.
+      estimatedEngagement: 0,
       createdAt: new Date().toISOString(),
     };
     addTweet(tweet);
     toast.success('Tweet saved!');
     setGenerated(null);
     setEditContent('');
-    setForm({ topic: '', threadType: 'single', tone: 'educational', replyingTo: '' });
+    setForm({ topic: '', threadType: 'single', tone: 'educational', replyingTo: '', icpTag: form.icpTag });
   };
 
   const charCount = (editing ? editContent : generated?.content || '').length;
@@ -132,7 +145,7 @@ export default function TweetGenerator() {
               {TONES.map((tone) => (
                 <button
                   key={tone.value}
-                  onClick={() => setForm({ ...form, tone: tone.value as any })}
+                  onClick={() => setForm({ ...form, tone: tone.value as typeof form.tone })}
                   className="p-2.5 rounded-lg text-left transition-all text-xs"
                   style={{
                     background: form.tone === tone.value ? 'rgba(6,182,212,0.15)' : 'rgba(255,255,255,0.03)',
@@ -145,6 +158,17 @@ export default function TweetGenerator() {
                 </button>
               ))}
             </div>
+          </div>
+
+          {/* ICP tag — Phase 4 */}
+          <div>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b' }}>
+              Target ICP
+            </label>
+            <IcpTagPicker
+              value={form.icpTag}
+              onChange={(tag) => setForm({ ...form, icpTag: tag })}
+            />
           </div>
 
           {form.threadType === 'reply' && (
@@ -241,7 +265,6 @@ export default function TweetGenerator() {
                 </div>
                 <div className="flex items-center justify-between text-xs" style={{ color: '#64748b' }}>
                   <span>{tweet.postType}</span>
-                  <span>~{tweet.estimatedEngagement} engagement</span>
                 </div>
               </div>
             ))}
