@@ -3,7 +3,9 @@ import { Wand2, Copy, Save, Trash2, Zap } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useStore } from '@/lib/store';
 import { generateTwitterThread } from '@/lib/ai';
+import { primaryIcpLabel } from '@/lib/icp';
 import type { TwitterThread } from '@/lib/types';
+import IcpTagPicker from '@/components/icp/IcpTagPicker';
 
 const THREAD_TYPES = [
   { value: 'educational', label: '📚 Educational', desc: 'Teach a concept' },
@@ -14,10 +16,15 @@ const THREAD_TYPES = [
 ];
 
 export default function TwitterThreadBuilder() {
-  const { twitterThreads, addTwitterThread, deleteTwitterThread, userProfile } = useStore();
-  const [form, setForm] = useState({
+  const { twitterThreads, addTwitterThread, deleteTwitterThread, userProfile, userPositioning } = useStore();
+  const [form, setForm] = useState<{
+    topic: string;
+    threadType: TwitterThread['threadType'];
+    icpTag: string | undefined;
+  }>({
     topic: '',
-    threadType: 'educational' as TwitterThread['threadType'],
+    threadType: 'educational',
+    icpTag: primaryIcpLabel(userPositioning),
   });
   const [generated, setGenerated] = useState<{ hook: string; setup: string[]; insights: string[]; cta: string } | null>(null);
   const [loading, setLoading] = useState(false);
@@ -34,6 +41,7 @@ export default function TwitterThreadBuilder() {
         threadType: form.threadType,
         yourSkills: userProfile.skills,
         targetAudience: userProfile.targetAudience,
+        positioning: userPositioning,
       });
       setGenerated(result);
       toast.success('Thread generated!');
@@ -52,13 +60,15 @@ export default function TwitterThreadBuilder() {
       insights: generated.insights,
       cta: generated.cta,
       threadType: form.threadType,
-      estimatedReach: Math.floor(Math.random() * 10000) + 5000,
+      icpTag: form.icpTag,
+      // Real reach comes from X analytics post-publish. Phase 5 will track it.
+      estimatedReach: 0,
       createdAt: new Date().toISOString(),
     };
     addTwitterThread(thread);
     toast.success('Thread saved!');
     setGenerated(null);
-    setForm({ topic: '', threadType: 'educational' });
+    setForm({ topic: '', threadType: 'educational', icpTag: form.icpTag });
   };
 
   const fullThread = generated
@@ -98,7 +108,7 @@ export default function TwitterThreadBuilder() {
               {THREAD_TYPES.map((t) => (
                 <button
                   key={t.value}
-                  onClick={() => setForm({ ...form, threadType: t.value as any })}
+                  onClick={() => setForm({ ...form, threadType: t.value as TwitterThread['threadType'] })}
                   className="p-2 rounded-lg text-left transition-all text-xs"
                   style={{
                     background: form.threadType === t.value ? 'rgba(6,182,212,0.15)' : 'rgba(255,255,255,0.03)',
@@ -111,6 +121,17 @@ export default function TwitterThreadBuilder() {
                 </button>
               ))}
             </div>
+          </div>
+
+          {/* ICP tag — Phase 4 */}
+          <div>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b' }}>
+              Target ICP
+            </label>
+            <IcpTagPicker
+              value={form.icpTag}
+              onChange={(tag) => setForm({ ...form, icpTag: tag })}
+            />
           </div>
         </div>
 

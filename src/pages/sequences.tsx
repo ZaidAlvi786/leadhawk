@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Wand2, Copy, Save, Trash2, Mail, Clock, ChevronDown, ChevronUp, Zap, Plus } from 'lucide-react';
+import { Wand2, Copy, Save, Trash2, Mail, Clock, ChevronDown, ChevronUp, Zap } from 'lucide-react';
 import { useStore } from '@/lib/store';
 import { generateEmailSequence } from '@/lib/ai';
 import type { EmailSequence, SequenceStep, SequenceStepType } from '@/lib/types';
+import PositioningGate from '@/components/positioning/PositioningGate';
+import PositioningBanner from '@/components/positioning/PositioningBanner';
 import toast from 'react-hot-toast';
 
 const STEP_LABELS: Record<SequenceStepType, { label: string; color: string; bgColor: string }> = {
@@ -19,7 +21,7 @@ const DEFAULT_STEPS: { type: SequenceStepType; delay: number }[] = [
 ];
 
 export default function SequencesPage() {
-  const { sequences, addSequence, deleteSequence, userProfile } = useStore();
+  const { sequences, addSequence, deleteSequence, userProfile, userPositioning } = useStore();
   const [form, setForm] = useState({
     name: '',
     targetRole: '',
@@ -46,6 +48,7 @@ export default function SequencesPage() {
         yourService: userProfile.service,
         yourName: userProfile.name || 'your name',
         sequenceLength: form.stepCount,
+        positioning: userPositioning,
       });
       if (!result.steps?.length) {
         toast.error('AI returned empty sequence — try again');
@@ -160,6 +163,8 @@ export default function SequencesPage() {
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 space-y-6">
+        <PositioningBanner />
+        <PositioningGate reason="Sequences need a sharp ICP to write coherent intro/value-add/breakup emails. Set positioning first.">
         {/* Generator Form */}
         <div className="glass-card p-5">
           <div className="flex items-center gap-2 mb-4">
@@ -408,6 +413,7 @@ export default function SequencesPage() {
             </div>
           </div>
         )}
+        </PositioningGate>
       </div>
     </div>
   );

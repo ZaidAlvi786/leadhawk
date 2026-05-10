@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, X, Wand2, ExternalLink, Copy, Trash2, Save, ChevronDown, Sparkles, MessageSquare, Flame, Info } from 'lucide-react';
+import { Plus, X, Wand2, ExternalLink, Copy, Trash2, Save, Sparkles, MessageSquare, Flame, Info } from 'lucide-react';
 import { useStore } from '@/lib/store';
 import {
   buildSalesNavURL,
@@ -10,11 +10,11 @@ import {
   SENIORITY_LEVELS,
   COMPANY_SIZES,
   INDUSTRIES,
-  TONES,
 } from '@/lib/utils';
 import { generateFilterSuggestions } from '@/lib/ai';
 import { FILTER_PRESETS, type FilterPreset } from '@/lib/filterPresets';
 import type { LeadFilter } from '@/lib/types';
+import SalesNavHonestyPanel from '@/components/channels/SalesNavHonestyPanel';
 import toast from 'react-hot-toast';
 
 const emptyFilter = (): LeadFilter => ({
@@ -29,12 +29,8 @@ const emptyFilter = (): LeadFilter => ({
   technologies: [],
 });
 
-interface LeadFilterBuilderProps {
-  onMessageForFilter?: (data: { leadTitle: string; leadCompany: string; leadIndustry: string; leadName: string }) => void;
-}
-
-export default function LeadFilterBuilder({ onMessageForFilter }: LeadFilterBuilderProps) {
-  const { filters, addFilter, deleteFilter, activeFilter, setActiveFilter } = useStore();
+export default function LeadFilterBuilder() {
+  const { filters, addFilter, deleteFilter, userPositioning } = useStore();
   const [current, setCurrent] = useState<LeadFilter>(emptyFilter());
   const [inputVals, setInputVals] = useState<Record<string, string>>({});
   const [aiDescription, setAiDescription] = useState('');
@@ -72,7 +68,7 @@ export default function LeadFilterBuilder({ onMessageForFilter }: LeadFilterBuil
     if (!aiDescription.trim()) return;
     setLoadingAI(true);
     try {
-      const result = await generateFilterSuggestions(aiDescription) as Record<string, unknown>;
+      const result = await generateFilterSuggestions(aiDescription, userPositioning) as Record<string, unknown>;
       const pick = (key: string, fallback: string[]) =>
         result[key] !== undefined ? cleanTagList(result[key] as string[]) : fallback;
       setCurrent((prev) => ({
@@ -137,6 +133,9 @@ export default function LeadFilterBuilder({ onMessageForFilter }: LeadFilterBuil
 
   return (
     <div className="space-y-6">
+      {/* Phase 6 honesty panel — surface Sales Nav's strengths/weaknesses + ranked channels */}
+      <SalesNavHonestyPanel />
+
       {/* AI Smart Builder */}
       <div className="glass-card p-5" style={{
         background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(6,182,212,0.04))',
@@ -423,20 +422,6 @@ export default function LeadFilterBuilder({ onMessageForFilter }: LeadFilterBuil
                     <ExternalLink size={12} />
                     Open
                   </button>
-                  {onMessageForFilter && (
-                    <button
-                      className="btn-secondary text-xs px-3 py-1.5 flex items-center gap-1"
-                      onClick={() => onMessageForFilter({
-                        leadTitle: f.jobTitles[0] || '',
-                        leadCompany: '',
-                        leadIndustry: f.industries[0] || '',
-                        leadName: '',
-                      })}
-                    >
-                      <MessageSquare size={12} />
-                      Message
-                    </button>
-                  )}
                   <button
                     onClick={() => { deleteFilter(f.id); toast.success('Filter deleted'); }}
                     className="w-7 h-7 flex items-center justify-center rounded-lg transition-all"

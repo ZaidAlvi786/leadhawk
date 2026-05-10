@@ -5,7 +5,7 @@ import { useStore } from '@/lib/store';
 import { generateTwitterGrowthPlan } from '@/lib/ai';
 
 export default function TwitterGrowthPlanGenerator() {
-  const { twitterGrowthPlans, addTwitterGrowthPlan, userProfile } = useStore();
+  const { twitterGrowthPlans, addTwitterGrowthPlan, userProfile, userPositioning } = useStore();
   const [form, setForm] = useState({
     currentFollowers: 100,
     targetFollowers: 1000,
@@ -23,6 +23,7 @@ export default function TwitterGrowthPlanGenerator() {
         targetFollowers: form.targetFollowers,
         weekCount: form.weekCount,
         expertise: userProfile.skills,
+        positioning: userPositioning,
       });
       if (result.error) {
         toast.error('Failed to generate plan. Check your API key.');

@@ -5,7 +5,7 @@ import { generateGrowthPlan } from '@/lib/ai';
 import toast from 'react-hot-toast';
 
 export default function LinkedInGrowthPlan() {
-  const { userProfile, growthPlans, addGrowthPlan, activePlan, setActivePlan } = useStore();
+  const { userProfile, growthPlans, addGrowthPlan, activePlan, setActivePlan, userPositioning } = useStore();
   const [form, setForm] = useState({
     currentRole: userProfile.title,
     targetAudience: userProfile.targetAudience,
@@ -23,6 +23,7 @@ export default function LinkedInGrowthPlan() {
       const result = await generateGrowthPlan({
         ...form,
         mainSkills: form.mainSkills.split(',').map((s) => s.trim()),
+        positioning: userPositioning,
       }) as Record<string, unknown>;
       setPlan(result);
       toast.success('Growth plan generated!');
