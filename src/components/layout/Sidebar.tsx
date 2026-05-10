@@ -1,77 +1,76 @@
 import React from 'react';
-import { Target, TrendingUp, Settings, Zap, ChevronRight, Send, Mail, Users, Share2, X, BarChart3, BookOpen } from 'lucide-react';
+import { Target, TrendingUp, Settings, Zap, ChevronRight, Mail, Users, Share2, X, BarChart3, BookOpen, Crosshair, Eye, Layers } from 'lucide-react';
 import { useStore } from '@/lib/store';
+import { isPositioningComplete } from '@/lib/positioning';
 import type { NavPage } from '@/lib/types';
 
-const navItems = [
+const navItems: { id: NavPage; label: string; icon: typeof Target; description: string; badge?: string; badgeColor?: string }[] = [
   {
-    id: 'leads' as NavPage,
+    id: 'positioning',
+    label: 'Positioning',
+    icon: Crosshair,
+    description: 'Your ICP, offer, proof',
+  },
+  {
+    id: 'leads',
     label: 'Lead Generation',
     icon: Target,
     description: 'Sales Navigator + AI Outreach',
-    badge: 'HOT',
-    badgeColor: 'tag-amber',
   },
   {
-    id: 'apollo' as NavPage,
-    label: 'Apollo Outreach',
-    icon: Send,
-    description: 'CSV Import + Cold Email',
-    badge: 'NEW',
-    badgeColor: 'tag-green',
-  },
-  {
-    id: 'sequences' as NavPage,
+    id: 'sequences',
     label: 'Email Sequences',
     icon: Mail,
     description: 'Multi-Step Cold Email AI',
-    badge: 'AI',
-    badgeColor: 'tag-indigo',
   },
   {
-    id: 'pipeline' as NavPage,
+    id: 'pipeline',
     label: 'Sales Pipeline',
     icon: Users,
     description: 'CRM + AI Next Actions',
-    badge: 'CRM',
-    badgeColor: 'tag-cyan',
   },
   {
-    id: 'linkedin-growth' as NavPage,
+    id: 'watchlist',
+    label: 'Watchlist',
+    icon: Eye,
+    description: 'Daily account scan',
+  },
+  {
+    id: 'channels',
+    label: 'Channels',
+    icon: Layers,
+    description: 'Beyond Sales Navigator',
+  },
+  {
+    id: 'linkedin-growth',
     label: 'LinkedIn Growth',
     icon: TrendingUp,
-    description: 'Monetize & Grow Your Profile',
-    badge: 'AI',
-    badgeColor: 'tag-indigo',
+    description: 'Posts & Authority Building',
   },
   {
-    id: 'twitter-growth' as NavPage,
+    id: 'twitter-growth',
     label: 'X / Twitter Growth',
     icon: Share2,
-    description: 'Viral Tweets & Threads',
-    badge: 'NEW',
-    badgeColor: 'tag-cyan',
+    description: 'Tweets & Threads',
   },
   {
-    id: 'analytics' as NavPage,
+    id: 'analytics',
     label: 'Analytics',
     icon: BarChart3,
     description: 'Performance & Outcomes',
-    badge: 'NEW',
-    badgeColor: 'tag-indigo',
   },
   {
-    id: 'templates' as NavPage,
+    id: 'templates',
     label: 'Message Templates',
     icon: BookOpen,
     description: 'Reusable Templates Library',
-    badge: 'NEW',
-    badgeColor: 'tag-cyan',
   },
 ];
 
 export default function Sidebar() {
-  const { currentPage, setCurrentPage, mobileSidebarOpen, setMobileSidebarOpen } = useStore();
+  const { currentPage, setCurrentPage, mobileSidebarOpen, setMobileSidebarOpen, userPositioning, pipelineLeads } = useStore();
+  const positioningReady = isPositioningComplete(userPositioning);
+  const activeLeadCount = pipelineLeads.filter((l) => l.stage !== 'closed-won' && l.stage !== 'closed-lost').length;
 
   return (
     <>
@@ -126,16 +125,30 @@ export default function Sidebar() {
       {/* Divider */}
       <div className="mx-4 mb-4" style={{ height: '1px', background: 'rgba(99,102,241,0.1)' }} />
 
-      {/* Stats pills */}
-      <div className="px-4 mb-4 flex gap-2">
-        <div className="flex-1 rounded-lg p-2 text-center" style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.15)' }}>
-          <div className="text-xs font-mono font-medium" style={{ color: '#a5b4fc', fontFamily: 'JetBrains Mono' }}>0</div>
-          <div className="text-xs mt-0.5" style={{ color: '#475569' }}>Filters</div>
-        </div>
-        <div className="flex-1 rounded-lg p-2 text-center" style={{ background: 'rgba(6,182,212,0.08)', border: '1px solid rgba(6,182,212,0.15)' }}>
-          <div className="text-xs font-mono font-medium" style={{ color: '#67e8f9', fontFamily: 'JetBrains Mono' }}>0</div>
-          <div className="text-xs mt-0.5" style={{ color: '#475569' }}>Posts</div>
-        </div>
+      {/* Positioning state pill */}
+      <div className="px-4 mb-4">
+        <button
+          onClick={() => setCurrentPage('positioning')}
+          className="w-full rounded-lg p-2.5 text-left transition-all"
+          style={{
+            background: positioningReady ? 'rgba(16,185,129,0.08)' : 'rgba(245,158,11,0.1)',
+            border: `1px solid ${positioningReady ? 'rgba(16,185,129,0.2)' : 'rgba(245,158,11,0.3)'}`,
+          }}
+        >
+          <div className="flex items-center justify-between">
+            <div className="text-xs font-medium" style={{ color: positioningReady ? '#10b981' : '#fcd34d' }}>
+              {positioningReady ? '✓ Positioning set' : '⚠ Set positioning'}
+            </div>
+            <div className="text-xs font-mono" style={{ color: '#475569' }}>
+              {activeLeadCount} active
+            </div>
+          </div>
+          {positioningReady && userPositioning?.targetRole && (
+            <div className="text-xs truncate mt-0.5" style={{ color: '#64748b' }}>
+              {userPositioning.targetRole} @ {userPositioning.targetCompanyType}
+            </div>
+          )}
+        </button>
       </div>
 
       {/* Navigation */}
@@ -181,9 +194,11 @@ export default function Sidebar() {
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                <span className={`tag text-xs px-1.5 py-0.5 ${item.badgeColor}`} style={{ fontSize: '9px', padding: '2px 6px' }}>
-                  {item.badge}
-                </span>
+                {item.badge && (
+                  <span className={`tag text-xs px-1.5 py-0.5 ${item.badgeColor}`} style={{ fontSize: '9px', padding: '2px 6px' }}>
+                    {item.badge}
+                  </span>
+                )}
                 <ChevronRight size={12} color={isActive ? '#6366f1' : '#334155'} />
               </div>
             </button>
@@ -206,7 +221,7 @@ export default function Sidebar() {
 
         {/* Version */}
         <div className="mt-3 px-2 flex items-center justify-between">
-          <span className="text-xs" style={{ color: '#1e293b', fontFamily: 'JetBrains Mono' }}>v1.0.0</span>
+          <span className="text-xs" style={{ color: '#1e293b', fontFamily: 'JetBrains Mono' }}>v2.0.0</span>
           <div className="flex items-center gap-1.5">
             <div className="w-1.5 h-1.5 rounded-full animate-pulse-slow" style={{ background: '#10b981' }} />
             <span className="text-xs" style={{ color: '#1e293b' }}>Live</span>
