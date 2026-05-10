@@ -3,29 +3,32 @@ import Head from 'next/head';
 import Sidebar from '@/components/layout/Sidebar';
 import Header from '@/components/layout/Header';
 import LeadsPage from '@/pages/leads';
-import ApolloPage from '@/pages/apollo';
 import SequencesPage from '@/pages/sequences';
 import PipelinePage from '@/pages/pipeline';
 import LinkedInGrowthPage from '@/pages/linkedin-growth';
 import TwitterGrowthPage from '@/pages/twitter-growth';
 import AnalyticsPage from '@/pages/analytics';
 import TemplatesPage from '@/pages/templates';
-import ProfileSetup from '@/components/shared/ProfileSetup';
+import PositioningPage from '@/pages/positioning';
+import WatchlistPage from '@/pages/watchlist';
+import ChannelsPage from '@/pages/channels';
+import PositioningSetup from '@/components/positioning/PositioningSetup';
 import { useStore } from '@/lib/store';
+import { isPositioningComplete } from '@/lib/positioning';
 import { X } from 'lucide-react';
 
 export default function Home() {
-  const { currentPage, userProfile } = useStore();
-  const [showProfileModal, setShowProfileModal] = useState(false);
+  const { currentPage, userPositioning, setCurrentPage } = useStore();
+  const [showPositioningModal, setShowPositioningModal] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    // Show profile setup on first visit
-    if (!userProfile.name) {
-      setTimeout(() => setShowProfileModal(true), 800);
+    // First-load: force positioning setup before anything else
+    if (!isPositioningComplete(userPositioning)) {
+      setTimeout(() => setShowPositioningModal(true), 600);
     }
-  }, []);
+  }, [userPositioning]);
 
   if (!mounted) return null;
 
@@ -55,33 +58,39 @@ export default function Home() {
           <Header />
           <main className="flex-1 overflow-hidden flex flex-col">
             {currentPage === 'leads' && <LeadsPage />}
-            {currentPage === 'apollo' && <ApolloPage />}
             {currentPage === 'sequences' && <SequencesPage />}
             {currentPage === 'pipeline' && <PipelinePage />}
             {currentPage === 'linkedin-growth' && <LinkedInGrowthPage />}
             {currentPage === 'twitter-growth' && <TwitterGrowthPage />}
             {currentPage === 'analytics' && <AnalyticsPage />}
             {currentPage === 'templates' && <TemplatesPage />}
+            {currentPage === 'positioning' && <PositioningPage />}
+            {currentPage === 'watchlist' && <WatchlistPage />}
+            {currentPage === 'channels' && <ChannelsPage />}
           </main>
         </div>
       </div>
 
-      {/* Profile Setup Modal */}
-      {showProfileModal && (
+      {/* Positioning Setup — blocks first-load and all generation until complete */}
+      {showPositioningModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)' }}>
-          <div className="relative w-full max-w-2xl animate-fadeUp">
-            <button
-              onClick={() => setShowProfileModal(false)}
-              className="absolute -top-3 -right-3 w-8 h-8 rounded-full flex items-center justify-center z-10"
-              style={{ background: '#1e293b', border: '1px solid rgba(255,255,255,0.1)' }}
-            >
-              <X size={14} color="#64748b" />
-            </button>
-            <div className="mb-3 text-center">
-              <p className="text-sm" style={{ color: '#6366f1' }}>👋 Welcome to LeadHawk! Set up your profile for personalized AI output.</p>
-            </div>
-            <ProfileSetup onClose={() => setShowProfileModal(false)} />
+          style={{ background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(8px)' }}>
+          <div className="relative w-full max-w-3xl animate-fadeUp max-h-[92vh] overflow-y-auto">
+            {isPositioningComplete(userPositioning) && (
+              <button
+                onClick={() => setShowPositioningModal(false)}
+                className="absolute -top-3 -right-3 w-8 h-8 rounded-full flex items-center justify-center z-10"
+                style={{ background: '#1e293b', border: '1px solid rgba(255,255,255,0.1)' }}
+              >
+                <X size={14} color="#64748b" />
+              </button>
+            )}
+            <PositioningSetup
+              onComplete={() => {
+                setShowPositioningModal(false);
+                setCurrentPage('leads');
+              }}
+            />
           </div>
         </div>
       )}
