@@ -3,6 +3,18 @@ import { supabase } from './supabase';
 import { useAuth } from './auth';
 import type { MessageTemplate } from './types';
 
+// `supabase` is nullable when env vars are missing (localStorage-only mode).
+// This hook is only mounted under an authenticated session, so by the time
+// any query runs Supabase must be configured — fail loudly if it isn't.
+function db() {
+  if (!supabase) {
+    throw new Error(
+      'Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.'
+    );
+  }
+  return supabase;
+}
+
 type Row = {
   id: string;
   name: string;
@@ -69,7 +81,7 @@ async function importFromLocalStorage(userId: string) {
     response_rate: t.responseRate ?? null,
   }));
 
-  const { error } = await supabase.from('message_templates').insert(rows);
+  const { error } = await db().from('message_templates').insert(rows);
   if (!error) localStorage.setItem(migrationFlagKey(userId), '1');
 }
 
@@ -85,7 +97,7 @@ export function useTemplates() {
       return;
     }
     setLoading(true);
-    const { data, error } = await supabase
+    const { data, error } = await db()
       .from('message_templates')
       .select('*')
       .order('created_at', { ascending: false });
@@ -108,7 +120,7 @@ export function useTemplates() {
   const addTemplate = useCallback(
     async (t: NewTemplate) => {
       if (!user) throw new Error('Not authenticated');
-      const { data, error } = await supabase
+      const { data, error } = await db()
         .from('message_templates')
         .insert({
           user_id: user.id,
@@ -132,7 +144,7 @@ export function useTemplates() {
   );
 
   const deleteTemplate = useCallback(async (id: string) => {
-    const { error } = await supabase.from('message_templates').delete().eq('id', id);
+    const { error } = await db().from('message_templates').delete().eq('id', id);
     if (error) throw error;
     setTemplates((prev) => prev.filter((t) => t.id !== id));
   }, []);
