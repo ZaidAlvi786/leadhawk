@@ -23,15 +23,15 @@ export default function PositioningGate({ children, reason }: Props) {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4">
       <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4" style={{
-        background: 'linear-gradient(135deg, rgba(99,102,241,0.2), rgba(6,182,212,0.15))',
-        border: '1px solid rgba(99,102,241,0.3)',
+        background: 'linear-gradient(135deg, rgba(58,143,163,0.2), rgba(30,111,112,0.15))',
+        border: '1px solid rgba(58,143,163,0.3)',
       }}>
-        <Crosshair size={24} color="#a5b4fc" />
+        <Crosshair size={24} color="#1E6F70" />
       </div>
       <h3 className="text-base font-semibold text-white mb-2" style={{ fontFamily: 'Syne' }}>
         Set your positioning first
       </h3>
-      <p className="text-sm text-center max-w-md mb-5" style={{ color: '#64748b' }}>
+      <p className="text-sm text-center max-w-md mb-5" style={{ color: '#6E7F86' }}>
         {reason || 'Generators are disabled until you commit to a niche, problem, mechanism, outcome, and proof. A vague offer guarantees vague replies.'}
       </p>
       <button
