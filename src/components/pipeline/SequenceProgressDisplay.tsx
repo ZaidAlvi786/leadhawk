@@ -41,26 +41,26 @@ export default function SequenceProgressDisplay({
   return (
     <div
       className="p-2.5 rounded-lg mb-2 space-y-2"
-      style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.15)' }}
+      style={{ background: 'rgba(58,143,163,0.08)', border: '1px solid rgba(58,143,163,0.15)' }}
     >
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Mail size={12} color="#a5b4fc" />
-          <span className="text-xs font-medium" style={{ color: '#a5b4fc' }}>
+          <Mail size={12} color="#1E6F70" />
+          <span className="text-xs font-medium" style={{ color: '#1E6F70' }}>
             {seq.name}
           </span>
         </div>
         <div className="flex items-center gap-1">
-          <span className="text-xs" style={{ color: '#64748b' }}>
+          <span className="text-xs" style={{ color: '#6E7F86' }}>
             {currentStep}/{totalSteps}
           </span>
           <button
             onClick={handleRemove}
             className="w-4 h-4 flex items-center justify-center rounded"
-            style={{ background: 'rgba(244,63,94,0.1)' }}
+            style={{ background: 'rgba(176,67,42,0.1)' }}
           >
-            <X size={8} color="#f87171" />
+            <X size={8} color="#CC6B4F" />
           </button>
         </div>
       </div>
@@ -70,7 +70,7 @@ export default function SequenceProgressDisplay({
         <div
           className="h-full rounded-full transition-all"
           style={{
-            background: '#6366f1',
+            background: '#3A8FA3',
             width: `${progress}%`,
           }}
         />
@@ -78,7 +78,7 @@ export default function SequenceProgressDisplay({
 
       {/* Current step info */}
       {step && (
-        <div className="text-xs" style={{ color: '#cbd5e1' }}>
+        <div className="text-xs" style={{ color: '#D6CCB6' }}>
           <span className="font-medium">{step.subject}</span>
           <span className="text-gray-500"> — in {step.delayDays}d</span>
         </div>
