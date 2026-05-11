@@ -59,10 +59,10 @@ export default function WarmIntroTracker() {
     <div className="space-y-3">
       {/* Discipline reminder */}
       <div className="rounded-lg p-3" style={{
-        background: 'rgba(245,158,11,0.06)',
-        border: '1px solid rgba(245,158,11,0.2)',
+        background: 'rgba(208,138,62,0.06)',
+        border: '1px solid rgba(208,138,62,0.2)',
       }}>
-        <p className="text-xs leading-relaxed" style={{ color: '#fcd34d' }}>
+        <p className="text-xs leading-relaxed" style={{ color: '#D08A3E' }}>
           <strong>Warm intros convert ~10x better than cold DMs.</strong> Pick 2–3 to touch this week. The discipline is in the touching, not the list.
         </p>
       </div>
@@ -70,11 +70,11 @@ export default function WarmIntroTracker() {
       {/* Header + add */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-semibold" style={{ color: '#fcd34d', fontFamily: 'Syne' }}>
+          <p className="text-sm font-semibold" style={{ color: '#D08A3E', fontFamily: 'Syne' }}>
             Warm Intros · {warmContacts.length}
           </p>
           {staleCount > 0 && (
-            <p className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>
+            <p className="text-xs mt-0.5" style={{ color: '#6E7F86' }}>
               {staleCount} contact{staleCount === 1 ? '' : 's'} need{staleCount === 1 ? 's' : ''} a touch
             </p>
           )}
@@ -91,8 +91,8 @@ export default function WarmIntroTracker() {
       {/* Add form */}
       {adding && (
         <div className="rounded-lg p-3 space-y-2" style={{
-          background: 'rgba(99,102,241,0.06)',
-          border: '1px solid rgba(99,102,241,0.18)',
+          background: 'rgba(58,143,163,0.06)',
+          border: '1px solid rgba(58,143,163,0.18)',
         }}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             <input
@@ -138,15 +138,15 @@ export default function WarmIntroTracker() {
       {warmContacts.length === 0 && !adding && (
         <div className="flex flex-col items-center justify-center py-12">
           <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-3" style={{
-            background: 'rgba(245,158,11,0.1)',
-            border: '1px solid rgba(245,158,11,0.2)',
+            background: 'rgba(208,138,62,0.1)',
+            border: '1px solid rgba(208,138,62,0.2)',
           }}>
-            <UserPlus size={20} color="#f59e0b" />
+            <UserPlus size={20} color="#D08A3E" />
           </div>
-          <p className="text-sm text-center" style={{ color: '#94a3b8' }}>
+          <p className="text-sm text-center" style={{ color: '#6E7F86' }}>
             No warm contacts yet
           </p>
-          <p className="text-xs text-center max-w-md mt-1" style={{ color: '#64748b' }}>
+          <p className="text-xs text-center max-w-md mt-1" style={{ color: '#6E7F86' }}>
             List 5–10 people you already know who could plausibly hire you or refer someone who would.
             Past colleagues, ex-clients, mutual friends.
           </p>
@@ -172,10 +172,10 @@ function WarmContactRow({ contact, now, onTouch, onDelete }: {
 }) {
   const stale = warmStaleness(contact, now);
   const colorMap = {
-    'fresh':      { bg: 'rgba(16,185,129,0.05)', border: 'rgba(16,185,129,0.18)', label: '#6ee7b7' },
-    'stale':      { bg: 'rgba(245,158,11,0.05)', border: 'rgba(245,158,11,0.22)', label: '#fcd34d' },
-    'very-stale': { bg: 'rgba(239,68,68,0.05)',  border: 'rgba(239,68,68,0.25)',  label: '#fca5a5' },
-    'never':      { bg: 'rgba(167,139,250,0.05)', border: 'rgba(167,139,250,0.25)', label: '#c4b5fd' },
+    'fresh':      { bg: 'rgba(30,111,112,0.05)', border: 'rgba(30,111,112,0.18)', label: '#1E6F70' },
+    'stale':      { bg: 'rgba(208,138,62,0.05)', border: 'rgba(208,138,62,0.22)', label: '#D08A3E' },
+    'very-stale': { bg: 'rgba(176,67,42,0.05)',  border: 'rgba(176,67,42,0.25)',  label: '#fca5a5' },
+    'never':      { bg: 'rgba(204,107,79,0.05)', border: 'rgba(204,107,79,0.25)', label: '#CC6B4F' },
   } as const;
   const c = colorMap[stale];
 
@@ -190,7 +190,7 @@ function WarmContactRow({ contact, now, onTouch, onDelete }: {
     }}>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <p className="text-sm font-semibold" style={{ color: '#e2e8f0' }}>{contact.name}</p>
+          <p className="text-sm font-semibold" style={{ color: '#E6DCC8' }}>{contact.name}</p>
           {stale !== 'fresh' && (
             <span className="text-xs px-1.5 py-0.5 rounded" style={{
               background: c.bg, color: c.label, border: `1px solid ${c.border}`,
@@ -199,16 +199,16 @@ function WarmContactRow({ contact, now, onTouch, onDelete }: {
             </span>
           )}
           {contact.url && (
-            <a href={contact.url} target="_blank" rel="noopener noreferrer" className="text-xs flex items-center gap-1" style={{ color: '#94a3b8' }}>
+            <a href={contact.url} target="_blank" rel="noopener noreferrer" className="text-xs flex items-center gap-1" style={{ color: '#6E7F86' }}>
               <ExternalLink size={10} /> link
             </a>
           )}
         </div>
-        <p className="text-xs mt-0.5" style={{ color: '#94a3b8' }}>
+        <p className="text-xs mt-0.5" style={{ color: '#6E7F86' }}>
           {contact.relationship}{contact.channel ? ` · via ${contact.channel}` : ''}
         </p>
         {contact.notes && (
-          <p className="text-xs mt-1" style={{ color: '#64748b' }}>{contact.notes}</p>
+          <p className="text-xs mt-1" style={{ color: '#6E7F86' }}>{contact.notes}</p>
         )}
         <p className="text-xs mt-1" style={{ color: c.label }}>
           {stale === 'never' && <AlertCircle size={9} className="inline mr-1" />}
@@ -219,7 +219,7 @@ function WarmContactRow({ contact, now, onTouch, onDelete }: {
         <button
           onClick={onTouch}
           className="text-xs px-2 py-1 rounded-md flex items-center gap-1"
-          style={{ background: 'rgba(16,185,129,0.1)', color: '#6ee7b7', border: '1px solid rgba(16,185,129,0.2)' }}
+          style={{ background: 'rgba(30,111,112,0.1)', color: '#1E6F70', border: '1px solid rgba(30,111,112,0.2)' }}
           title="Mark as touched today"
         >
           <Calendar size={11} />
@@ -228,9 +228,9 @@ function WarmContactRow({ contact, now, onTouch, onDelete }: {
         <button
           onClick={onDelete}
           className="w-7 h-7 flex items-center justify-center rounded-lg"
-          style={{ background: 'rgba(244,63,94,0.1)', border: '1px solid rgba(244,63,94,0.2)' }}
+          style={{ background: 'rgba(176,67,42,0.1)', border: '1px solid rgba(176,67,42,0.2)' }}
         >
-          <Trash2 size={11} color="#f87171" />
+          <Trash2 size={11} color="#CC6B4F" />
         </button>
       </div>
     </div>
