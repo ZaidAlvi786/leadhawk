@@ -24,9 +24,9 @@ export default function ChannelsPage() {
   return (
     <div className="flex-1 flex flex-col min-h-0">
       {/* Hero */}
-      <div className="px-4 md:px-8 py-5 border-b" style={{ borderColor: 'rgba(99,102,241,0.1)' }}>
+      <div className="px-4 md:px-8 py-5 border-b" style={{ borderColor: 'rgba(58,143,163,0.1)' }}>
         <div className="flex items-center gap-2 mb-1">
-          <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)' }}>
+          <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #D08A3E, #B0432A)' }}>
             <Layers size={13} color="white" />
           </div>
           <span className="text-xs font-medium tag tag-amber">Channel Mix</span>
@@ -34,7 +34,7 @@ export default function ChannelsPage() {
         <h2 className="text-lg font-semibold text-white mb-0.5" style={{ fontFamily: 'Syne' }}>
           Channels Beyond Sales Navigator
         </h2>
-        <p className="text-sm" style={{ color: '#475569' }}>
+        <p className="text-sm" style={{ color: '#6E7F86' }}>
           Top operators win on portfolio mix, not channel mastery. Capture intent from anywhere.
         </p>
       </div>
@@ -55,9 +55,9 @@ export default function ChannelsPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-all"
                 style={{
-                  background: isActive ? 'rgba(99,102,241,0.2)' : 'transparent',
-                  color: isActive ? '#a5b4fc' : '#475569',
-                  border: isActive ? '1px solid rgba(99,102,241,0.3)' : '1px solid transparent',
+                  background: isActive ? 'rgba(58,143,163,0.2)' : 'transparent',
+                  color: isActive ? '#1E6F70' : '#6E7F86',
+                  border: isActive ? '1px solid rgba(58,143,163,0.3)' : '1px solid transparent',
                 }}
                 title={tab.description}
               >
