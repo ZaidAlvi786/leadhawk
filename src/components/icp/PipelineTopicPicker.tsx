@@ -92,21 +92,21 @@ export default function PipelineTopicPicker({ onPick }: Props) {
 
   return (
     <div className="rounded-xl p-4" style={{
-      background: 'rgba(16,185,129,0.05)',
-      border: '1px solid rgba(16,185,129,0.18)',
+      background: 'rgba(30,111,112,0.05)',
+      border: '1px solid rgba(30,111,112,0.18)',
     }}>
       <div className="flex items-center gap-2 mb-1">
-        <Users size={13} color="#10b981" />
-        <span className="text-xs font-semibold" style={{ color: '#10b981', fontFamily: 'Syne' }}>
+        <Users size={13} color="#1E6F70" />
+        <span className="text-xs font-semibold" style={{ color: '#1E6F70', fontFamily: 'Syne' }}>
           What did your last {MAX_TOPICS} prospects struggle with?
         </span>
       </div>
-      <p className="text-xs mb-3" style={{ color: '#64748b' }}>
+      <p className="text-xs mb-3" style={{ color: '#6E7F86' }}>
         Pick one. Write about that pain. Real prospect → real post → more prospects who feel the same way.
       </p>
 
       {topics.length === 0 ? (
-        <p className="text-xs italic px-3 py-2" style={{ color: '#475569' }}>
+        <p className="text-xs italic px-3 py-2" style={{ color: '#6E7F86' }}>
           No active prospects with signals or notes yet. Add intent signals on pipeline cards or paste research to populate this list.
         </p>
       ) : (
@@ -123,27 +123,27 @@ export default function PipelineTopicPicker({ onPick }: Props) {
             >
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
-                  <span className="text-xs font-medium" style={{ color: '#cbd5e1' }}>
+                  <span className="text-xs font-medium" style={{ color: '#D6CCB6' }}>
                     {topic.leadName}
                   </span>
                   <span className="text-xs px-1.5 py-0.5 rounded" style={{
-                    background: 'rgba(99,102,241,0.12)',
-                    color: '#a5b4fc',
+                    background: 'rgba(58,143,163,0.12)',
+                    color: '#1E6F70',
                     fontSize: '9px',
                   }}>
                     {topic.source}
                   </span>
-                  <span className="text-xs ml-auto" style={{ color: '#64748b' }}>
+                  <span className="text-xs ml-auto" style={{ color: '#6E7F86' }}>
                     {formatFreshness(topic.daysOld * 24)} ago
                   </span>
                 </div>
-                <p className="text-xs leading-relaxed line-clamp-2" style={{ color: '#94a3b8' }}>
+                <p className="text-xs leading-relaxed line-clamp-2" style={{ color: '#6E7F86' }}>
                   {topic.text}
                 </p>
               </div>
               <ArrowRight
                 size={12}
-                color="#64748b"
+                color="#6E7F86"
                 className="flex-shrink-0 mt-1 opacity-0 group-hover:opacity-100 transition-opacity"
               />
             </button>
