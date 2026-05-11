@@ -65,9 +65,9 @@ export default function WatchlistPage() {
   return (
     <div className="flex-1 flex flex-col min-h-0">
       {/* Hero */}
-      <div className="px-4 md:px-8 py-5 border-b" style={{ borderColor: 'rgba(99,102,241,0.1)' }}>
+      <div className="px-4 md:px-8 py-5 border-b" style={{ borderColor: 'rgba(58,143,163,0.1)' }}>
         <div className="flex items-center gap-2 mb-1">
-          <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #f59e0b, #ef4444)' }}>
+          <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #D08A3E, #B0432A)' }}>
             <Eye size={13} color="white" />
           </div>
           <span className="text-xs font-medium tag tag-amber">Daily discipline</span>
@@ -75,7 +75,7 @@ export default function WatchlistPage() {
         <h2 className="text-lg font-semibold text-white mb-0.5" style={{ fontFamily: 'Syne' }}>
           Watchlist
         </h2>
-        <p className="text-sm" style={{ color: '#475569' }}>
+        <p className="text-sm" style={{ color: '#6E7F86' }}>
           {watchlistAccounts.length} of {MAX_ACCOUNTS} target accounts. Check daily. Paste any new signal you find.
         </p>
       </div>
@@ -83,12 +83,12 @@ export default function WatchlistPage() {
       {/* Daily nudge */}
       {staleAccounts.length > 0 && (
         <div className="px-4 md:px-8 py-3 border-b" style={{
-          background: 'rgba(245,158,11,0.06)',
-          borderColor: 'rgba(245,158,11,0.2)',
+          background: 'rgba(208,138,62,0.06)',
+          borderColor: 'rgba(208,138,62,0.2)',
         }}>
           <div className="flex items-center gap-2 text-xs">
-            <AlertCircle size={13} color="#fcd34d" />
-            <span style={{ color: '#fcd34d' }}>
+            <AlertCircle size={13} color="#D08A3E" />
+            <span style={{ color: '#D08A3E' }}>
               <strong>{staleAccounts.length}</strong> account{staleAccounts.length === 1 ? '' : 's'} not checked today.
               Spend 15 minutes scanning their LinkedIn, Twitter, and recent news. Paste anything you find.
             </span>
@@ -97,7 +97,7 @@ export default function WatchlistPage() {
       )}
 
       {/* Actions */}
-      <div className="px-4 md:px-8 py-4 border-b flex flex-wrap items-center gap-3" style={{ borderColor: 'rgba(99,102,241,0.08)' }}>
+      <div className="px-4 md:px-8 py-4 border-b flex flex-wrap items-center gap-3" style={{ borderColor: 'rgba(58,143,163,0.08)' }}>
         <button
           className="btn-primary flex items-center gap-2"
           onClick={() => setAdding(!adding)}
@@ -106,7 +106,7 @@ export default function WatchlistPage() {
           <Plus size={14} />
           Add Account
         </button>
-        <span className="text-xs" style={{ color: '#475569' }}>
+        <span className="text-xs" style={{ color: '#6E7F86' }}>
           {intentSignals.filter((s) => s.watchlistAccountId).length} signals tracked
         </span>
       </div>
@@ -115,8 +115,8 @@ export default function WatchlistPage() {
       <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 space-y-3">
         {/* Add form */}
         {adding && (
-          <div className="glass-card p-4" style={{ border: '1px solid rgba(99,102,241,0.25)' }}>
-            <h3 className="text-sm font-medium mb-3" style={{ color: '#a5b4fc', fontFamily: 'Syne' }}>
+          <div className="glass-card p-4" style={{ border: '1px solid rgba(58,143,163,0.25)' }}>
+            <h3 className="text-sm font-medium mb-3" style={{ color: '#1E6F70', fontFamily: 'Syne' }}>
               Add Target Account
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
@@ -157,15 +157,15 @@ export default function WatchlistPage() {
         {watchlistAccounts.length === 0 && !adding && (
           <div className="flex flex-col items-center justify-center py-20">
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4" style={{
-              background: 'rgba(245,158,11,0.1)',
-              border: '1px solid rgba(245,158,11,0.2)',
+              background: 'rgba(208,138,62,0.1)',
+              border: '1px solid rgba(208,138,62,0.2)',
             }}>
-              <Eye size={28} color="#f59e0b" />
+              <Eye size={28} color="#D08A3E" />
             </div>
             <h3 className="text-base font-semibold text-white mb-2" style={{ fontFamily: 'Syne' }}>
               Your watchlist is empty
             </h3>
-            <p className="text-sm text-center max-w-md" style={{ color: '#475569' }}>
+            <p className="text-sm text-center max-w-md" style={{ color: '#6E7F86' }}>
               Add 20–50 accounts that match your positioning. Check them daily for signals.
               The discipline of <em>looking</em> beats hoping for inbound.
             </p>
@@ -195,16 +195,16 @@ export default function WatchlistPage() {
                 key={account.id}
                 className="glass-card p-4"
                 style={{
-                  border: isHot ? '1px solid rgba(245,158,11,0.55)' : '1px solid rgba(255,255,255,0.06)',
+                  border: isHot ? '1px solid rgba(208,138,62,0.55)' : '1px solid rgba(255,255,255,0.06)',
                   opacity: isStale ? 0.7 : 1,
-                  boxShadow: isHot ? '0 0 24px rgba(245,158,11,0.18)' : 'none',
+                  boxShadow: isHot ? '0 0 24px rgba(208,138,62,0.18)' : 'none',
                 }}
               >
                 <div className="flex items-start gap-3">
                   <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{
-                    background: isHot ? 'rgba(245,158,11,0.18)' : 'rgba(99,102,241,0.1)',
+                    background: isHot ? 'rgba(208,138,62,0.18)' : 'rgba(58,143,163,0.1)',
                   }}>
-                    <Building2 size={15} color={isHot ? '#fcd34d' : '#a5b4fc'} />
+                    <Building2 size={15} color={isHot ? '#D08A3E' : '#1E6F70'} />
                   </div>
 
                   <div className="flex-1 min-w-0">
@@ -214,14 +214,14 @@ export default function WatchlistPage() {
                         <span className="tag tag-indigo text-xs">{account.industry}</span>
                       )}
                       {account.url && (
-                        <a href={account.url} target="_blank" rel="noopener noreferrer" className="text-xs flex items-center gap-1" style={{ color: '#94a3b8' }}>
+                        <a href={account.url} target="_blank" rel="noopener noreferrer" className="text-xs flex items-center gap-1" style={{ color: '#6E7F86' }}>
                           <ExternalLink size={10} />
                           link
                         </a>
                       )}
                     </div>
                     {account.notes && (
-                      <p className="text-xs mt-1" style={{ color: '#94a3b8' }}>{account.notes}</p>
+                      <p className="text-xs mt-1" style={{ color: '#6E7F86' }}>{account.notes}</p>
                     )}
 
                     {top ? (
@@ -229,16 +229,16 @@ export default function WatchlistPage() {
                         <IntentSignalDisplay signal={top} compact />
                       </div>
                     ) : (
-                      <p className="text-xs mt-2" style={{ color: '#475569' }}>
+                      <p className="text-xs mt-2" style={{ color: '#6E7F86' }}>
                         No signals yet — paste one when you spot something
                       </p>
                     )}
 
-                    <div className="flex items-center gap-2 mt-2 text-xs" style={{ color: '#475569' }}>
+                    <div className="flex items-center gap-2 mt-2 text-xs" style={{ color: '#6E7F86' }}>
                       {checkedHoursAgo !== null ? (
                         <span>Checked {formatFreshness(checkedHoursAgo)} ago</span>
                       ) : (
-                        <span style={{ color: '#fcd34d' }}>Never checked</span>
+                        <span style={{ color: '#D08A3E' }}>Never checked</span>
                       )}
                       <span>·</span>
                       <span>{signals.length} signal{signals.length === 1 ? '' : 's'} total</span>
@@ -249,7 +249,7 @@ export default function WatchlistPage() {
                     <button
                       onClick={() => { markWatchlistChecked(account.id); toast.success('Marked checked'); }}
                       className="text-xs px-2 py-1 rounded-md flex items-center gap-1"
-                      style={{ background: 'rgba(16,185,129,0.1)', color: '#6ee7b7', border: '1px solid rgba(16,185,129,0.2)' }}
+                      style={{ background: 'rgba(30,111,112,0.1)', color: '#1E6F70', border: '1px solid rgba(30,111,112,0.2)' }}
                       title="Mark as checked today"
                     >
                       <Calendar size={11} />
@@ -258,25 +258,25 @@ export default function WatchlistPage() {
                     <button
                       onClick={() => setExpanded(isExpanded ? null : account.id)}
                       className="w-7 h-7 flex items-center justify-center rounded-lg"
-                      style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.2)' }}
+                      style={{ background: 'rgba(58,143,163,0.1)', border: '1px solid rgba(58,143,163,0.2)' }}
                     >
                       {isExpanded
-                        ? <ChevronUp size={13} color="#a5b4fc" />
-                        : <ChevronDown size={13} color="#a5b4fc" />}
+                        ? <ChevronUp size={13} color="#1E6F70" />
+                        : <ChevronDown size={13} color="#1E6F70" />}
                     </button>
                     <button
                       onClick={() => handleDelete(account)}
                       className="w-7 h-7 flex items-center justify-center rounded-lg"
-                      style={{ background: 'rgba(244,63,94,0.1)', border: '1px solid rgba(244,63,94,0.2)' }}
+                      style={{ background: 'rgba(176,67,42,0.1)', border: '1px solid rgba(176,67,42,0.2)' }}
                     >
-                      <Trash2 size={12} color="#f87171" />
+                      <Trash2 size={12} color="#CC6B4F" />
                     </button>
                   </div>
                 </div>
 
                 {isExpanded && (
                   <div className="mt-3 pt-3 border-t space-y-2" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
-                    <p className="text-xs font-semibold" style={{ color: '#94a3b8' }}>
+                    <p className="text-xs font-semibold" style={{ color: '#6E7F86' }}>
                       Signals ({signals.length})
                     </p>
                     {signals.length > 0 ? (
@@ -289,15 +289,15 @@ export default function WatchlistPage() {
                             <button
                               onClick={() => { deleteIntentSignal(s.id); toast.success('Signal removed'); }}
                               className="p-1 rounded mt-1"
-                              style={{ background: 'rgba(244,63,94,0.08)' }}
+                              style={{ background: 'rgba(176,67,42,0.08)' }}
                             >
-                              <Trash2 size={10} color="#f87171" />
+                              <Trash2 size={10} color="#CC6B4F" />
                             </button>
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <p className="text-xs" style={{ color: '#475569' }}>None yet.</p>
+                      <p className="text-xs" style={{ color: '#6E7F86' }}>None yet.</p>
                     )}
 
                     <IntentSignalEditor watchlistAccountId={account.id} />
