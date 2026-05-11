@@ -34,9 +34,9 @@ export default function LinkedInGrowthPlan() {
   };
 
   const priorityColor = (p: string) => {
-    if (p === 'high') return { bg: 'rgba(244,63,94,0.15)', color: '#fca5a5', border: 'rgba(244,63,94,0.3)' };
-    if (p === 'medium') return { bg: 'rgba(245,158,11,0.15)', color: '#fcd34d', border: 'rgba(245,158,11,0.3)' };
-    return { bg: 'rgba(16,185,129,0.15)', color: '#6ee7b7', border: 'rgba(16,185,129,0.3)' };
+    if (p === 'high') return { bg: 'rgba(176,67,42,0.15)', color: '#fca5a5', border: 'rgba(176,67,42,0.3)' };
+    if (p === 'medium') return { bg: 'rgba(208,138,62,0.15)', color: '#D08A3E', border: 'rgba(208,138,62,0.3)' };
+    return { bg: 'rgba(30,111,112,0.15)', color: '#1E6F70', border: 'rgba(30,111,112,0.3)' };
   };
 
   const actionTypeIcon = (type: string) => {
@@ -48,39 +48,39 @@ export default function LinkedInGrowthPlan() {
     <div className="space-y-6">
       {/* Plan Generator */}
       <div className="glass-card p-5" style={{
-        background: 'linear-gradient(135deg, rgba(16,185,129,0.06), rgba(99,102,241,0.04))',
-        border: '1px solid rgba(16,185,129,0.15)',
+        background: 'linear-gradient(135deg, rgba(30,111,112,0.06), rgba(58,143,163,0.04))',
+        border: '1px solid rgba(30,111,112,0.15)',
       }}>
         <div className="flex items-center gap-2 mb-4">
-          <Target size={16} color="#10b981" />
-          <h3 className="font-semibold text-sm" style={{ color: '#6ee7b7', fontFamily: 'Syne' }}>
+          <Target size={16} color="#1E6F70" />
+          <h3 className="font-semibold text-sm" style={{ color: '#1E6F70', fontFamily: 'Syne' }}>
             AI LinkedIn Growth Plan Generator
           </h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>Your Role / Title</label>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>Your Role / Title</label>
             <input className="input-field text-sm" value={form.currentRole}
               onChange={(e) => setForm({ ...form, currentRole: e.target.value })} />
           </div>
           <div>
-            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>Target Audience</label>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>Target Audience</label>
             <input className="input-field text-sm" placeholder="e.g. SaaS Founders, CTOs..."
               value={form.targetAudience} onChange={(e) => setForm({ ...form, targetAudience: e.target.value })} />
           </div>
           <div>
-            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>Your Skills (comma-separated)</label>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>Your Skills (comma-separated)</label>
             <input className="input-field text-sm" value={form.mainSkills}
               onChange={(e) => setForm({ ...form, mainSkills: e.target.value })} />
           </div>
           <div>
-            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>Business Goal</label>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>Business Goal</label>
             <input className="input-field text-sm" value={form.businessGoal}
               onChange={(e) => setForm({ ...form, businessGoal: e.target.value })} />
           </div>
           <div>
-            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>Plan Duration</label>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>Plan Duration</label>
             <div className="flex gap-2">
               {[4, 8, 12].map((w) => (
                 <button
@@ -88,9 +88,9 @@ export default function LinkedInGrowthPlan() {
                   onClick={() => setForm({ ...form, weekCount: w })}
                   className="flex-1 py-2 text-sm rounded-xl transition-all"
                   style={{
-                    background: form.weekCount === w ? 'rgba(16,185,129,0.2)' : 'rgba(255,255,255,0.04)',
-                    border: `1px solid ${form.weekCount === w ? 'rgba(16,185,129,0.4)' : 'rgba(255,255,255,0.07)'}`,
-                    color: form.weekCount === w ? '#6ee7b7' : '#475569',
+                    background: form.weekCount === w ? 'rgba(30,111,112,0.2)' : 'rgba(255,255,255,0.04)',
+                    border: `1px solid ${form.weekCount === w ? 'rgba(30,111,112,0.4)' : 'rgba(255,255,255,0.07)'}`,
+                    color: form.weekCount === w ? '#1E6F70' : '#6E7F86',
                   }}
                 >
                   {w}w
@@ -105,10 +105,10 @@ export default function LinkedInGrowthPlan() {
           onClick={handleGenerate}
           disabled={loading}
           style={{
-            background: 'linear-gradient(135deg, #10b981, #059669)',
+            background: 'linear-gradient(135deg, #1E6F70, #1E6F70)',
             color: 'white',
-            border: '1px solid rgba(16,185,129,0.4)',
-            boxShadow: loading ? 'none' : '0 0 20px rgba(16,185,129,0.3)',
+            border: '1px solid rgba(30,111,112,0.4)',
+            boxShadow: loading ? 'none' : '0 0 20px rgba(30,111,112,0.3)',
           }}
         >
           {loading ? <div className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" /> : <Wand2 size={15} />}
@@ -121,24 +121,24 @@ export default function LinkedInGrowthPlan() {
         <div className="space-y-4 animate-fadeUp">
           {/* Overview */}
           {typeof plan.overview === 'string' && (
-            <div className="glass-card p-5" style={{ border: '1px solid rgba(16,185,129,0.2)' }}>
+            <div className="glass-card p-5" style={{ border: '1px solid rgba(30,111,112,0.2)' }}>
               <div className="flex items-center gap-2 mb-2">
-                <BarChart2 size={15} color="#10b981" />
-                <span className="text-sm font-medium" style={{ color: '#6ee7b7', fontFamily: 'Syne' }}>Plan Overview</span>
+                <BarChart2 size={15} color="#1E6F70" />
+                <span className="text-sm font-medium" style={{ color: '#1E6F70', fontFamily: 'Syne' }}>Plan Overview</span>
               </div>
-              <p className="text-sm leading-relaxed" style={{ color: '#94a3b8' }}>{plan.overview as string}</p>
+              <p className="text-sm leading-relaxed" style={{ color: '#6E7F86' }}>{plan.overview as string}</p>
 
               {/* Monetization tips */}
               {(plan.monetizationTips as string[])?.length > 0 && (
                 <div className="mt-4">
                   <div className="flex items-center gap-1.5 mb-2">
-                    <DollarSign size={13} color="#f59e0b" />
-                    <span className="text-xs font-medium" style={{ color: '#fcd34d', fontFamily: 'Syne' }}>Monetization Tips</span>
+                    <DollarSign size={13} color="#D08A3E" />
+                    <span className="text-xs font-medium" style={{ color: '#D08A3E', fontFamily: 'Syne' }}>Monetization Tips</span>
                   </div>
                   <div className="space-y-1.5">
                     {(plan.monetizationTips as string[]).map((tip: string, i: number) => (
-                      <div key={i} className="flex items-start gap-2 text-xs" style={{ color: '#94a3b8' }}>
-                        <span style={{ color: '#f59e0b' }}>→</span>
+                      <div key={i} className="flex items-start gap-2 text-xs" style={{ color: '#6E7F86' }}>
+                        <span style={{ color: '#D08A3E' }}>→</span>
                         {tip}
                       </div>
                     ))}
@@ -154,19 +154,19 @@ export default function LinkedInGrowthPlan() {
               <button
                 onClick={() => setExpandedWeek(expandedWeek === week.week as number ? null : week.week as number)}
                 className="w-full flex items-center justify-between p-4 text-left"
-                style={{ borderBottom: expandedWeek === week.week ? '1px solid rgba(99,102,241,0.15)' : 'none' }}
+                style={{ borderBottom: expandedWeek === week.week ? '1px solid rgba(58,143,163,0.15)' : 'none' }}
               >
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold" style={{
-                    background: 'linear-gradient(135deg, rgba(99,102,241,0.3), rgba(6,182,212,0.15))',
-                    color: '#a5b4fc',
+                    background: 'linear-gradient(135deg, rgba(58,143,163,0.3), rgba(30,111,112,0.15))',
+                    color: '#1E6F70',
                     fontFamily: 'Syne',
                   }}>
                     W{week.week as number}
                   </div>
                   <div>
                     <div className="text-sm font-medium text-white">{week.theme as string}</div>
-                    <div className="text-xs" style={{ color: '#475569' }}>{week.focus as string}</div>
+                    <div className="text-xs" style={{ color: '#6E7F86' }}>{week.focus as string}</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -174,7 +174,7 @@ export default function LinkedInGrowthPlan() {
                     <span className="tag tag-indigo text-xs">{(week.targetConnections as number)?.toLocaleString()} connections</span>
                     <span className="tag tag-cyan text-xs">{(week.targetImpressions as number)?.toLocaleString()} impressions</span>
                   </div>
-                  {expandedWeek === week.week ? <ChevronDown size={16} color="#475569" /> : <ChevronRight size={16} color="#475569" />}
+                  {expandedWeek === week.week ? <ChevronDown size={16} color="#6E7F86" /> : <ChevronRight size={16} color="#6E7F86" />}
                 </div>
               </button>
 
@@ -183,13 +183,13 @@ export default function LinkedInGrowthPlan() {
                   {/* Goals */}
                   {(week.goals as string[])?.length > 0 && (
                     <div>
-                      <div className="text-xs font-medium mb-2" style={{ color: '#64748b', fontFamily: 'Syne', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                      <div className="text-xs font-medium mb-2" style={{ color: '#6E7F86', fontFamily: 'Syne', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                         Goals
                       </div>
                       <div className="space-y-1">
                         {(week.goals as string[]).map((goal: string, i: number) => (
-                          <div key={i} className="flex items-center gap-2 text-sm" style={{ color: '#94a3b8' }}>
-                            <CheckCircle size={13} color="#10b981" />
+                          <div key={i} className="flex items-center gap-2 text-sm" style={{ color: '#6E7F86' }}>
+                            <CheckCircle size={13} color="#1E6F70" />
                             {goal}
                           </div>
                         ))}
@@ -200,7 +200,7 @@ export default function LinkedInGrowthPlan() {
                   {/* Actions */}
                   {(week.actions as Record<string, unknown>[])?.length > 0 && (
                     <div>
-                      <div className="text-xs font-medium mb-2" style={{ color: '#64748b', fontFamily: 'Syne', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                      <div className="text-xs font-medium mb-2" style={{ color: '#6E7F86', fontFamily: 'Syne', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                         Daily Actions
                       </div>
                       <div className="space-y-2">
@@ -211,8 +211,8 @@ export default function LinkedInGrowthPlan() {
                               style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
                               <span className="text-base">{actionTypeIcon(action.type as string)}</span>
                               <div className="flex-1 min-w-0">
-                                <div className="text-sm" style={{ color: '#e2e8f0' }}>{action.description as string}</div>
-                                <div className="text-xs mt-0.5" style={{ color: '#475569' }}>{action.frequency as string}</div>
+                                <div className="text-sm" style={{ color: '#E6DCC8' }}>{action.description as string}</div>
+                                <div className="text-xs mt-0.5" style={{ color: '#6E7F86' }}>{action.frequency as string}</div>
                               </div>
                               <span className="tag text-xs px-2 py-0.5 flex-shrink-0"
                                 style={{ background: colors.bg, color: colors.color, border: `1px solid ${colors.border}` }}>
@@ -228,7 +228,7 @@ export default function LinkedInGrowthPlan() {
                   {/* Content Topics */}
                   {(week.contentTopics as string[])?.length > 0 && (
                     <div>
-                      <div className="text-xs font-medium mb-2" style={{ color: '#64748b', fontFamily: 'Syne', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                      <div className="text-xs font-medium mb-2" style={{ color: '#6E7F86', fontFamily: 'Syne', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                         Content Topics This Week
                       </div>
                       <div className="flex flex-wrap gap-2">
@@ -247,15 +247,15 @@ export default function LinkedInGrowthPlan() {
           {(plan.keyMetrics as string[])?.length > 0 && (
             <div className="glass-card p-4">
               <div className="flex items-center gap-2 mb-3">
-                <TrendingUp size={14} color="#6366f1" />
-                <span className="text-sm font-medium" style={{ color: '#a5b4fc', fontFamily: 'Syne' }}>Track These Metrics</span>
+                <TrendingUp size={14} color="#3A8FA3" />
+                <span className="text-sm font-medium" style={{ color: '#1E6F70', fontFamily: 'Syne' }}>Track These Metrics</span>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                 {(plan.keyMetrics as string[]).map((metric: string, i: number) => (
                   <div key={i} className="p-2.5 rounded-lg text-center text-xs" style={{
-                    background: 'rgba(99,102,241,0.08)',
-                    border: '1px solid rgba(99,102,241,0.15)',
-                    color: '#94a3b8',
+                    background: 'rgba(58,143,163,0.08)',
+                    border: '1px solid rgba(58,143,163,0.15)',
+                    color: '#6E7F86',
                   }}>
                     {metric}
                   </div>
