@@ -69,15 +69,15 @@ export default function TwitterGrowthPlanGenerator() {
       {/* Input Form */}
       <div className="glass-card p-5">
         <div className="flex items-center gap-2 mb-4">
-          <Target size={16} color="#06b6d4" />
-          <h3 className="font-semibold text-sm" style={{ color: '#06b6d4', fontFamily: 'Syne' }}>
+          <Target size={16} color="#1E6F70" />
+          <h3 className="font-semibold text-sm" style={{ color: '#1E6F70', fontFamily: 'Syne' }}>
             Twitter Growth Plan
           </h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <div>
-            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b' }}>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86' }}>
               Current Followers
             </label>
             <input
@@ -88,7 +88,7 @@ export default function TwitterGrowthPlanGenerator() {
             />
           </div>
           <div>
-            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b' }}>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86' }}>
               Target Followers
             </label>
             <input
@@ -99,7 +99,7 @@ export default function TwitterGrowthPlanGenerator() {
             />
           </div>
           <div>
-            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b' }}>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86' }}>
               Week Count
             </label>
             <select
@@ -126,21 +126,21 @@ export default function TwitterGrowthPlanGenerator() {
 
       {/* Generated Plan */}
       {generated && (
-        <div className="glass-card p-5 animate-fadeUp" style={{ border: '1px solid rgba(6,182,212,0.2)' }}>
+        <div className="glass-card p-5 animate-fadeUp" style={{ border: '1px solid rgba(30,111,112,0.2)' }}>
           {generated.overview && (
             <div className="mb-4">
-              <p className="text-sm" style={{ color: '#cbd5e1' }}>{generated.overview}</p>
+              <p className="text-sm" style={{ color: '#D6CCB6' }}>{generated.overview}</p>
             </div>
           )}
 
           {generated.weeks && generated.weeks.length > 0 ? (
             <div className="space-y-4 mb-4">
               {generated.weeks.slice(0, 3).map((week: any, i: number) => (
-                <div key={i} className="p-3 rounded-lg" style={{ background: 'rgba(6,182,212,0.05)', border: '1px solid rgba(6,182,212,0.1)' }}>
+                <div key={i} className="p-3 rounded-lg" style={{ background: 'rgba(30,111,112,0.05)', border: '1px solid rgba(30,111,112,0.1)' }}>
                   <div className="flex items-center gap-2 mb-2">
-                    <Calendar size={14} color="#06b6d4" />
-                    <span className="text-xs font-bold" style={{ color: '#06b6d4' }}>Week {week.week || i + 1}</span>
-                    <span className="text-xs" style={{ color: '#64748b' }}>{week.theme}</span>
+                    <Calendar size={14} color="#1E6F70" />
+                    <span className="text-xs font-bold" style={{ color: '#1E6F70' }}>Week {week.week || i + 1}</span>
+                    <span className="text-xs" style={{ color: '#6E7F86' }}>{week.theme}</span>
                   </div>
                   <div className="text-xs text-gray-400 space-y-1">
                     {week.goals?.slice(0, 2).map((g: string, gi: number) => (
@@ -152,7 +152,7 @@ export default function TwitterGrowthPlanGenerator() {
             </div>
           ) : (
             <div className="p-3 rounded-lg mb-4" style={{ background: 'rgba(255,193,7,0.1)', border: '1px solid rgba(255,193,7,0.2)' }}>
-              <p className="text-xs" style={{ color: '#fcd34d' }}>
+              <p className="text-xs" style={{ color: '#D08A3E' }}>
                 Plan generated! Check browser console for details. Click "Save Plan" to proceed.
               </p>
             </div>
@@ -167,18 +167,18 @@ export default function TwitterGrowthPlanGenerator() {
       {/* Saved Plans */}
       {twitterGrowthPlans.length > 0 && (
         <div>
-          <h3 className="text-sm font-medium mb-3" style={{ color: '#64748b' }}>
+          <h3 className="text-sm font-medium mb-3" style={{ color: '#6E7F86' }}>
             Saved Plans ({twitterGrowthPlans.length})
           </h3>
           <div className="space-y-2">
             {twitterGrowthPlans.slice(0, 5).map((plan) => (
-              <div key={plan.id} className="glass-card p-3" style={{ border: '1px solid rgba(6,182,212,0.1)' }}>
+              <div key={plan.id} className="glass-card p-3" style={{ border: '1px solid rgba(30,111,112,0.1)' }}>
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-xs font-semibold text-gray-300">Week {plan.week}: {plan.theme}</p>
                     <p className="text-xs text-gray-400">{plan.actions.length} actions • {plan.goals.length} goals</p>
                   </div>
-                  <span className="text-xs px-2 py-1 rounded" style={{ background: 'rgba(6,182,212,0.15)', color: '#06b6d4' }}>
+                  <span className="text-xs px-2 py-1 rounded" style={{ background: 'rgba(30,111,112,0.15)', color: '#1E6F70' }}>
                     {plan.targetFollowers.toLocaleString()} target
                   </span>
                 </div>

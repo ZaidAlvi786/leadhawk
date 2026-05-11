@@ -20,6 +20,7 @@ import WhatsStuckPanel from '@/components/analytics/WhatsStuckPanel';
 import WeeklyReviewModal from '@/components/analytics/WeeklyReviewModal';
 import AuthorityGapBanner from '@/components/icp/AuthorityGapBanner';
 import ChannelMixCoach from '@/components/channels/ChannelMixCoach';
+import SyncPanel from '@/components/sync/SyncPanel';
 
 type RangeChoice = 'this-month' | 'last-month' | 'this-week' | 'last-week';
 
@@ -37,16 +38,16 @@ export default function AnalyticsPage() {
   return (
     <div className="flex-1 flex flex-col min-h-0">
       {/* Header */}
-      <div className="px-4 md:px-8 py-5 border-b" style={{ borderColor: 'rgba(99,102,241,0.1)' }}>
+      <div className="px-4 md:px-8 py-5 border-b" style={{ borderColor: 'rgba(58,143,163,0.1)' }}>
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <BarChart3 size={18} color="#6366f1" />
+              <BarChart3 size={18} color="#3A8FA3" />
               <h2 className="text-lg font-semibold text-white" style={{ fontFamily: 'Syne' }}>
                 Honest Dashboard
               </h2>
             </div>
-            <p className="text-sm" style={{ color: '#475569' }}>
+            <p className="text-sm" style={{ color: '#6E7F86' }}>
               Calls booked, proposals sent, deals closed, revenue closed. Every number is real.
             </p>
           </div>
@@ -63,9 +64,9 @@ export default function AnalyticsPage() {
                   onClick={() => setRangeChoice(opt.value)}
                   className="px-3 py-1.5 rounded-lg text-xs transition-all"
                   style={{
-                    background: rangeChoice === opt.value ? 'rgba(99,102,241,0.2)' : 'transparent',
-                    color: rangeChoice === opt.value ? '#a5b4fc' : '#64748b',
-                    border: rangeChoice === opt.value ? '1px solid rgba(99,102,241,0.3)' : '1px solid transparent',
+                    background: rangeChoice === opt.value ? 'rgba(58,143,163,0.2)' : 'transparent',
+                    color: rangeChoice === opt.value ? '#1E6F70' : '#6E7F86',
+                    border: rangeChoice === opt.value ? '1px solid rgba(58,143,163,0.3)' : '1px solid transparent',
                   }}
                 >
                   {opt.label}
@@ -87,28 +88,28 @@ export default function AnalyticsPage() {
             label="Calls Booked"
             value={current.callsBooked.toString()}
             delta={comparison.deltas.callsBooked}
-            color="#6366f1"
+            color="#3A8FA3"
             tooltip={`vs ${previousRange.label.toLowerCase()}: ${previous.callsBooked}`}
           />
           <KPI
             label="Proposals Sent"
             value={current.proposalsSent.toString()}
             delta={comparison.deltas.proposalsSent}
-            color="#06b6d4"
+            color="#1E6F70"
             tooltip={`vs ${previousRange.label.toLowerCase()}: ${previous.proposalsSent}`}
           />
           <KPI
             label="Deals Closed"
             value={current.dealsClosed.toString()}
             delta={comparison.deltas.dealsClosed}
-            color="#10b981"
+            color="#1E6F70"
             tooltip={`vs ${previousRange.label.toLowerCase()}: ${previous.dealsClosed}`}
           />
           <KPI
             label="Revenue Closed"
             value={formatRevenue(current.revenueClosed)}
             delta={comparison.deltas.revenueClosed}
-            color="#f59e0b"
+            color="#D08A3E"
             tooltip={`vs ${previousRange.label.toLowerCase()}: ${formatRevenue(previous.revenueClosed)}`}
           />
 
@@ -116,7 +117,7 @@ export default function AnalyticsPage() {
             label="Replies → Calls"
             value={formatRate(current.replyToCallRate)}
             delta={comparison.deltas.replyToCallRate}
-            color="#a78bfa"
+            color="#CC6B4F"
             tooltip={`${current.callsBooked} calls / ${current.repliesInRange} replies`}
             diagnostic
           />
@@ -124,7 +125,7 @@ export default function AnalyticsPage() {
             label="Calls → Proposals"
             value={formatRate(current.callToProposalRate)}
             delta={comparison.deltas.callToProposalRate}
-            color="#a78bfa"
+            color="#CC6B4F"
             tooltip={`${current.proposalsSent} proposals / ${current.callsBooked} calls`}
             diagnostic
           />
@@ -132,7 +133,7 @@ export default function AnalyticsPage() {
             label="Proposals → Closed"
             value={formatRate(current.proposalToCloseRate)}
             delta={comparison.deltas.proposalToCloseRate}
-            color="#a78bfa"
+            color="#CC6B4F"
             tooltip={`${current.dealsClosed} won / ${current.proposalsSent} proposals`}
             diagnostic
           />
@@ -142,6 +143,9 @@ export default function AnalyticsPage() {
 
         {/* Channel Mix — Phase 6 */}
         <ChannelMixCoach />
+
+        {/* Sync Panel — Phase 8 */}
+        <SyncPanel />
 
         {/* What's Stuck */}
         <WhatsStuckPanel />
@@ -155,17 +159,17 @@ export default function AnalyticsPage() {
             className="w-full p-4 flex items-center justify-between"
           >
             <div className="flex items-center gap-2">
-              <MessageCircle size={13} color="#64748b" />
-              <span className="text-xs font-medium" style={{ color: '#94a3b8', fontFamily: 'Syne' }}>
+              <MessageCircle size={13} color="#6E7F86" />
+              <span className="text-xs font-medium" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>
                 Detailed Activity (vanity metrics)
               </span>
-              <span className="text-xs" style={{ color: '#475569' }}>
+              <span className="text-xs" style={{ color: '#6E7F86' }}>
                 — these don't predict revenue but the data's here if you want it
               </span>
             </div>
             {activitySectionOpen
-              ? <ChevronUp size={13} color="#64748b" />
-              : <ChevronDown size={13} color="#64748b" />}
+              ? <ChevronUp size={13} color="#6E7F86" />
+              : <ChevronDown size={13} color="#6E7F86" />}
           </button>
 
           {activitySectionOpen && (
@@ -227,20 +231,20 @@ function KPI({ label, value, delta, color, tooltip, diagnostic }: KPIProps) {
     <div
       className="glass-card p-4"
       style={{
-        borderColor: diagnostic ? 'rgba(167,139,250,0.18)' : 'rgba(99,102,241,0.1)',
-        background: diagnostic ? 'rgba(167,139,250,0.04)' : undefined,
+        borderColor: diagnostic ? 'rgba(204,107,79,0.18)' : 'rgba(58,143,163,0.1)',
+        background: diagnostic ? 'rgba(204,107,79,0.04)' : undefined,
       }}
       title={tooltip}
     >
       <div className="flex items-center gap-2 mb-1">
-        <p className="text-xs" style={{ color: '#64748b' }}>{label}</p>
+        <p className="text-xs" style={{ color: '#6E7F86' }}>{label}</p>
       </div>
       <div className="flex items-baseline gap-2">
         <p className="text-2xl font-bold" style={{ color, fontFamily: 'Syne' }}>{value}</p>
         {delta !== null && delta !== 0 && (
           <span
             className="text-xs font-medium flex items-center gap-0.5"
-            style={{ color: deltaPositive ? '#10b981' : '#ef4444' }}
+            style={{ color: deltaPositive ? '#1E6F70' : '#B0432A' }}
           >
             {deltaPositive ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
             {formatDelta(delta)}
@@ -254,8 +258,8 @@ function KPI({ label, value, delta, color, tooltip, diagnostic }: KPIProps) {
 function ActivityStat({ label, value }: { label: string; value: number }) {
   return (
     <div className="rounded-lg p-3" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
-      <p className="text-xs" style={{ color: '#475569' }}>{label}</p>
-      <p className="text-lg font-bold" style={{ color: '#94a3b8', fontFamily: 'Syne' }}>{value}</p>
+      <p className="text-xs" style={{ color: '#6E7F86' }}>{label}</p>
+      <p className="text-lg font-bold" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>{value}</p>
     </div>
   );
 }

@@ -23,16 +23,16 @@ export default function SendReadinessPanel({ report }: Props) {
 
   return (
     <div className="rounded-lg p-3" style={{
-      background: allPass ? 'rgba(16,185,129,0.06)' : 'rgba(245,158,11,0.05)',
-      border: `1px solid ${allPass ? 'rgba(16,185,129,0.25)' : 'rgba(245,158,11,0.25)'}`,
+      background: allPass ? 'rgba(30,111,112,0.06)' : 'rgba(208,138,62,0.05)',
+      border: `1px solid ${allPass ? 'rgba(30,111,112,0.25)' : 'rgba(208,138,62,0.25)'}`,
     }}>
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-1.5">
           {allPass
-            ? <Check size={13} color="#10b981" />
-            : <AlertCircle size={13} color="#fcd34d" />}
+            ? <Check size={13} color="#1E6F70" />
+            : <AlertCircle size={13} color="#D08A3E" />}
           <span className="text-xs font-semibold" style={{
-            color: allPass ? '#6ee7b7' : '#fcd34d',
+            color: allPass ? '#1E6F70' : '#D08A3E',
             fontFamily: 'Syne',
           }}>
             Send-readiness · {report.passed}/{report.total} {allPass ? 'all clear' : 'checks failing'}
@@ -44,14 +44,14 @@ export default function SendReadinessPanel({ report }: Props) {
         {items.map((item) => (
           <div key={item.key} className="flex items-start gap-2">
             {item.result.ok
-              ? <Check size={11} color="#10b981" className="flex-shrink-0 mt-0.5" />
-              : <X size={11} color="#f87171" className="flex-shrink-0 mt-0.5" />}
+              ? <Check size={11} color="#1E6F70" className="flex-shrink-0 mt-0.5" />
+              : <X size={11} color="#CC6B4F" className="flex-shrink-0 mt-0.5" />}
             <div className="flex-1 min-w-0">
-              <span className="text-xs" style={{ color: item.result.ok ? '#94a3b8' : '#cbd5e1' }}>
+              <span className="text-xs" style={{ color: item.result.ok ? '#6E7F86' : '#D6CCB6' }}>
                 {item.label}
               </span>
               {!item.result.ok && item.result.reason && (
-                <span className="text-xs ml-1.5" style={{ color: '#f87171' }}>
+                <span className="text-xs ml-1.5" style={{ color: '#CC6B4F' }}>
                   — {item.result.reason}
                 </span>
               )}

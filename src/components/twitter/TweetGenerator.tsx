@@ -91,8 +91,8 @@ export default function TweetGenerator() {
       {/* Generator */}
       <div className="glass-card p-5">
         <div className="flex items-center gap-2 mb-4">
-          <Zap size={16} color="#06b6d4" />
-          <h3 className="font-semibold text-sm" style={{ color: '#06b6d4', fontFamily: 'Syne' }}>
+          <Zap size={16} color="#1E6F70" />
+          <h3 className="font-semibold text-sm" style={{ color: '#1E6F70', fontFamily: 'Syne' }}>
             Tweet Generator
           </h3>
         </div>
@@ -100,7 +100,7 @@ export default function TweetGenerator() {
         <div className="space-y-4 mb-4">
           {/* Topic */}
           <div>
-            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b' }}>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86' }}>
               Topic or Hook
             </label>
             <textarea
@@ -114,7 +114,7 @@ export default function TweetGenerator() {
 
           {/* Tweet Type */}
           <div>
-            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b' }}>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86' }}>
               Tweet Type
             </label>
             <div className="grid grid-cols-3 gap-2">
@@ -124,13 +124,13 @@ export default function TweetGenerator() {
                   onClick={() => setForm({ ...form, threadType: t.value as 'single' | 'thread-part' | 'reply' })}
                   className="p-3 rounded-lg text-left transition-all text-xs"
                   style={{
-                    background: form.threadType === t.value ? 'rgba(6,182,212,0.15)' : 'rgba(255,255,255,0.03)',
-                    border: `1px solid ${form.threadType === t.value ? 'rgba(6,182,212,0.3)' : 'rgba(255,255,255,0.1)'}`,
-                    color: form.threadType === t.value ? '#06b6d4' : '#64748b',
+                    background: form.threadType === t.value ? 'rgba(30,111,112,0.15)' : 'rgba(255,255,255,0.03)',
+                    border: `1px solid ${form.threadType === t.value ? 'rgba(30,111,112,0.3)' : 'rgba(255,255,255,0.1)'}`,
+                    color: form.threadType === t.value ? '#1E6F70' : '#6E7F86',
                   }}
                 >
                   <div className="font-medium">{t.label}</div>
-                  <div style={{ color: '#475569' }}>{t.desc}</div>
+                  <div style={{ color: '#6E7F86' }}>{t.desc}</div>
                 </button>
               ))}
             </div>
@@ -138,7 +138,7 @@ export default function TweetGenerator() {
 
           {/* Tone */}
           <div>
-            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b' }}>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86' }}>
               Tone
             </label>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -148,11 +148,11 @@ export default function TweetGenerator() {
                   onClick={() => setForm({ ...form, tone: tone.value as typeof form.tone })}
                   className="p-2.5 rounded-lg text-left transition-all text-xs"
                   style={{
-                    background: form.tone === tone.value ? 'rgba(6,182,212,0.15)' : 'rgba(255,255,255,0.03)',
-                    border: `1px solid ${form.tone === tone.value ? 'rgba(6,182,212,0.3)' : 'rgba(255,255,255,0.1)'}`,
+                    background: form.tone === tone.value ? 'rgba(30,111,112,0.15)' : 'rgba(255,255,255,0.03)',
+                    border: `1px solid ${form.tone === tone.value ? 'rgba(30,111,112,0.3)' : 'rgba(255,255,255,0.1)'}`,
                   }}
                 >
-                  <div className="font-medium" style={{ color: form.tone === tone.value ? '#06b6d4' : '#a0aec0' }}>
+                  <div className="font-medium" style={{ color: form.tone === tone.value ? '#1E6F70' : '#a0aec0' }}>
                     {tone.label}
                   </div>
                 </button>
@@ -162,7 +162,7 @@ export default function TweetGenerator() {
 
           {/* ICP tag — Phase 4 */}
           <div>
-            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b' }}>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86' }}>
               Target ICP
             </label>
             <IcpTagPicker
@@ -173,7 +173,7 @@ export default function TweetGenerator() {
 
           {form.threadType === 'reply' && (
             <div>
-              <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b' }}>
+              <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86' }}>
                 Replying To (optional)
               </label>
               <input
@@ -198,11 +198,11 @@ export default function TweetGenerator() {
 
       {/* Generated Tweet */}
       {generated && (
-        <div className="glass-card p-5 animate-fadeUp" style={{ border: '1px solid rgba(6,182,212,0.2)' }}>
+        <div className="glass-card p-5 animate-fadeUp" style={{ border: '1px solid rgba(30,111,112,0.2)' }}>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <Zap size={14} color="#06b6d4" />
-              <span className="text-sm font-medium" style={{ color: '#06b6d4' }}>
+              <Zap size={14} color="#1E6F70" />
+              <span className="text-sm font-medium" style={{ color: '#1E6F70' }}>
                 Generated Tweet
               </span>
             </div>
@@ -220,9 +220,9 @@ export default function TweetGenerator() {
             />
           ) : (
             <div className="text-sm p-4 rounded-lg mb-3 whitespace-pre-wrap leading-relaxed" style={{
-              background: 'rgba(6,182,212,0.05)',
-              border: '1px solid rgba(6,182,212,0.1)',
-              color: '#cbd5e1',
+              background: 'rgba(30,111,112,0.05)',
+              border: '1px solid rgba(30,111,112,0.1)',
+              color: '#D6CCB6',
             }}>
               {generated.content}
             </div>
@@ -247,23 +247,23 @@ export default function TweetGenerator() {
       {/* Saved Tweets */}
       {tweets.length > 0 && (
         <div>
-          <h3 className="text-sm font-medium mb-3" style={{ color: '#64748b' }}>
+          <h3 className="text-sm font-medium mb-3" style={{ color: '#6E7F86' }}>
             Saved Tweets ({tweets.length})
           </h3>
           <div className="space-y-2">
             {tweets.map((tweet) => (
-              <div key={tweet.id} className="glass-card p-3" style={{ border: '1px solid rgba(6,182,212,0.1)' }}>
+              <div key={tweet.id} className="glass-card p-3" style={{ border: '1px solid rgba(30,111,112,0.1)' }}>
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <p className="text-sm text-gray-300 flex-1">{tweet.content}</p>
                   <button
                     onClick={() => { deleteTweet(tweet.id); toast.success('Deleted'); }}
                     className="p-1.5"
-                    style={{ background: 'rgba(244,63,94,0.1)', border: '1px solid rgba(244,63,94,0.2)', borderRadius: '6px' }}
+                    style={{ background: 'rgba(176,67,42,0.1)', border: '1px solid rgba(176,67,42,0.2)', borderRadius: '6px' }}
                   >
-                    <Trash2 size={12} color="#f87171" />
+                    <Trash2 size={12} color="#CC6B4F" />
                   </button>
                 </div>
-                <div className="flex items-center justify-between text-xs" style={{ color: '#64748b' }}>
+                <div className="flex items-center justify-between text-xs" style={{ color: '#6E7F86' }}>
                   <span>{tweet.postType}</span>
                 </div>
               </div>

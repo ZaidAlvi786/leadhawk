@@ -105,24 +105,24 @@ export default function MessageTemplateGenerator() {
     return (
       <div className="space-y-4">
         <div className="rounded-lg p-3" style={{
-          background: 'rgba(99,102,241,0.06)',
-          border: '1px solid rgba(99,102,241,0.18)',
+          background: 'rgba(58,143,163,0.06)',
+          border: '1px solid rgba(58,143,163,0.18)',
         }}>
-          <p className="text-xs leading-relaxed" style={{ color: '#a5b4fc' }}>
+          <p className="text-xs leading-relaxed" style={{ color: '#1E6F70' }}>
             <strong>Messages need research first.</strong> The generator refuses to invent specifics about real people. Open the Research tab, paste 2–3 real artifacts about a lead, then come back here.
           </p>
         </div>
         <div className="flex flex-col items-center justify-center py-12">
           <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-3" style={{
-            background: 'rgba(99,102,241,0.12)',
-            border: '1px solid rgba(99,102,241,0.22)',
+            background: 'rgba(58,143,163,0.12)',
+            border: '1px solid rgba(58,143,163,0.22)',
           }}>
-            <FileSearch size={20} color="#a5b4fc" />
+            <FileSearch size={20} color="#1E6F70" />
           </div>
-          <p className="text-sm text-center mb-3" style={{ color: '#94a3b8' }}>
+          <p className="text-sm text-center mb-3" style={{ color: '#6E7F86' }}>
             No lead research yet
           </p>
-          <p className="text-xs text-center max-w-md mb-4" style={{ color: '#64748b' }}>
+          <p className="text-xs text-center max-w-md mb-4" style={{ color: '#6E7F86' }}>
             The 4-component message format requires a real reference grounded in something the prospect actually said or did.
           </p>
           <button
@@ -143,10 +143,10 @@ export default function MessageTemplateGenerator() {
     <div className="space-y-6">
       {/* Discipline reminder */}
       <div className="rounded-lg p-3" style={{
-        background: 'rgba(99,102,241,0.06)',
-        border: '1px solid rgba(99,102,241,0.18)',
+        background: 'rgba(58,143,163,0.06)',
+        border: '1px solid rgba(58,143,163,0.18)',
       }}>
-        <p className="text-xs leading-relaxed" style={{ color: '#a5b4fc' }}>
+        <p className="text-xs leading-relaxed" style={{ color: '#1E6F70' }}>
           <strong>Structure beats tone.</strong> Every message gets 4 components: a specific reference (cited from research), a pattern interrupt, an earned right, and a low-friction ask. The 5 checks below tell you when it's ready.
         </p>
       </div>
@@ -154,14 +154,14 @@ export default function MessageTemplateGenerator() {
       {/* Generator setup */}
       <div className="glass-card p-5 space-y-4">
         <div className="flex items-center gap-2">
-          <MessageSquare size={14} color="#a5b4fc" />
-          <h3 className="text-sm font-semibold" style={{ color: '#a5b4fc', fontFamily: 'Syne' }}>
+          <MessageSquare size={14} color="#1E6F70" />
+          <h3 className="text-sm font-semibold" style={{ color: '#1E6F70', fontFamily: 'Syne' }}>
             Outreach Composer
           </h3>
         </div>
 
         <div>
-          <label className="text-xs font-medium block mb-1.5" style={{ color: '#94a3b8' }}>
+          <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86' }}>
             Pick lead research *
           </label>
           <select
@@ -180,11 +180,11 @@ export default function MessageTemplateGenerator() {
 
         {selectedResearch && (
           <div className="rounded-lg p-3 text-xs" style={{
-            background: 'rgba(99,102,241,0.08)',
-            border: '1px solid rgba(99,102,241,0.15)',
-            color: '#cbd5e1',
+            background: 'rgba(58,143,163,0.08)',
+            border: '1px solid rgba(58,143,163,0.15)',
+            color: '#D6CCB6',
           }}>
-            <p className="font-semibold mb-1" style={{ color: '#a5b4fc' }}>
+            <p className="font-semibold mb-1" style={{ color: '#1E6F70' }}>
               {selectedResearch.leadName}
               {selectedResearch.leadRole && ` · ${selectedResearch.leadRole}`}
               {selectedResearch.leadCompany && ` at ${selectedResearch.leadCompany}`}
@@ -193,7 +193,7 @@ export default function MessageTemplateGenerator() {
               <strong>{selectedResearch.sources.length}</strong> source{selectedResearch.sources.length === 1 ? '' : 's'} available · {selectedResearch.hooks.length} pre-synthesised hook{selectedResearch.hooks.length === 1 ? '' : 's'}
             </p>
             {selectedResearch.sources.length === 0 && (
-              <p className="mt-1" style={{ color: '#fcd34d' }}>
+              <p className="mt-1" style={{ color: '#D08A3E' }}>
                 ⚠ No sources — open Research tab and add at least one before generating
               </p>
             )}
@@ -214,15 +214,15 @@ export default function MessageTemplateGenerator() {
 
       {/* Output */}
       {components && (
-        <div className="glass-card p-5 space-y-4" style={{ border: '1px solid rgba(16,185,129,0.2)' }}>
+        <div className="glass-card p-5 space-y-4" style={{ border: '1px solid rgba(30,111,112,0.2)' }}>
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold" style={{ color: '#6ee7b7', fontFamily: 'Syne' }}>
+            <h3 className="text-sm font-semibold" style={{ color: '#1E6F70', fontFamily: 'Syne' }}>
               Composition
             </h3>
             <button
               onClick={() => setEditing(!editing)}
               className="text-xs px-2 py-1 rounded"
-              style={{ background: 'rgba(255,255,255,0.04)', color: '#94a3b8' }}
+              style={{ background: 'rgba(255,255,255,0.04)', color: '#6E7F86' }}
             >
               {editing ? 'Preview' : 'Edit components'}
             </button>
@@ -232,15 +232,15 @@ export default function MessageTemplateGenerator() {
 
           {/* Assembled preview */}
           <div>
-            <p className="text-xs font-medium mb-1.5" style={{ color: '#94a3b8' }}>Assembled message</p>
+            <p className="text-xs font-medium mb-1.5" style={{ color: '#6E7F86' }}>Assembled message</p>
             <div className="text-sm p-3 rounded-lg whitespace-pre-wrap leading-relaxed" style={{
-              background: 'rgba(16,185,129,0.04)',
-              border: '1px solid rgba(16,185,129,0.12)',
-              color: '#e2e8f0',
+              background: 'rgba(30,111,112,0.04)',
+              border: '1px solid rgba(30,111,112,0.12)',
+              color: '#E6DCC8',
             }}>
               {components.assembledMessage}
             </div>
-            <p className="text-xs mt-1" style={{ color: '#64748b' }}>
+            <p className="text-xs mt-1" style={{ color: '#6E7F86' }}>
               {components.assembledMessage.length} chars
             </p>
           </div>
@@ -250,7 +250,7 @@ export default function MessageTemplateGenerator() {
 
           {/* Override warning */}
           {report && report.passed < report.total && (
-            <div className="flex items-start gap-2 text-xs" style={{ color: '#fcd34d' }}>
+            <div className="flex items-start gap-2 text-xs" style={{ color: '#D08A3E' }}>
               <AlertTriangle size={12} className="flex-shrink-0 mt-0.5" />
               <span>
                 Some checks failed. You can copy anyway, but expect lower reply rates. Consider editing components above first.
@@ -278,7 +278,7 @@ export default function MessageTemplateGenerator() {
       {/* Saved templates */}
       {(templatesLoading || templates.length > 0) && (
         <div>
-          <h3 className="text-sm font-medium mb-3" style={{ color: '#64748b', fontFamily: 'Syne' }}>
+          <h3 className="text-sm font-medium mb-3" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>
             Saved Templates {templatesLoading ? '(loading…)' : `(${templates.length})`}
           </h3>
           <div className="space-y-3">
@@ -289,32 +289,32 @@ export default function MessageTemplateGenerator() {
                     <span className="text-sm font-medium text-white truncate">{t.name}</span>
                     {t.responseRate && t.responseRate > 0 ? (
                       <span className="text-xs px-2 py-0.5 rounded-full" style={{
-                        background: 'rgba(16,185,129,0.15)',
-                        color: '#6ee7b7',
+                        background: 'rgba(30,111,112,0.15)',
+                        color: '#1E6F70',
                       }}>
                         {t.responseRate}% reply rate
                       </span>
                     ) : (
-                      <span className="text-xs" style={{ color: '#475569' }}>no data yet</span>
+                      <span className="text-xs" style={{ color: '#6E7F86' }}>no data yet</span>
                     )}
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <button onClick={() => { navigator.clipboard.writeText(t.body); toast.success('Copied'); }}
                       className="w-7 h-7 flex items-center justify-center rounded-lg"
-                      style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.2)' }}>
-                      <Copy size={12} color="#a5b4fc" />
+                      style={{ background: 'rgba(58,143,163,0.1)', border: '1px solid rgba(58,143,163,0.2)' }}>
+                      <Copy size={12} color="#1E6F70" />
                     </button>
                     <button onClick={async () => {
                       try { await deleteTemplate(t.id); toast.success('Deleted'); }
                       catch (err) { toast.error(err instanceof Error ? err.message : 'Delete failed'); }
                     }}
                       className="w-7 h-7 flex items-center justify-center rounded-lg"
-                      style={{ background: 'rgba(244,63,94,0.1)', border: '1px solid rgba(244,63,94,0.2)' }}>
-                      <Trash2 size={12} color="#f87171" />
+                      style={{ background: 'rgba(176,67,42,0.1)', border: '1px solid rgba(176,67,42,0.2)' }}>
+                      <Trash2 size={12} color="#CC6B4F" />
                     </button>
                   </div>
                 </div>
-                <p className="text-xs leading-relaxed line-clamp-2" style={{ color: '#475569' }}>{t.body}</p>
+                <p className="text-xs leading-relaxed line-clamp-2" style={{ color: '#6E7F86' }}>{t.body}</p>
               </div>
             ))}
           </div>

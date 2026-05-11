@@ -20,9 +20,9 @@ export default function LeadsPage() {
   return (
     <div className="flex-1 flex flex-col min-h-0">
       {/* Hero */}
-      <div className="px-4 md:px-8 py-5 border-b" style={{ borderColor: 'rgba(99,102,241,0.1)' }}>
+      <div className="px-4 md:px-8 py-5 border-b" style={{ borderColor: 'rgba(58,143,163,0.1)' }}>
         <div className="flex items-center gap-2 mb-1">
-          <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #6366f1, #06b6d4)' }}>
+          <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #3A8FA3, #1E6F70)' }}>
             <Target size={13} color="white" />
           </div>
           <span className="text-xs font-medium tag tag-indigo">Sales Navigator Integration</span>
@@ -30,7 +30,7 @@ export default function LeadsPage() {
         <h2 className="text-lg font-semibold text-white mb-0.5" style={{ fontFamily: 'Syne' }}>
           Find & Convert Your Ideal Clients
         </h2>
-        <p className="text-sm" style={{ color: '#475569' }}>
+        <p className="text-sm" style={{ color: '#6E7F86' }}>
           Filters → Research → Outreach (4-part structure with send-readiness) → Reply coach when they respond
         </p>
       </div>
@@ -47,9 +47,9 @@ export default function LeadsPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-all"
                 style={{
-                  background: isActive ? 'rgba(99,102,241,0.2)' : 'transparent',
-                  color: isActive ? '#a5b4fc' : '#475569',
-                  border: isActive ? '1px solid rgba(99,102,241,0.3)' : '1px solid transparent',
+                  background: isActive ? 'rgba(58,143,163,0.2)' : 'transparent',
+                  color: isActive ? '#1E6F70' : '#6E7F86',
+                  border: isActive ? '1px solid rgba(58,143,163,0.3)' : '1px solid transparent',
                 }}
                 title={tab.description}
               >

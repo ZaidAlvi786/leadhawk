@@ -15,10 +15,10 @@ interface Props {
 }
 
 const PARTS: { key: keyof Omit<OutreachComponents, 'sourceFieldIds' | 'assembledMessage'>; label: string; subtitle: string; icon: typeof MapPin; color: string }[] = [
-  { key: 'specificReference', label: 'Specific reference', subtitle: 'sourced from real research', icon: MapPin, color: '#06b6d4' },
-  { key: 'patternInterrupt', label: 'Pattern interrupt',  subtitle: 'breaks the "another DM" frame', icon: Zap, color: '#f59e0b' },
-  { key: 'earnedRight',      label: 'Earned right',       subtitle: 'one line of relevant proof',   icon: Award, color: '#10b981' },
-  { key: 'lowFrictionAsk',   label: 'Low-friction ask',   subtitle: 'small ask, NOT "30-min call"', icon: MousePointer, color: '#a78bfa' },
+  { key: 'specificReference', label: 'Specific reference', subtitle: 'sourced from real research', icon: MapPin, color: '#1E6F70' },
+  { key: 'patternInterrupt', label: 'Pattern interrupt',  subtitle: 'breaks the "another DM" frame', icon: Zap, color: '#D08A3E' },
+  { key: 'earnedRight',      label: 'Earned right',       subtitle: 'one line of relevant proof',   icon: Award, color: '#1E6F70' },
+  { key: 'lowFrictionAsk',   label: 'Low-friction ask',   subtitle: 'small ask, NOT "30-min call"', icon: MousePointer, color: '#CC6B4F' },
 ];
 
 export default function OutreachComponentDisplay({ components, onChange, editable = false }: Props) {
@@ -46,8 +46,8 @@ export default function OutreachComponentDisplay({ components, onChange, editabl
               <span className="text-xs font-semibold" style={{ color: p.color, fontFamily: 'Syne' }}>
                 {p.label}
               </span>
-              <span className="text-xs" style={{ color: '#475569' }}>· {p.subtitle}</span>
-              {editable && <Edit3 size={9} color="#475569" className="ml-auto" />}
+              <span className="text-xs" style={{ color: '#6E7F86' }}>· {p.subtitle}</span>
+              {editable && <Edit3 size={9} color="#6E7F86" className="ml-auto" />}
             </div>
             {editable ? (
               <textarea
@@ -58,7 +58,7 @@ export default function OutreachComponentDisplay({ components, onChange, editabl
                 onChange={(e) => update(p.key, e.target.value)}
               />
             ) : (
-              <p className="text-sm leading-relaxed" style={{ color: value ? '#e2e8f0' : '#475569' }}>
+              <p className="text-sm leading-relaxed" style={{ color: value ? '#E6DCC8' : '#6E7F86' }}>
                 {value || `(empty — ${p.label.toLowerCase()})`}
               </p>
             )}
@@ -69,8 +69,8 @@ export default function OutreachComponentDisplay({ components, onChange, editabl
       {/* Source citation chip */}
       {components.sourceFieldIds?.length > 0 && (
         <div className="flex items-center gap-1.5 text-xs px-2 py-1 rounded" style={{
-          background: 'rgba(16,185,129,0.08)',
-          color: '#6ee7b7',
+          background: 'rgba(30,111,112,0.08)',
+          color: '#1E6F70',
         }}>
           <span>✓</span>
           <span>Reference cites {components.sourceFieldIds.length} source{components.sourceFieldIds.length === 1 ? '' : 's'}</span>

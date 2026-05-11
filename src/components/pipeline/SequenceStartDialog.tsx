@@ -58,8 +58,8 @@ export default function SequenceStartDialog({
         <div
           className="rounded-2xl p-6 space-y-4 shadow-2xl"
           style={{
-            background: 'linear-gradient(135deg, #0f172a 0%, #0a1428 100%)',
-            border: '1px solid rgba(99,102,241,0.2)',
+            background: 'linear-gradient(135deg, #F7F2E7 0%, #0a1428 100%)',
+            border: '1px solid rgba(58,143,163,0.2)',
           }}
         >
           {/* Header */}
@@ -67,9 +67,9 @@ export default function SequenceStartDialog({
             <div className="flex items-center gap-3">
               <div
                 className="w-10 h-10 rounded-lg flex items-center justify-center"
-                style={{ background: 'rgba(99,102,241,0.15)' }}
+                style={{ background: 'rgba(58,143,163,0.15)' }}
               >
-                <Mail size={18} color="#a5b4fc" />
+                <Mail size={18} color="#1E6F70" />
               </div>
               <div>
                 <h3
@@ -78,7 +78,7 @@ export default function SequenceStartDialog({
                 >
                   Start Email Sequence
                 </h3>
-                <p className="text-xs" style={{ color: '#64748b' }}>
+                <p className="text-xs" style={{ color: '#6E7F86' }}>
                   Auto-send emails to {leadName}
                 </p>
               </div>
@@ -88,23 +88,23 @@ export default function SequenceStartDialog({
               className="w-6 h-6 flex items-center justify-center rounded"
               style={{ background: 'rgba(255,255,255,0.05)' }}
             >
-              <X size={14} color="#64748b" />
+              <X size={14} color="#6E7F86" />
             </button>
           </div>
 
           {/* Lead Info */}
           <div
             className="p-3 rounded-lg"
-            style={{ background: 'rgba(99,102,241,0.08)' }}
+            style={{ background: 'rgba(58,143,163,0.08)' }}
           >
             <div className="flex items-center gap-2 mb-1">
               <div
                 className="w-1.5 h-1.5 rounded-full"
-                style={{ background: '#6366f1' }}
+                style={{ background: '#3A8FA3' }}
               />
               <span className="text-xs font-medium text-white">{leadName}</span>
             </div>
-            <span className="text-xs" style={{ color: '#64748b' }}>
+            <span className="text-xs" style={{ color: '#6E7F86' }}>
               {leadEmail}
             </span>
           </div>
@@ -112,7 +112,7 @@ export default function SequenceStartDialog({
           {/* Sequences List */}
           {sequences.length === 0 ? (
             <div className="text-center py-6">
-              <p className="text-xs" style={{ color: '#475569' }}>
+              <p className="text-xs" style={{ color: '#6E7F86' }}>
                 No sequences created yet. Create one in the Email Sequences module.
               </p>
             </div>
@@ -126,11 +126,11 @@ export default function SequenceStartDialog({
                   style={{
                     background:
                       selectedSeq === seq.id
-                        ? 'rgba(99,102,241,0.15)'
+                        ? 'rgba(58,143,163,0.15)'
                         : 'rgba(255,255,255,0.04)',
                     border: `1px solid ${
                       selectedSeq === seq.id
-                        ? 'rgba(99,102,241,0.3)'
+                        ? 'rgba(58,143,163,0.3)'
                         : 'rgba(255,255,255,0.1)'
                     }`,
                   }}
@@ -145,7 +145,7 @@ export default function SequenceStartDialog({
                       </div>
                       <div
                         className="text-xs mt-0.5 flex items-center gap-1.5"
-                        style={{ color: '#64748b' }}
+                        style={{ color: '#6E7F86' }}
                       >
                         <span>{seq.steps.length} steps</span>
                         <span>•</span>
@@ -155,7 +155,7 @@ export default function SequenceStartDialog({
                     {selectedSeq === seq.id && (
                       <div
                         className="w-5 h-5 rounded-full flex items-center justify-center"
-                        style={{ background: '#6366f1' }}
+                        style={{ background: '#3A8FA3' }}
                       >
                         <ChevronRight size={12} color="white" />
                       </div>
@@ -184,7 +184,7 @@ export default function SequenceStartDialog({
           </div>
 
           {/* Info */}
-          <p className="text-xs text-center" style={{ color: '#475569' }}>
+          <p className="text-xs text-center" style={{ color: '#6E7F86' }}>
             You can link a sequence anytime from the lead's card
           </p>
         </div>

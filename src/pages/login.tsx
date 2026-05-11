@@ -40,22 +40,22 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 sm:p-6" style={{ background: '#0b1020' }}>
+    <div className="min-h-screen flex items-center justify-center p-4 sm:p-6" style={{ background: '#F2EBDD' }}>
       <div className="glass-card p-6 sm:p-8 w-full max-w-md">
-        <h1 className="text-2xl font-semibold mb-1" style={{ color: '#f1f5f9', fontFamily: 'Syne' }}>
+        <h1 className="text-2xl font-semibold mb-1" style={{ color: '#0F3B47', fontFamily: 'Syne' }}>
           LeadHawk
         </h1>
-        <p className="text-sm mb-6" style={{ color: '#64748b' }}>
+        <p className="text-sm mb-6" style={{ color: '#6E7F86' }}>
           {mode === 'signin' ? 'Sign in to your account' : 'Create a new account'}
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>
               Email
             </label>
             <div className="relative">
-              <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2" color="#64748b" />
+              <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2" color="#6E7F86" />
               <input
                 type="email"
                 className="input-field text-sm pl-9 w-full"
@@ -68,11 +68,11 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>
               Password
             </label>
             <div className="relative">
-              <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2" color="#64748b" />
+              <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2" color="#6E7F86" />
               <input
                 type="password"
                 className="input-field text-sm pl-9 w-full"
@@ -97,7 +97,7 @@ export default function LoginPage() {
         <button
           onClick={() => setMode(mode === 'signin' ? 'signup' : 'signin')}
           className="mt-4 text-xs w-full text-center"
-          style={{ color: '#a5b4fc' }}
+          style={{ color: '#1E6F70' }}
         >
           {mode === 'signin' ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
         </button>

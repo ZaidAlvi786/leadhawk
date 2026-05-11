@@ -17,9 +17,9 @@ export default function LinkedInGrowthPage() {
   return (
     <div className="flex-1 flex flex-col min-h-0">
       {/* Hero */}
-      <div className="px-4 md:px-8 py-5 border-b" style={{ borderColor: 'rgba(99,102,241,0.1)' }}>
+      <div className="px-4 md:px-8 py-5 border-b" style={{ borderColor: 'rgba(58,143,163,0.1)' }}>
         <div className="flex items-center gap-2 mb-1">
-          <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #10b981, #06b6d4)' }}>
+          <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #1E6F70, #1E6F70)' }}>
             <TrendingUp size={13} color="white" />
           </div>
           <span className="text-xs font-medium tag tag-green">LinkedIn Authority Building</span>
@@ -27,7 +27,7 @@ export default function LinkedInGrowthPage() {
         <h2 className="text-lg font-semibold text-white mb-0.5" style={{ fontFamily: 'Syne' }}>
           Grow Your Profile & Get Inbound Clients
         </h2>
-        <p className="text-sm" style={{ color: '#475569' }}>
+        <p className="text-sm" style={{ color: '#6E7F86' }}>
           AI growth plans + post generator → One-click post to LinkedIn with optimal keywords
         </p>
       </div>
@@ -44,9 +44,9 @@ export default function LinkedInGrowthPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-all"
                 style={{
-                  background: isActive ? 'rgba(16,185,129,0.18)' : 'transparent',
-                  color: isActive ? '#6ee7b7' : '#475569',
-                  border: isActive ? '1px solid rgba(16,185,129,0.3)' : '1px solid transparent',
+                  background: isActive ? 'rgba(30,111,112,0.18)' : 'transparent',
+                  color: isActive ? '#1E6F70' : '#6E7F86',
+                  border: isActive ? '1px solid rgba(30,111,112,0.3)' : '1px solid transparent',
                 }}
               >
                 <Icon size={14} />

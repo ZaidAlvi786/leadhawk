@@ -23,9 +23,9 @@ export default function AuthorityGapBanner({ onAct }: Props) {
   if (!top) return null;
 
   const isCritical = top.severity === 'critical';
-  const color = isCritical ? '#ef4444' : '#f59e0b';
-  const bg = isCritical ? 'rgba(239,68,68,0.06)' : 'rgba(245,158,11,0.06)';
-  const border = isCritical ? 'rgba(239,68,68,0.3)' : 'rgba(245,158,11,0.3)';
+  const color = isCritical ? '#B0432A' : '#D08A3E';
+  const bg = isCritical ? 'rgba(176,67,42,0.06)' : 'rgba(208,138,62,0.06)';
+  const border = isCritical ? 'rgba(176,67,42,0.3)' : 'rgba(208,138,62,0.3)';
 
   const daysText = top.daysSinceLastPost == null
     ? 'never posted to that ICP'
@@ -63,9 +63,9 @@ export default function AuthorityGapBanner({ onAct }: Props) {
               Authority Gap · {top.severity === 'critical' ? 'CRITICAL' : 'Warning'}
             </span>
           </div>
-          <p className="text-sm leading-relaxed" style={{ color: '#e2e8f0' }}>
+          <p className="text-sm leading-relaxed" style={{ color: '#E6DCC8' }}>
             You have <strong style={{ color }}>{top.activeLeadCount}</strong> active{' '}
-            {top.activeLeadCount === 1 ? 'lead' : 'leads'} in ICP <em style={{ color: '#a5b4fc' }}>"{top.icpTag}"</em>{' '}
+            {top.activeLeadCount === 1 ? 'lead' : 'leads'} in ICP <em style={{ color: '#1E6F70' }}>"{top.icpTag}"</em>{' '}
             but {daysText}. Cold DMs to people who can't find proof you understand them are 3–5x less likely to convert.
           </p>
         </div>

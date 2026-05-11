@@ -100,13 +100,13 @@ export default function LinkedInPostGenerator() {
     <div className="space-y-6">
       {/* Generator */}
       <div className="glass-card p-5">
-        <h3 className="font-semibold text-sm mb-4" style={{ color: '#a5b4fc', fontFamily: 'Syne' }}>
+        <h3 className="font-semibold text-sm mb-4" style={{ color: '#1E6F70', fontFamily: 'Syne' }}>
           AI LinkedIn Post Generator
         </h3>
 
         {/* Strategic post type selector — Phase 4 */}
         <div className="mb-4">
-          <label className="text-xs font-medium block mb-2" style={{ color: '#64748b', fontFamily: 'Syne' }}>
+          <label className="text-xs font-medium block mb-2" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>
             Post type — pick the funnel objective
           </label>
           <div className="grid grid-cols-2 gap-2">
@@ -119,17 +119,17 @@ export default function LinkedInPostGenerator() {
                   onClick={() => setForm({ ...form, postType: t })}
                   className="p-3 rounded-xl text-left transition-all"
                   style={{
-                    background: isActive ? 'rgba(99,102,241,0.18)' : 'rgba(255,255,255,0.03)',
-                    border: `1px solid ${isActive ? 'rgba(99,102,241,0.5)' : 'rgba(255,255,255,0.07)'}`,
+                    background: isActive ? 'rgba(58,143,163,0.18)' : 'rgba(255,255,255,0.03)',
+                    border: `1px solid ${isActive ? 'rgba(58,143,163,0.5)' : 'rgba(255,255,255,0.07)'}`,
                   }}
                 >
                   <div className="flex items-center gap-1.5 mb-0.5">
                     <span>{meta.emoji}</span>
-                    <span className="text-xs font-semibold" style={{ color: isActive ? '#a5b4fc' : '#cbd5e1' }}>
+                    <span className="text-xs font-semibold" style={{ color: isActive ? '#1E6F70' : '#D6CCB6' }}>
                       {meta.label}
                     </span>
                   </div>
-                  <div className="text-xs" style={{ color: '#64748b' }}>
+                  <div className="text-xs" style={{ color: '#6E7F86' }}>
                     {meta.funnelObjective}
                   </div>
                 </button>
@@ -140,7 +140,7 @@ export default function LinkedInPostGenerator() {
 
         {/* ICP tag */}
         <div className="mb-4">
-          <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>
+          <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>
             Target ICP
           </label>
           <IcpTagPicker
@@ -169,9 +169,9 @@ export default function LinkedInPostGenerator() {
             onClick={() => setShowLibrary(!showLibrary)}
             className="text-xs flex items-center gap-1 px-2 py-1 rounded-lg"
             style={{
-              background: showLibrary ? 'rgba(99,102,241,0.12)' : 'rgba(255,255,255,0.03)',
-              color: showLibrary ? '#a5b4fc' : '#64748b',
-              border: '1px solid rgba(99,102,241,0.15)',
+              background: showLibrary ? 'rgba(58,143,163,0.12)' : 'rgba(255,255,255,0.03)',
+              color: showLibrary ? '#1E6F70' : '#6E7F86',
+              border: '1px solid rgba(58,143,163,0.15)',
             }}
           >
             <Lightbulb size={11} />
@@ -180,10 +180,10 @@ export default function LinkedInPostGenerator() {
 
           {showLibrary && (
             <div className="mt-2 p-4 rounded-xl" style={{
-              background: 'rgba(99,102,241,0.04)',
-              border: '1px solid rgba(99,102,241,0.12)',
+              background: 'rgba(58,143,163,0.04)',
+              border: '1px solid rgba(58,143,163,0.12)',
             }}>
-              <p className="text-xs mb-2" style={{ color: '#64748b' }}>
+              <p className="text-xs mb-2" style={{ color: '#6E7F86' }}>
                 Generic prompts when your pipeline is too thin to inspire one. Topics from your actual prospects (above) almost always perform better.
               </p>
               <input
@@ -205,14 +205,14 @@ export default function LinkedInPostGenerator() {
                       onClick={() => setTopicCategory(cat.id)}
                       className="text-xs px-2.5 py-1 rounded-lg transition-all flex items-center gap-1"
                       style={{
-                        background: topicCategory === cat.id ? 'rgba(99,102,241,0.25)' : 'rgba(255,255,255,0.04)',
-                        border: `1px solid ${topicCategory === cat.id ? 'rgba(99,102,241,0.5)' : 'rgba(255,255,255,0.07)'}`,
-                        color: topicCategory === cat.id ? '#a5b4fc' : '#475569',
+                        background: topicCategory === cat.id ? 'rgba(58,143,163,0.25)' : 'rgba(255,255,255,0.04)',
+                        border: `1px solid ${topicCategory === cat.id ? 'rgba(58,143,163,0.5)' : 'rgba(255,255,255,0.07)'}`,
+                        color: topicCategory === cat.id ? '#1E6F70' : '#6E7F86',
                       }}
                     >
                       <span>{cat.emoji}</span>
                       {cat.label}
-                      <span className="ml-0.5" style={{ color: '#334155', fontSize: '10px' }}>{count}</span>
+                      <span className="ml-0.5" style={{ color: '#6E7F86', fontSize: '10px' }}>{count}</span>
                     </button>
                   );
                 })}
@@ -232,12 +232,12 @@ export default function LinkedInPostGenerator() {
                       onClick={() => setForm({ ...form, topic: suggestion.topic, pipelineContext: '' })}
                       className="text-left p-2.5 rounded-lg transition-all flex items-start gap-2"
                       style={{
-                        background: form.topic === suggestion.topic ? 'rgba(99,102,241,0.18)' : 'rgba(255,255,255,0.03)',
-                        border: `1px solid ${form.topic === suggestion.topic ? 'rgba(99,102,241,0.4)' : 'rgba(255,255,255,0.06)'}`,
+                        background: form.topic === suggestion.topic ? 'rgba(58,143,163,0.18)' : 'rgba(255,255,255,0.03)',
+                        border: `1px solid ${form.topic === suggestion.topic ? 'rgba(58,143,163,0.4)' : 'rgba(255,255,255,0.06)'}`,
                       }}
                     >
                       <span className="text-sm flex-shrink-0 mt-0.5">{suggestion.emoji}</span>
-                      <div className="text-xs leading-relaxed" style={{ color: '#cbd5e1' }}>
+                      <div className="text-xs leading-relaxed" style={{ color: '#D6CCB6' }}>
                         {suggestion.topic}
                       </div>
                     </button>
@@ -250,7 +250,7 @@ export default function LinkedInPostGenerator() {
         {/* Topic + audience inputs */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div className="md:col-span-2">
-            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>
               Post topic *
             </label>
             <input
@@ -260,24 +260,24 @@ export default function LinkedInPostGenerator() {
               onChange={(e) => setForm({ ...form, topic: e.target.value })}
             />
             {form.pipelineContext && (
-              <p className="text-xs mt-1" style={{ color: '#10b981' }}>
+              <p className="text-xs mt-1" style={{ color: '#1E6F70' }}>
                 ✓ Grounded in real pipeline context — won't be generic
               </p>
             )}
           </div>
           <div>
-            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>Industry</label>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>Industry</label>
             <select
               className="input-field text-sm"
               value={form.industry}
               onChange={(e) => setForm({ ...form, industry: e.target.value })}
               style={{ cursor: 'pointer' }}
             >
-              {INDUSTRIES.map((i) => <option key={i} value={i} style={{ background: '#0f172a' }}>{i}</option>)}
+              {INDUSTRIES.map((i) => <option key={i} value={i} style={{ background: '#F7F2E7' }}>{i}</option>)}
             </select>
           </div>
           <div>
-            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>Target audience</label>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>Target audience</label>
             <input
               className="input-field text-sm"
               placeholder="CTOs, Startup Founders…"
@@ -299,24 +299,24 @@ export default function LinkedInPostGenerator() {
 
       {/* Preview */}
       {generated && (
-        <div className="glass-card p-5 animate-fadeUp" style={{ border: '1px solid rgba(6,182,212,0.2)' }}>
+        <div className="glass-card p-5 animate-fadeUp" style={{ border: '1px solid rgba(30,111,112,0.2)' }}>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
             <div className="flex items-center gap-2">
-              <Eye size={14} color="#06b6d4" />
-              <span className="text-sm font-medium" style={{ color: '#67e8f9', fontFamily: 'Syne' }}>Post Preview</span>
+              <Eye size={14} color="#1E6F70" />
+              <span className="text-sm font-medium" style={{ color: '#1E6F70', fontFamily: 'Syne' }}>Post Preview</span>
             </div>
-            <span className="text-xs" style={{ color: '#475569' }}>
+            <span className="text-xs" style={{ color: '#6E7F86' }}>
               Reach reported by LinkedIn after you post.
             </span>
           </div>
 
           {generated.hook && (
             <div className="mb-3 p-3 rounded-lg" style={{
-              background: 'rgba(6,182,212,0.06)',
-              border: '1px solid rgba(6,182,212,0.15)',
+              background: 'rgba(30,111,112,0.06)',
+              border: '1px solid rgba(30,111,112,0.15)',
             }}>
-              <div className="text-xs mb-1" style={{ color: '#06b6d4' }}>🎯 Hook (visible before &quot;see more&quot;):</div>
-              <p className="text-sm font-medium" style={{ color: '#e2e8f0' }}>{generated.hook}</p>
+              <div className="text-xs mb-1" style={{ color: '#1E6F70' }}>🎯 Hook (visible before &quot;see more&quot;):</div>
+              <p className="text-sm font-medium" style={{ color: '#E6DCC8' }}>{generated.hook}</p>
             </div>
           )}
 
@@ -329,9 +329,9 @@ export default function LinkedInPostGenerator() {
             />
           ) : (
             <div className="text-sm p-4 rounded-xl mb-3 whitespace-pre-wrap leading-relaxed" style={{
-              background: 'rgba(6,182,212,0.04)',
-              border: '1px solid rgba(6,182,212,0.1)',
-              color: '#cbd5e1',
+              background: 'rgba(30,111,112,0.04)',
+              border: '1px solid rgba(30,111,112,0.1)',
+              color: '#D6CCB6',
             }}>
               {generated.content}
             </div>
@@ -351,9 +351,9 @@ export default function LinkedInPostGenerator() {
           {/* Image */}
           <div className="mb-4 p-4 rounded-xl" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)' }}>
             <div className="flex items-center gap-2 mb-3">
-              <Image size={14} color="#a5b4fc" />
-              <span className="text-xs font-medium" style={{ color: '#a5b4fc', fontFamily: 'Syne' }}>Post image</span>
-              <span className="text-xs" style={{ color: '#475569' }}>— text cards stop the scroll on LinkedIn</span>
+              <Image size={14} color="#1E6F70" />
+              <span className="text-xs font-medium" style={{ color: '#1E6F70', fontFamily: 'Syne' }}>Post image</span>
+              <span className="text-xs" style={{ color: '#6E7F86' }}>— text cards stop the scroll on LinkedIn</span>
             </div>
 
             <div className="flex flex-wrap gap-1.5 mb-3">
@@ -367,14 +367,14 @@ export default function LinkedInPostGenerator() {
                     onClick={() => setImageFamily(f.id)}
                     className="text-xs px-2.5 py-1 rounded-lg transition-all flex items-center gap-1"
                     style={{
-                      background: imageFamily === f.id ? 'rgba(99,102,241,0.25)' : 'rgba(255,255,255,0.04)',
-                      border: `1px solid ${imageFamily === f.id ? 'rgba(99,102,241,0.5)' : 'rgba(255,255,255,0.07)'}`,
-                      color: imageFamily === f.id ? '#a5b4fc' : '#475569',
+                      background: imageFamily === f.id ? 'rgba(58,143,163,0.25)' : 'rgba(255,255,255,0.04)',
+                      border: `1px solid ${imageFamily === f.id ? 'rgba(58,143,163,0.5)' : 'rgba(255,255,255,0.07)'}`,
+                      color: imageFamily === f.id ? '#1E6F70' : '#6E7F86',
                     }}
                   >
                     <span>{f.emoji}</span>
                     {f.label}
-                    <span className="ml-0.5" style={{ color: '#334155', fontSize: '10px' }}>{count}</span>
+                    <span className="ml-0.5" style={{ color: '#6E7F86', fontSize: '10px' }}>{count}</span>
                   </button>
                 );
               })}
@@ -389,8 +389,8 @@ export default function LinkedInPostGenerator() {
                     onClick={() => { setImageStyle(s.id); setGeneratedImage(null); }}
                     className="flex items-center gap-2 p-2 rounded-lg text-xs transition-all text-left"
                     style={{
-                      background: imageStyle === s.id ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.04)',
-                      border: `1px solid ${imageStyle === s.id ? 'rgba(99,102,241,0.5)' : 'rgba(255,255,255,0.08)'}`,
+                      background: imageStyle === s.id ? 'rgba(58,143,163,0.2)' : 'rgba(255,255,255,0.04)',
+                      border: `1px solid ${imageStyle === s.id ? 'rgba(58,143,163,0.5)' : 'rgba(255,255,255,0.08)'}`,
                     }}
                   >
                     <div className="w-8 h-6 rounded flex-shrink-0" style={{
@@ -398,10 +398,10 @@ export default function LinkedInPostGenerator() {
                       border: '1px solid rgba(255,255,255,0.15)',
                     }} />
                     <div className="min-w-0 flex-1">
-                      <div className="font-medium" style={{ color: imageStyle === s.id ? '#a5b4fc' : '#94a3b8' }}>
+                      <div className="font-medium" style={{ color: imageStyle === s.id ? '#1E6F70' : '#6E7F86' }}>
                         {s.label}
                       </div>
-                      <div style={{ color: '#475569', fontSize: '10px' }}>
+                      <div style={{ color: '#6E7F86', fontSize: '10px' }}>
                         {s.description}
                       </div>
                     </div>
@@ -491,7 +491,7 @@ export default function LinkedInPostGenerator() {
       {/* Saved Posts */}
       {posts.length > 0 && (
         <div>
-          <h3 className="text-sm font-medium mb-3" style={{ color: '#64748b', fontFamily: 'Syne' }}>
+          <h3 className="text-sm font-medium mb-3" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>
             Saved Posts ({posts.length})
           </h3>
           <div className="space-y-3">
@@ -507,14 +507,14 @@ export default function LinkedInPostGenerator() {
                         </span>
                         {p.icpTag && (
                           <span className="text-xs px-2 py-0.5 rounded" style={{
-                            background: 'rgba(99,102,241,0.12)',
-                            color: '#a5b4fc',
+                            background: 'rgba(58,143,163,0.12)',
+                            color: '#1E6F70',
                           }}>
                             {p.icpTag}
                           </span>
                         )}
                       </div>
-                      <p className="text-xs leading-relaxed line-clamp-2" style={{ color: '#64748b' }}>{p.content}</p>
+                      <p className="text-xs leading-relaxed line-clamp-2" style={{ color: '#6E7F86' }}>{p.content}</p>
                     </div>
                     <div className="flex items-center gap-1.5 flex-shrink-0">
                       <button
@@ -531,13 +531,13 @@ export default function LinkedInPostGenerator() {
                       </button>
                       <button onClick={() => { navigator.clipboard.writeText(p.content); toast.success('Copied'); }}
                         className="w-7 h-7 flex items-center justify-center rounded-lg"
-                        style={{ background: 'rgba(6,182,212,0.1)', border: '1px solid rgba(6,182,212,0.2)' }}>
-                        <Copy size={12} color="#67e8f9" />
+                        style={{ background: 'rgba(30,111,112,0.1)', border: '1px solid rgba(30,111,112,0.2)' }}>
+                        <Copy size={12} color="#1E6F70" />
                       </button>
                       <button onClick={() => { deletePost(p.id); toast.success('Deleted'); }}
                         className="w-7 h-7 flex items-center justify-center rounded-lg"
-                        style={{ background: 'rgba(244,63,94,0.1)', border: '1px solid rgba(244,63,94,0.2)' }}>
-                        <Trash2 size={12} color="#f87171" />
+                        style={{ background: 'rgba(176,67,42,0.1)', border: '1px solid rgba(176,67,42,0.2)' }}>
+                        <Trash2 size={12} color="#CC6B4F" />
                       </button>
                     </div>
                   </div>

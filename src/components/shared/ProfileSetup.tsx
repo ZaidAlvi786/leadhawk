@@ -27,26 +27,26 @@ export default function ProfileSetup({ onClose }: { onClose?: () => void }) {
   return (
     <div className="glass-card p-4 sm:p-6 max-w-2xl mx-auto">
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #6366f1, #06b6d4)' }}>
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #3A8FA3, #1E6F70)' }}>
           <User size={18} color="white" />
         </div>
         <div>
           <h2 className="text-base font-semibold text-white" style={{ fontFamily: 'Syne' }}>Your Profile</h2>
-          <p className="text-xs" style={{ color: '#475569' }}>Used to personalize AI-generated messages and posts</p>
+          <p className="text-xs" style={{ color: '#6E7F86' }}>Used to personalize AI-generated messages and posts</p>
         </div>
       </div>
 
       <div className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>
               <User size={11} className="inline mr-1" />Your Name
             </label>
             <input className="input-field text-sm" placeholder="Ahmad / Your Name"
               value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
           </div>
           <div>
-            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>
               <Briefcase size={11} className="inline mr-1" />Your Title
             </label>
             <input className="input-field text-sm" placeholder="Full Stack Developer"
@@ -55,7 +55,7 @@ export default function ProfileSetup({ onClose }: { onClose?: () => void }) {
         </div>
 
         <div>
-          <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>
+          <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>
             Your Service / Offer
           </label>
           <input className="input-field text-sm"
@@ -64,7 +64,7 @@ export default function ProfileSetup({ onClose }: { onClose?: () => void }) {
         </div>
 
         <div>
-          <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>
+          <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>
             <Target size={11} className="inline mr-1" />Target Audience
           </label>
           <input className="input-field text-sm"
@@ -73,7 +73,7 @@ export default function ProfileSetup({ onClose }: { onClose?: () => void }) {
         </div>
 
         <div>
-          <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>
+          <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>
             <Code2 size={11} className="inline mr-1" />Skills & Technologies
           </label>
           <div className="flex gap-2 mb-2">

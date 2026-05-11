@@ -15,30 +15,30 @@ interface Props {
 
 const FRESHNESS_STYLES = {
   hot: {
-    bg: 'rgba(245,158,11,0.12)',
-    border: 'rgba(245,158,11,0.45)',
-    color: '#fcd34d',
-    glow: '0 0 16px rgba(245,158,11,0.35)',
+    bg: 'rgba(208,138,62,0.12)',
+    border: 'rgba(208,138,62,0.45)',
+    color: '#D08A3E',
+    glow: '0 0 16px rgba(208,138,62,0.35)',
     label: 'HOT',
   },
   warm: {
-    bg: 'rgba(99,102,241,0.1)',
-    border: 'rgba(99,102,241,0.3)',
-    color: '#a5b4fc',
+    bg: 'rgba(58,143,163,0.1)',
+    border: 'rgba(58,143,163,0.3)',
+    color: '#1E6F70',
     glow: 'none',
     label: 'warm',
   },
   cool: {
     bg: 'rgba(255,255,255,0.03)',
     border: 'rgba(255,255,255,0.08)',
-    color: '#64748b',
+    color: '#6E7F86',
     glow: 'none',
     label: 'cool',
   },
   cold: {
     bg: 'rgba(255,255,255,0.02)',
     border: 'rgba(255,255,255,0.04)',
-    color: '#475569',
+    color: '#6E7F86',
     glow: 'none',
     label: 'cold',
   },
@@ -90,9 +90,9 @@ export default function IntentSignalDisplay({ signal, compact = false }: Props) 
               {formatFreshness(hours)} ago
             </span>
           </div>
-          <p className="text-xs font-semibold" style={{ color: '#e2e8f0' }}>{signal.title}</p>
+          <p className="text-xs font-semibold" style={{ color: '#E6DCC8' }}>{signal.title}</p>
           {signal.content && signal.content !== signal.title && (
-            <p className="text-xs mt-0.5 line-clamp-2" style={{ color: '#94a3b8' }}>{signal.content}</p>
+            <p className="text-xs mt-0.5 line-clamp-2" style={{ color: '#6E7F86' }}>{signal.content}</p>
           )}
         </div>
         {signal.url && (

@@ -74,7 +74,7 @@ export default function IntentSignalEditor({ leadId, watchlistAccountId, onAdded
       <button
         onClick={() => setOpen(true)}
         className="text-xs px-2 py-1 rounded-md flex items-center gap-1 transition-all"
-        style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.25)', color: '#fcd34d' }}
+        style={{ background: 'rgba(208,138,62,0.1)', border: '1px solid rgba(208,138,62,0.25)', color: '#D08A3E' }}
       >
         <Plus size={11} />
         Add signal
@@ -85,12 +85,12 @@ export default function IntentSignalEditor({ leadId, watchlistAccountId, onAdded
   return (
     <div className="rounded-lg p-3 space-y-2" style={{
       background: 'rgba(15,23,42,0.6)',
-      border: '1px solid rgba(245,158,11,0.25)',
+      border: '1px solid rgba(208,138,62,0.25)',
     }}>
       <div className="flex items-center justify-between">
-        <span className="text-xs font-medium" style={{ color: '#fcd34d' }}>Add intent signal</span>
+        <span className="text-xs font-medium" style={{ color: '#D08A3E' }}>Add intent signal</span>
         <button onClick={() => setOpen(false)} className="p-0.5">
-          <X size={12} color="#64748b" />
+          <X size={12} color="#6E7F86" />
         </button>
       </div>
       <textarea
@@ -119,7 +119,7 @@ export default function IntentSignalEditor({ leadId, watchlistAccountId, onAdded
           onChange={(e) => setDraft({ ...draft, type: e.target.value as IntentSignalType })}
         >
           {TYPES.map((t) => (
-            <option key={t} value={t} style={{ background: '#0f172a' }}>{signalTypeLabel(t)}</option>
+            <option key={t} value={t} style={{ background: '#F7F2E7' }}>{signalTypeLabel(t)}</option>
           ))}
         </select>
         <input

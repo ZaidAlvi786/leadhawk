@@ -140,10 +140,10 @@ export default function LeadResearchPanel() {
           this rebuild is that the panel doesn't fabricate; remind the user that
           the discipline is theirs. */}
       <div className="rounded-lg p-3" style={{
-        background: 'rgba(99,102,241,0.06)',
-        border: '1px solid rgba(99,102,241,0.18)',
+        background: 'rgba(58,143,163,0.06)',
+        border: '1px solid rgba(58,143,163,0.18)',
       }}>
-        <p className="text-xs leading-relaxed" style={{ color: '#a5b4fc' }}>
+        <p className="text-xs leading-relaxed" style={{ color: '#1E6F70' }}>
           <strong>Research-only.</strong> The AI will only synthesise hooks from sources you paste.
           If you don't paste anything specific, you get fewer (or zero) hooks — by design.
         </p>
@@ -154,17 +154,17 @@ export default function LeadResearchPanel() {
         onClick={() => setIsOpen(!isOpen)}
         className="w-full px-4 py-3 rounded-lg font-medium transition-all flex items-center justify-between"
         style={{
-          background: isOpen ? 'rgba(99,102,241,0.15)' : 'rgba(99,102,241,0.05)',
-          border: isOpen ? '1px solid rgba(99,102,241,0.3)' : '1px solid rgba(99,102,241,0.1)',
-          color: '#f1f5f9',
+          background: isOpen ? 'rgba(58,143,163,0.15)' : 'rgba(58,143,163,0.05)',
+          border: isOpen ? '1px solid rgba(58,143,163,0.3)' : '1px solid rgba(58,143,163,0.1)',
+          color: '#0F3B47',
         }}
       >
         <span className="flex items-center gap-2">
-          <FileSearch size={16} style={{ color: '#a5b4fc' }} />
+          <FileSearch size={16} style={{ color: '#1E6F70' }} />
           Research a New Lead
         </span>
         <ChevronDown size={16} style={{
-          color: '#64748b',
+          color: '#6E7F86',
           transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
           transition: 'all 0.2s',
         }} />
@@ -173,7 +173,7 @@ export default function LeadResearchPanel() {
       {isOpen && (
         <div className="p-4 rounded-lg space-y-4 border" style={{
           background: 'rgba(15,23,42,0.8)',
-          borderColor: 'rgba(99,102,241,0.2)',
+          borderColor: 'rgba(58,143,163,0.2)',
         }}>
           {/* Lead meta */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -206,7 +206,7 @@ export default function LeadResearchPanel() {
                 <button
                   onClick={() => window.open(meta.linkedinUrl, '_blank')}
                   className="px-2 rounded-md"
-                  style={{ background: 'rgba(99,102,241,0.15)', color: '#a5b4fc' }}
+                  style={{ background: 'rgba(58,143,163,0.15)', color: '#1E6F70' }}
                   title="Open profile to copy real artifacts from it"
                 >
                   <ExternalLink size={13} />
@@ -217,7 +217,7 @@ export default function LeadResearchPanel() {
 
           {/* Source drafts */}
           <div className="space-y-2">
-            <p className="text-xs font-semibold" style={{ color: '#94a3b8' }}>
+            <p className="text-xs font-semibold" style={{ color: '#6E7F86' }}>
               Paste real sources ({validDrafts.length} ready)
             </p>
             {drafts.map((draft) => {
@@ -237,7 +237,7 @@ export default function LeadResearchPanel() {
                       style={{ width: 'auto' }}
                     >
                       {FIELD_PROMPTS.map((f) => (
-                        <option key={f.field} value={f.field} style={{ background: '#0f172a' }}>
+                        <option key={f.field} value={f.field} style={{ background: '#F7F2E7' }}>
                           {f.label}
                         </option>
                       ))}
@@ -245,9 +245,9 @@ export default function LeadResearchPanel() {
                     <button
                       onClick={() => handleRemoveDraft(draft.id)}
                       className="ml-auto p-1 rounded"
-                      style={{ background: 'rgba(244,63,94,0.1)' }}
+                      style={{ background: 'rgba(176,67,42,0.1)' }}
                     >
-                      <X size={12} color="#f87171" />
+                      <X size={12} color="#CC6B4F" />
                     </button>
                   </div>
                   <textarea
@@ -279,7 +279,7 @@ export default function LeadResearchPanel() {
                 key={f.field}
                 onClick={() => handleAddSourceField(f.field)}
                 className="text-xs px-2 py-1 rounded-lg flex items-center gap-1"
-                style={{ background: 'rgba(99,102,241,0.08)', color: '#a5b4fc', border: '1px solid rgba(99,102,241,0.15)' }}
+                style={{ background: 'rgba(58,143,163,0.08)', color: '#1E6F70', border: '1px solid rgba(58,143,163,0.15)' }}
               >
                 <Plus size={10} />
                 {f.label}
@@ -315,7 +315,7 @@ export default function LeadResearchPanel() {
                 className="rounded-lg border"
                 style={{
                   background: 'rgba(30,41,59,0.6)',
-                  borderColor: 'rgba(99,102,241,0.2)',
+                  borderColor: 'rgba(58,143,163,0.2)',
                 }}
               >
                 <div
@@ -326,12 +326,12 @@ export default function LeadResearchPanel() {
                     <p className="font-semibold text-sm flex items-center gap-2">
                       {r.leadName}
                       <span className="px-2 py-0.5 rounded text-xs font-medium" style={{
-                        background: 'rgba(99,102,241,0.2)',
-                        color: '#a5b4fc',
+                        background: 'rgba(58,143,163,0.2)',
+                        color: '#1E6F70',
                       }}>
                         {ARCHETYPE_PROFILES[r.archetype]?.label || 'Other'}
                       </span>
-                      <span className="text-xs" style={{ color: '#64748b' }}>
+                      <span className="text-xs" style={{ color: '#6E7F86' }}>
                         {r.sources.length} source{r.sources.length === 1 ? '' : 's'} · {r.hooks.length} hook{r.hooks.length === 1 ? '' : 's'}
                       </span>
                     </p>
@@ -342,19 +342,19 @@ export default function LeadResearchPanel() {
                       onClick={(e) => { e.stopPropagation(); runSynthesis(r); }}
                       disabled={isSynthesizing === r.id}
                       className="p-1.5 rounded"
-                      style={{ background: 'rgba(99,102,241,0.15)' }}
+                      style={{ background: 'rgba(58,143,163,0.15)' }}
                       title="Re-synthesise hooks"
                     >
                       {isSynthesizing === r.id
                         ? <div className="w-3 h-3 rounded-full border border-indigo-400 border-t-transparent animate-spin" />
-                        : <Sparkles size={12} color="#a5b4fc" />}
+                        : <Sparkles size={12} color="#1E6F70" />}
                     </button>
                     <button
                       onClick={(e) => { e.stopPropagation(); deleteLeadResearch(r.id); toast.success('Deleted'); }}
                       className="p-1.5 rounded"
-                      style={{ background: 'rgba(244,63,94,0.1)' }}
+                      style={{ background: 'rgba(176,67,42,0.1)' }}
                     >
-                      <Trash2 size={12} color="#f87171" />
+                      <Trash2 size={12} color="#CC6B4F" />
                     </button>
                   </div>
                 </div>
@@ -380,17 +380,17 @@ export default function LeadResearchPanel() {
                               border: '1px solid rgba(255,255,255,0.05)',
                             }}>
                               <div className="flex items-center gap-1.5 mb-0.5">
-                                <Tag size={9} color="#64748b" />
-                                <span style={{ color: '#94a3b8', fontSize: '10px' }}>
+                                <Tag size={9} color="#6E7F86" />
+                                <span style={{ color: '#6E7F86', fontSize: '10px' }}>
                                   {FIELD_PROMPTS.find((f) => f.field === s.field)?.label || s.field}
                                 </span>
                                 {s.url && (
                                   <a href={s.url} target="_blank" rel="noopener noreferrer" className="ml-auto" title={s.url}>
-                                    <ExternalLink size={9} color="#64748b" />
+                                    <ExternalLink size={9} color="#6E7F86" />
                                   </a>
                                 )}
                               </div>
-                              <p className="text-xs" style={{ color: '#cbd5e1' }}>{s.content.slice(0, 200)}{s.content.length > 200 ? '…' : ''}</p>
+                              <p className="text-xs" style={{ color: '#D6CCB6' }}>{s.content.slice(0, 200)}{s.content.length > 200 ? '…' : ''}</p>
                             </div>
                           ))}
                         </div>
@@ -418,8 +418,8 @@ export default function LeadResearchPanel() {
                               >
                                 <span className="flex-1">• {hook.text}</span>
                                 <span className="text-xs px-1.5 py-0.5 rounded ml-2" style={{
-                                  background: 'rgba(16,185,129,0.12)',
-                                  color: '#6ee7b7',
+                                  background: 'rgba(30,111,112,0.12)',
+                                  color: '#1E6F70',
                                   fontSize: '9px',
                                 }}>
                                   {hook.sourceFieldIds.length} src
@@ -446,7 +446,7 @@ export default function LeadResearchPanel() {
 
                     {r.redFlags.length > 0 && (
                       <div>
-                        <p className="text-xs font-semibold" style={{ color: '#f87171' }}>⚠️ Red flags (avoid)</p>
+                        <p className="text-xs font-semibold" style={{ color: '#CC6B4F' }}>⚠️ Red flags (avoid)</p>
                         <div className="space-y-1">
                           {r.redFlags.map((flag, i) => (
                             <p key={i} className="text-xs text-gray-400">• {flag}</p>

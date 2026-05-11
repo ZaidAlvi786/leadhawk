@@ -40,7 +40,7 @@ export default function DailyActionQueue() {
           leadName: `${lead.firstName} ${lead.lastName}`,
           leadId: lead.id,
           icon: <Calendar size={16} />,
-          color: '#f59e0b',
+          color: '#D08A3E',
           priority: 'high',
         });
       }
@@ -60,7 +60,7 @@ export default function DailyActionQueue() {
           leadName: `${lead.firstName} ${lead.lastName}`,
           leadId: lead.id,
           icon: <Mail size={16} />,
-          color: '#6366f1',
+          color: '#3A8FA3',
           priority: 'high',
         });
       }
@@ -75,7 +75,7 @@ export default function DailyActionQueue() {
           leadName: `${lead.firstName} ${lead.lastName}`,
           leadId: lead.id,
           icon: <Zap size={16} />,
-          color: '#10b981',
+          color: '#1E6F70',
           priority: 'high',
         });
       }
@@ -97,13 +97,13 @@ export default function DailyActionQueue() {
   if (activeActions.length === 0) {
     return (
       <div className="glass-card p-6 text-center">
-        <div className="w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-3" style={{ background: 'rgba(16,185,129,0.15)' }}>
-          <CheckCircle2 size={20} color="#10b981" />
+        <div className="w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-3" style={{ background: 'rgba(30,111,112,0.15)' }}>
+          <CheckCircle2 size={20} color="#1E6F70" />
         </div>
         <h3 className="text-sm font-medium text-white mb-1" style={{ fontFamily: 'Syne' }}>
           All set for today!
         </h3>
-        <p className="text-xs" style={{ color: '#64748b' }}>
+        <p className="text-xs" style={{ color: '#6E7F86' }}>
           No actions due today. Keep building your pipeline.
         </p>
       </div>
@@ -143,7 +143,7 @@ export default function DailyActionQueue() {
                 {action.priority}
               </span>
             </div>
-            <p className="text-xs" style={{ color: '#64748b' }}>
+            <p className="text-xs" style={{ color: '#6E7F86' }}>
               {action.description}
             </p>
           </div>
@@ -160,10 +160,10 @@ export default function DailyActionQueue() {
             </button>
             <button
               className="p-1.5 rounded-lg"
-              style={{ background: 'rgba(99,102,241,0.1)' }}
+              style={{ background: 'rgba(58,143,163,0.1)' }}
               title="Take action"
             >
-              <ArrowRight size={14} color="#6366f1" />
+              <ArrowRight size={14} color="#3A8FA3" />
             </button>
           </div>
         </div>

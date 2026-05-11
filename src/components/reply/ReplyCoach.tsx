@@ -13,10 +13,10 @@ import type { ReplyAnalysis, OutreachComponents } from '@/lib/types';
 import SendReadinessPanel from '@/components/outreach/SendReadinessPanel';
 
 const TONE_STYLES = {
-  good:    { bg: 'rgba(16,185,129,0.12)', color: '#6ee7b7', border: 'rgba(16,185,129,0.3)' },
-  warn:    { bg: 'rgba(245,158,11,0.12)', color: '#fcd34d', border: 'rgba(245,158,11,0.3)' },
-  bad:     { bg: 'rgba(239,68,68,0.12)',  color: '#fca5a5', border: 'rgba(239,68,68,0.3)' },
-  neutral: { bg: 'rgba(148,163,184,0.1)', color: '#cbd5e1', border: 'rgba(148,163,184,0.25)' },
+  good:    { bg: 'rgba(30,111,112,0.12)', color: '#1E6F70', border: 'rgba(30,111,112,0.3)' },
+  warn:    { bg: 'rgba(208,138,62,0.12)', color: '#D08A3E', border: 'rgba(208,138,62,0.3)' },
+  bad:     { bg: 'rgba(176,67,42,0.12)',  color: '#fca5a5', border: 'rgba(176,67,42,0.3)' },
+  neutral: { bg: 'rgba(148,163,184,0.1)', color: '#D6CCB6', border: 'rgba(148,163,184,0.25)' },
 } as const;
 
 export default function ReplyCoach() {
@@ -60,17 +60,17 @@ export default function ReplyCoach() {
     <div className="space-y-6">
       {/* Discipline reminder */}
       <div className="rounded-lg p-3" style={{
-        background: 'rgba(99,102,241,0.06)',
-        border: '1px solid rgba(99,102,241,0.18)',
+        background: 'rgba(58,143,163,0.06)',
+        border: '1px solid rgba(58,143,163,0.18)',
       }}>
-        <p className="text-xs leading-relaxed" style={{ color: '#a5b4fc' }}>
+        <p className="text-xs leading-relaxed" style={{ color: '#1E6F70' }}>
           <strong>Two minutes here saves the deal.</strong> Most beginners reply on autopilot. Paste their reply — the coach gives you 2–3 options with tradeoffs so you pick on purpose.
         </p>
       </div>
 
       {/* Input form */}
       <div className="glass-card p-5 space-y-3">
-        <h3 className="text-sm font-semibold" style={{ color: '#a5b4fc', fontFamily: 'Syne' }}>
+        <h3 className="text-sm font-semibold" style={{ color: '#1E6F70', fontFamily: 'Syne' }}>
           Reply Coach
         </h3>
 
@@ -96,7 +96,7 @@ export default function ReplyCoach() {
         </div>
 
         <div>
-          <label className="text-xs font-medium block mb-1.5" style={{ color: '#94a3b8' }}>
+          <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86' }}>
             Original message you sent (optional but helpful)
           </label>
           <textarea
@@ -109,7 +109,7 @@ export default function ReplyCoach() {
         </div>
 
         <div>
-          <label className="text-xs font-medium block mb-1.5" style={{ color: '#94a3b8' }}>
+          <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86' }}>
             Their reply *
           </label>
           <textarea
@@ -140,8 +140,8 @@ export default function ReplyCoach() {
           <div className="glass-card p-4">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <MessageCircle size={14} color="#a5b4fc" />
-                <span className="text-xs font-semibold" style={{ color: '#a5b4fc', fontFamily: 'Syne' }}>
+                <MessageCircle size={14} color="#1E6F70" />
+                <span className="text-xs font-semibold" style={{ color: '#1E6F70', fontFamily: 'Syne' }}>
                   Classification
                 </span>
                 <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{
@@ -152,12 +152,12 @@ export default function ReplyCoach() {
                   {classMeta?.label}
                 </span>
               </div>
-              <span className="text-xs" style={{ color: '#64748b' }}>
+              <span className="text-xs" style={{ color: '#6E7F86' }}>
                 {Math.round(analysis.confidence * 100)}% confidence
               </span>
             </div>
             {analysis.reasoning && (
-              <p className="text-xs leading-relaxed" style={{ color: '#cbd5e1' }}>
+              <p className="text-xs leading-relaxed" style={{ color: '#D6CCB6' }}>
                 {analysis.reasoning}
               </p>
             )}
@@ -212,32 +212,32 @@ function PlaybookCard({ option, idx }: { option: { label: string; approach: stri
     <div className="glass-card p-4 space-y-3">
       <div className="flex items-center gap-2">
         <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0" style={{
-          background: 'rgba(99,102,241,0.18)',
-          color: '#a5b4fc',
+          background: 'rgba(58,143,163,0.18)',
+          color: '#1E6F70',
         }}>{idx + 1}</span>
         <span className="text-sm font-semibold text-white" style={{ fontFamily: 'Syne' }}>
           {option.label}
         </span>
       </div>
 
-      <p className="text-xs leading-relaxed" style={{ color: '#cbd5e1' }}>
-        <strong style={{ color: '#94a3b8' }}>Approach: </strong>
+      <p className="text-xs leading-relaxed" style={{ color: '#D6CCB6' }}>
+        <strong style={{ color: '#6E7F86' }}>Approach: </strong>
         {option.approach}
       </p>
 
       {option.tradeoff && (
-        <p className="text-xs leading-relaxed" style={{ color: '#fcd34d' }}>
+        <p className="text-xs leading-relaxed" style={{ color: '#D08A3E' }}>
           <strong>Tradeoff: </strong>{option.tradeoff}
         </p>
       )}
 
       <div>
         <div className="flex items-center justify-between mb-1.5">
-          <span className="text-xs font-medium" style={{ color: '#94a3b8' }}>Sample reply</span>
+          <span className="text-xs font-medium" style={{ color: '#6E7F86' }}>Sample reply</span>
           <button
             onClick={() => setEditing(!editing)}
             className="text-xs px-2 py-0.5 rounded"
-            style={{ background: 'rgba(255,255,255,0.04)', color: '#64748b' }}
+            style={{ background: 'rgba(255,255,255,0.04)', color: '#6E7F86' }}
           >
             {editing ? 'Preview' : 'Edit'}
           </button>
@@ -251,9 +251,9 @@ function PlaybookCard({ option, idx }: { option: { label: string; approach: stri
           />
         ) : (
           <div className="text-sm p-3 rounded-lg whitespace-pre-wrap" style={{
-            background: 'rgba(99,102,241,0.05)',
-            border: '1px solid rgba(99,102,241,0.12)',
-            color: '#e2e8f0',
+            background: 'rgba(58,143,163,0.05)',
+            border: '1px solid rgba(58,143,163,0.12)',
+            color: '#E6DCC8',
           }}>
             {draft}
           </div>

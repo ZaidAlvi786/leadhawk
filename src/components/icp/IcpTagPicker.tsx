@@ -54,9 +54,9 @@ export default function IcpTagPicker({ value, onChange, compact = false, allowCl
         onClick={() => setOpen(!open)}
         className="text-xs px-2 py-0.5 rounded-md flex items-center gap-1 transition-all relative"
         style={{
-          background: isPrimary ? 'rgba(99,102,241,0.15)' : 'rgba(255,255,255,0.04)',
-          border: `1px solid ${isPrimary ? 'rgba(99,102,241,0.35)' : 'rgba(255,255,255,0.1)'}`,
-          color: value ? '#a5b4fc' : '#64748b',
+          background: isPrimary ? 'rgba(58,143,163,0.15)' : 'rgba(255,255,255,0.04)',
+          border: `1px solid ${isPrimary ? 'rgba(58,143,163,0.35)' : 'rgba(255,255,255,0.1)'}`,
+          color: value ? '#1E6F70' : '#6E7F86',
         }}
       >
         <span className="truncate max-w-[180px]">{display}</span>
@@ -65,8 +65,8 @@ export default function IcpTagPicker({ value, onChange, compact = false, allowCl
           <div
             className="absolute top-full left-0 mt-1 w-64 rounded-lg shadow-lg z-20 max-h-72 overflow-y-auto"
             style={{
-              background: '#1e293b',
-              border: '1px solid rgba(99,102,241,0.3)',
+              background: '#0F3B47',
+              border: '1px solid rgba(58,143,163,0.3)',
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -89,15 +89,15 @@ export default function IcpTagPicker({ value, onChange, compact = false, allowCl
         onClick={() => setOpen(!open)}
         className="w-full input-field text-sm flex items-center justify-between"
       >
-        <span style={{ color: value ? '#cbd5e1' : '#64748b' }}>{display}</span>
-        <ChevronDown size={12} color="#64748b" />
+        <span style={{ color: value ? '#D6CCB6' : '#6E7F86' }}>{display}</span>
+        <ChevronDown size={12} color="#6E7F86" />
       </button>
       {open && (
         <div
           className="mt-1 rounded-lg shadow-lg max-h-72 overflow-y-auto"
           style={{
             background: 'rgba(15,23,42,0.95)',
-            border: '1px solid rgba(99,102,241,0.3)',
+            border: '1px solid rgba(58,143,163,0.3)',
           }}
         >
           <PickerBody
@@ -130,7 +130,7 @@ function PickerBody({ value, tags, primary, adding, setAdding, draft, setDraft, 
   return (
     <div className="py-1">
       {tags.length === 0 && !adding && (
-        <p className="text-xs px-3 py-2" style={{ color: '#64748b' }}>
+        <p className="text-xs px-3 py-2" style={{ color: '#6E7F86' }}>
           No ICPs known yet. Set positioning first or add a custom tag below.
         </p>
       )}
@@ -139,11 +139,11 @@ function PickerBody({ value, tags, primary, adding, setAdding, draft, setDraft, 
           key={tag}
           onClick={() => onPick(tag)}
           className="w-full text-left px-3 py-1.5 text-xs flex items-center justify-between hover:bg-white/5 transition-all"
-          style={{ color: value === tag ? '#a5b4fc' : '#cbd5e1' }}
+          style={{ color: value === tag ? '#1E6F70' : '#D6CCB6' }}
         >
           <span className="truncate">{tag}</span>
           {tag === primary && (
-            <span className="text-xs ml-2 flex-shrink-0" style={{ color: '#64748b' }}>primary</span>
+            <span className="text-xs ml-2 flex-shrink-0" style={{ color: '#6E7F86' }}>primary</span>
           )}
         </button>
       ))}
@@ -151,7 +151,7 @@ function PickerBody({ value, tags, primary, adding, setAdding, draft, setDraft, 
         <button
           onClick={() => onPick(undefined)}
           className="w-full text-left px-3 py-1.5 text-xs flex items-center gap-1 hover:bg-white/5"
-          style={{ color: '#64748b' }}
+          style={{ color: '#6E7F86' }}
         >
           <X size={9} /> Clear ICP
         </button>
@@ -171,7 +171,7 @@ function PickerBody({ value, tags, primary, adding, setAdding, draft, setDraft, 
             <button
               onClick={onAddCustom}
               className="text-xs px-2 rounded"
-              style={{ background: 'rgba(99,102,241,0.18)', color: '#a5b4fc' }}
+              style={{ background: 'rgba(58,143,163,0.18)', color: '#1E6F70' }}
             >
               Add
             </button>
@@ -181,7 +181,7 @@ function PickerBody({ value, tags, primary, adding, setAdding, draft, setDraft, 
         <button
           onClick={() => setAdding(true)}
           className="w-full text-left px-3 py-1.5 text-xs flex items-center gap-1 hover:bg-white/5"
-          style={{ color: '#a5b4fc' }}
+          style={{ color: '#1E6F70' }}
         >
           <Plus size={10} /> Add secondary ICP…
         </button>

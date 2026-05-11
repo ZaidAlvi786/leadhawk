@@ -9,23 +9,31 @@ import '@/styles/globals.css';
 const PUBLIC_ROUTES = ['/login'];
 
 function AuthGate({ children }: { children: React.ReactNode }) {
-  const { session, loading } = useAuth();
+  const { session, loading, enabled } = useAuth();
   const router = useRouter();
   const isPublic = PUBLIC_ROUTES.includes(router.pathname);
 
   useEffect(() => {
     if (loading) return;
+    // Phase 8: when Supabase isn't configured, the app runs in
+    // localStorage-only mode — no login wall, no redirect.
+    if (!enabled) return;
     if (!session && !isPublic) router.replace('/login');
-  }, [loading, session, isPublic, router]);
+  }, [loading, session, isPublic, enabled, router]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: '#0b1020' }}>
-        <div className="w-6 h-6 rounded-full border-2 border-indigo-400 border-t-transparent animate-spin" />
+      <div className="min-h-screen flex items-center justify-center" style={{ background: '#F2EBDD' }}>
+        <div
+          className="w-6 h-6 rounded-full border-2 animate-spin"
+          style={{ borderColor: '#3A8FA3', borderTopColor: 'transparent' }}
+        />
       </div>
     );
   }
 
+  // localStorage-only mode → never gate
+  if (!enabled) return <>{children}</>;
   if (!session && !isPublic) return null;
   return <>{children}</>;
 }
@@ -43,18 +51,19 @@ export default function App({ Component, pageProps }: AppProps) {
         position="bottom-right"
         toastOptions={{
           style: {
-            background: '#1e293b',
-            color: '#f1f5f9',
-            border: '1px solid rgba(99,102,241,0.3)',
-            borderRadius: '12px',
+            background: '#FFFFFF',
+            color: '#0F3B47',
+            border: '1px solid #D6CCB6',
+            borderRadius: '14px',
             fontSize: '13px',
             fontFamily: 'DM Sans, sans-serif',
+            boxShadow: '0 12px 32px -14px rgba(15,59,71,0.28)',
           },
           success: {
-            iconTheme: { primary: '#10b981', secondary: '#f1f5f9' },
+            iconTheme: { primary: '#1E6F70', secondary: '#FFFFFF' },
           },
           error: {
-            iconTheme: { primary: '#f43f5e', secondary: '#f1f5f9' },
+            iconTheme: { primary: '#B0432A', secondary: '#FFFFFF' },
           },
         }}
       />

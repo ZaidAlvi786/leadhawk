@@ -87,15 +87,15 @@ export default function PositioningSetup({ onComplete }: Props) {
 
   return (
     <div className="rounded-2xl overflow-hidden" style={{
-      background: 'linear-gradient(180deg, #0a1628 0%, #050a14 100%)',
-      border: '1px solid rgba(99,102,241,0.25)',
-      boxShadow: '0 0 80px rgba(99,102,241,0.15)',
+      background: 'linear-gradient(180deg, #F7F2E7 0%, #F2EBDD 100%)',
+      border: '1px solid rgba(58,143,163,0.25)',
+      boxShadow: '0 0 80px rgba(58,143,163,0.15)',
     }}>
       {/* Header */}
-      <div className="px-6 py-5" style={{ borderBottom: '1px solid rgba(99,102,241,0.12)' }}>
+      <div className="px-6 py-5" style={{ borderBottom: '1px solid rgba(58,143,163,0.12)' }}>
         <div className="flex items-center gap-3 mb-3">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{
-            background: 'linear-gradient(135deg, #6366f1, #06b6d4)',
+            background: 'linear-gradient(135deg, #3A8FA3, #1E6F70)',
           }}>
             <Crosshair size={18} color="white" />
           </div>
@@ -103,7 +103,7 @@ export default function PositioningSetup({ onComplete }: Props) {
             <h2 className="text-base font-semibold text-white" style={{ fontFamily: 'Syne' }}>
               Positioning Setup
             </h2>
-            <p className="text-xs" style={{ color: '#64748b' }}>
+            <p className="text-xs" style={{ color: '#6E7F86' }}>
               Step {step} of 6 — every AI output gets sharper after this is locked in
             </p>
           </div>
@@ -122,18 +122,18 @@ export default function PositioningSetup({ onComplete }: Props) {
                 disabled={s.num > step}
                 className="flex-1 flex items-center gap-1.5 px-2 py-1.5 rounded-lg transition-all"
                 style={{
-                  background: isCurrent ? 'rgba(99,102,241,0.18)' : isDone ? 'rgba(16,185,129,0.1)' : 'rgba(255,255,255,0.02)',
-                  border: `1px solid ${isCurrent ? 'rgba(99,102,241,0.4)' : isDone ? 'rgba(16,185,129,0.25)' : 'rgba(255,255,255,0.04)'}`,
+                  background: isCurrent ? 'rgba(58,143,163,0.18)' : isDone ? 'rgba(30,111,112,0.1)' : 'rgba(255,255,255,0.02)',
+                  border: `1px solid ${isCurrent ? 'rgba(58,143,163,0.4)' : isDone ? 'rgba(30,111,112,0.25)' : 'rgba(255,255,255,0.04)'}`,
                   cursor: s.num < step ? 'pointer' : 'default',
                 }}
               >
                 {isDone ? (
-                  <Check size={11} color="#10b981" />
+                  <Check size={11} color="#1E6F70" />
                 ) : (
-                  <Icon size={11} color={isCurrent ? '#a5b4fc' : '#475569'} />
+                  <Icon size={11} color={isCurrent ? '#1E6F70' : '#6E7F86'} />
                 )}
                 <span className="text-xs font-medium" style={{
-                  color: isCurrent ? '#a5b4fc' : isDone ? '#10b981' : '#475569',
+                  color: isCurrent ? '#1E6F70' : isDone ? '#1E6F70' : '#6E7F86',
                 }}>
                   {s.label}
                 </span>
@@ -155,11 +155,11 @@ export default function PositioningSetup({ onComplete }: Props) {
         {/* Inline validation feedback */}
         {!stepValidation.ok && stepValidation.reason && (
           <div className="mt-4 p-3 rounded-lg flex items-start gap-2" style={{
-            background: 'rgba(245,158,11,0.08)',
-            border: '1px solid rgba(245,158,11,0.25)',
+            background: 'rgba(208,138,62,0.08)',
+            border: '1px solid rgba(208,138,62,0.25)',
           }}>
-            <AlertCircle size={14} color="#fcd34d" className="flex-shrink-0 mt-0.5" />
-            <p className="text-xs" style={{ color: '#fcd34d' }}>{stepValidation.reason}</p>
+            <AlertCircle size={14} color="#D08A3E" className="flex-shrink-0 mt-0.5" />
+            <p className="text-xs" style={{ color: '#D08A3E' }}>{stepValidation.reason}</p>
           </div>
         )}
       </div>
@@ -167,7 +167,7 @@ export default function PositioningSetup({ onComplete }: Props) {
       {/* Footer */}
       <div className="px-6 py-4 flex items-center justify-between" style={{
         background: 'rgba(0,0,0,0.25)',
-        borderTop: '1px solid rgba(99,102,241,0.12)',
+        borderTop: '1px solid rgba(58,143,163,0.12)',
       }}>
         <button
           onClick={handleBack}
@@ -175,7 +175,7 @@ export default function PositioningSetup({ onComplete }: Props) {
           className="text-xs px-3 py-2 rounded-lg flex items-center gap-1 transition-all disabled:opacity-30"
           style={{
             background: 'rgba(255,255,255,0.04)',
-            color: '#64748b',
+            color: '#6E7F86',
           }}
         >
           <ChevronLeft size={12} />
@@ -188,9 +188,9 @@ export default function PositioningSetup({ onComplete }: Props) {
           className="text-xs px-4 py-2 rounded-lg flex items-center gap-1 transition-all font-medium"
           style={{
             background: stepValidation.ok
-              ? 'linear-gradient(135deg, #6366f1, #06b6d4)'
+              ? 'linear-gradient(135deg, #3A8FA3, #1E6F70)'
               : 'rgba(255,255,255,0.05)',
-            color: stepValidation.ok ? 'white' : '#475569',
+            color: stepValidation.ok ? 'white' : '#6E7F86',
             cursor: stepValidation.ok ? 'pointer' : 'not-allowed',
           }}
         >
@@ -220,14 +220,14 @@ function Step1Niche({ draft, setDraft }: StepProps) {
         <h3 className="text-base font-semibold text-white mb-1" style={{ fontFamily: 'Syne' }}>
           Who do you serve?
         </h3>
-        <p className="text-xs" style={{ color: '#64748b' }}>
+        <p className="text-xs" style={{ color: '#6E7F86' }}>
           Pick one role at one company type. "Anyone with a problem" is the fastest way to land zero clients.
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div>
-          <label className="text-xs font-medium block mb-1.5" style={{ color: '#94a3b8' }}>
+          <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86' }}>
             Role *
           </label>
           <input
@@ -238,7 +238,7 @@ function Step1Niche({ draft, setDraft }: StepProps) {
           />
         </div>
         <div>
-          <label className="text-xs font-medium block mb-1.5" style={{ color: '#94a3b8' }}>
+          <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86' }}>
             Company type *
           </label>
           <input
@@ -262,7 +262,7 @@ function Step2Problem({ draft, setDraft }: StepProps) {
         <h3 className="text-base font-semibold text-white mb-1" style={{ fontFamily: 'Syne' }}>
           What painful problem do they hire you for?
         </h3>
-        <p className="text-xs" style={{ color: '#64748b' }}>
+        <p className="text-xs" style={{ color: '#6E7F86' }}>
           How would the prospect describe this to a friend at 11pm on a Tuesday? That's the language to use.
         </p>
       </div>
@@ -290,7 +290,7 @@ function Step3Mechanism({ draft, setDraft }: StepProps) {
         <h3 className="text-base font-semibold text-white mb-1" style={{ fontFamily: 'Syne' }}>
           How do you solve it — specifically?
         </h3>
-        <p className="text-xs" style={{ color: '#64748b' }}>
+        <p className="text-xs" style={{ color: '#6E7F86' }}>
           "I code well" is not a mechanism. Name the actual approach, framework, or sequence you use.
         </p>
       </div>
@@ -318,14 +318,14 @@ function Step4Outcome({ draft, setDraft }: StepProps) {
         <h3 className="text-base font-semibold text-white mb-1" style={{ fontFamily: 'Syne' }}>
           What measurable outcome do you produce?
         </h3>
-        <p className="text-xs" style={{ color: '#64748b' }}>
+        <p className="text-xs" style={{ color: '#6E7F86' }}>
           Numbers force specificity. If you have no past results, write a plausible projection — we'll label it as such.
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div>
-          <label className="text-xs font-medium block mb-1.5" style={{ color: '#94a3b8' }}>
+          <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86' }}>
             Metric *
           </label>
           <input
@@ -336,7 +336,7 @@ function Step4Outcome({ draft, setDraft }: StepProps) {
           />
         </div>
         <div>
-          <label className="text-xs font-medium block mb-1.5" style={{ color: '#94a3b8' }}>
+          <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86' }}>
             Timeframe *
           </label>
           <input
@@ -356,10 +356,10 @@ function Step4Outcome({ draft, setDraft }: StepProps) {
           className="mt-0.5"
         />
         <div>
-          <p className="text-xs" style={{ color: '#cbd5e1' }}>
+          <p className="text-xs" style={{ color: '#D6CCB6' }}>
             This outcome is projected — I haven't measured it on a real client yet.
           </p>
-          <p className="text-xs" style={{ color: '#64748b' }}>
+          <p className="text-xs" style={{ color: '#6E7F86' }}>
             (Honest. The AI will surface "(projected)" wherever this metric appears.)
           </p>
         </div>
@@ -402,7 +402,7 @@ function Step5Proof({ draft, setDraft }: StepProps) {
         <h3 className="text-base font-semibold text-white mb-1" style={{ fontFamily: 'Syne' }}>
           What proof do you have?
         </h3>
-        <p className="text-xs" style={{ color: '#64748b' }}>
+        <p className="text-xs" style={{ color: '#6E7F86' }}>
           One real artifact you can link to. GitHub, case study, demo video, testimonial. Without proof, cold DMs don't convert.
         </p>
       </div>
@@ -412,13 +412,13 @@ function Step5Proof({ draft, setDraft }: StepProps) {
         <div className="space-y-2">
           {draft.proofAssets.map((a, i) => (
             <div key={i} className="flex items-center gap-2 p-2 rounded-lg" style={{
-              background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.18)',
+              background: 'rgba(30,111,112,0.06)', border: '1px solid rgba(30,111,112,0.18)',
             }}>
-              <Check size={12} color="#10b981" />
-              <span className="text-xs font-medium" style={{ color: '#6ee7b7' }}>{a.label}</span>
-              <span className="text-xs truncate flex-1" style={{ color: '#64748b' }}>{a.url}</span>
+              <Check size={12} color="#1E6F70" />
+              <span className="text-xs font-medium" style={{ color: '#1E6F70' }}>{a.label}</span>
+              <span className="text-xs truncate flex-1" style={{ color: '#6E7F86' }}>{a.url}</span>
               <button onClick={() => removeAsset(i)} className="p-1">
-                <Trash2 size={11} color="#f87171" />
+                <Trash2 size={11} color="#CC6B4F" />
               </button>
             </div>
           ))}
@@ -436,7 +436,7 @@ function Step5Proof({ draft, setDraft }: StepProps) {
             onChange={(e) => setNewAsset({ ...newAsset, type: e.target.value as ProofAssetType })}
           >
             {PROOF_TYPES.map((t) => (
-              <option key={t.value} value={t.value} style={{ background: '#0f172a' }}>{t.label}</option>
+              <option key={t.value} value={t.value} style={{ background: '#F7F2E7' }}>{t.label}</option>
             ))}
           </select>
           <input
@@ -455,7 +455,7 @@ function Step5Proof({ draft, setDraft }: StepProps) {
         <button
           onClick={addAsset}
           className="text-xs px-3 py-1.5 rounded-lg flex items-center gap-1"
-          style={{ background: 'rgba(99,102,241,0.18)', color: '#a5b4fc' }}
+          style={{ background: 'rgba(58,143,163,0.18)', color: '#1E6F70' }}
         >
           <Plus size={11} />
           Add proof asset
@@ -464,9 +464,9 @@ function Step5Proof({ draft, setDraft }: StepProps) {
 
       {draft.proofAssets.length === 0 && (
         <div className="p-3 rounded-lg" style={{
-          background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)',
+          background: 'rgba(208,138,62,0.06)', border: '1px solid rgba(208,138,62,0.2)',
         }}>
-          <p className="text-xs" style={{ color: '#fcd34d' }}>
+          <p className="text-xs" style={{ color: '#D08A3E' }}>
             No proof yet? Build one this week. A 5-minute Loom walkthrough of a side-project counts.
           </p>
         </div>
@@ -482,7 +482,7 @@ function Step6NotFor({ draft, setDraft }: StepProps) {
         <h3 className="text-base font-semibold text-white mb-1" style={{ fontFamily: 'Syne' }}>
           Who are you NOT for?
         </h3>
-        <p className="text-xs" style={{ color: '#64748b' }}>
+        <p className="text-xs" style={{ color: '#6E7F86' }}>
           Almost no beginner writes this. Naming who you turn away makes everything else credible.
         </p>
       </div>
@@ -502,10 +502,10 @@ function Step6NotFor({ draft, setDraft }: StepProps) {
 
       {draft.targetRole && draft.targetCompanyType && (
         <div className="p-3 rounded-lg space-y-1" style={{
-          background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)',
+          background: 'rgba(58,143,163,0.08)', border: '1px solid rgba(58,143,163,0.2)',
         }}>
-          <p className="text-xs font-semibold" style={{ color: '#a5b4fc' }}>Your positioning preview</p>
-          <p className="text-xs" style={{ color: '#cbd5e1' }}>
+          <p className="text-xs font-semibold" style={{ color: '#1E6F70' }}>Your positioning preview</p>
+          <p className="text-xs" style={{ color: '#D6CCB6' }}>
             <strong>I help</strong> {draft.targetRole} at {draft.targetCompanyType} <strong>solve</strong> {truncate(draft.painfulProblem, 80)} <strong>by</strong> {truncate(draft.mechanism, 80)} <strong>achieving</strong> {draft.outcomeMetric}{draft.outcomeIsProjected ? ' (projected)' : ''} {draft.outcomeTimeframe}.
           </p>
         </div>
@@ -519,16 +519,16 @@ function ExamplesBox({ good, bad }: { good: string; bad: string }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
       <div className="p-3 rounded-lg" style={{
-        background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.18)',
+        background: 'rgba(30,111,112,0.06)', border: '1px solid rgba(30,111,112,0.18)',
       }}>
-        <p className="text-xs font-semibold mb-1" style={{ color: '#10b981' }}>✓ Good</p>
-        <p className="text-xs" style={{ color: '#cbd5e1' }}>{good}</p>
+        <p className="text-xs font-semibold mb-1" style={{ color: '#1E6F70' }}>✓ Good</p>
+        <p className="text-xs" style={{ color: '#D6CCB6' }}>{good}</p>
       </div>
       <div className="p-3 rounded-lg" style={{
-        background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.18)',
+        background: 'rgba(176,67,42,0.06)', border: '1px solid rgba(176,67,42,0.18)',
       }}>
-        <p className="text-xs font-semibold mb-1" style={{ color: '#ef4444' }}>✗ Bad</p>
-        <p className="text-xs" style={{ color: '#cbd5e1' }}>{bad}</p>
+        <p className="text-xs font-semibold mb-1" style={{ color: '#B0432A' }}>✗ Bad</p>
+        <p className="text-xs" style={{ color: '#D6CCB6' }}>{bad}</p>
       </div>
     </div>
   );

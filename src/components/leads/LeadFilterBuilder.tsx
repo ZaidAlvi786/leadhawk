@@ -138,14 +138,14 @@ export default function LeadFilterBuilder() {
 
       {/* AI Smart Builder */}
       <div className="glass-card p-5" style={{
-        background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(6,182,212,0.04))',
-        border: '1px solid rgba(99,102,241,0.2)',
+        background: 'linear-gradient(135deg, rgba(58,143,163,0.08), rgba(30,111,112,0.04))',
+        border: '1px solid rgba(58,143,163,0.2)',
       }}>
         <div className="flex items-center gap-2 mb-3">
-          <Sparkles size={16} color="#a5b4fc" />
-          <h3 className="font-semibold text-sm" style={{ color: '#a5b4fc', fontFamily: 'Syne' }}>AI Smart Filter Builder</h3>
+          <Sparkles size={16} color="#1E6F70" />
+          <h3 className="font-semibold text-sm" style={{ color: '#1E6F70', fontFamily: 'Syne' }}>AI Smart Filter Builder</h3>
         </div>
-        <p className="text-xs mb-3" style={{ color: '#475569' }}>
+        <p className="text-xs mb-3" style={{ color: '#6E7F86' }}>
           Describe your ideal client — AI will extract the perfect Sales Navigator filters
         </p>
         <div className="flex flex-col sm:flex-row gap-2">
@@ -170,7 +170,7 @@ export default function LeadFilterBuilder() {
           </button>
         </div>
         {aiSuggested && (
-          <div className="mt-3 p-3 rounded-lg text-xs" style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', color: '#6ee7b7' }}>
+          <div className="mt-3 p-3 rounded-lg text-xs" style={{ background: 'rgba(30,111,112,0.08)', border: '1px solid rgba(30,111,112,0.2)', color: '#1E6F70' }}>
             <strong>Suggested angle:</strong> {aiSuggested}
           </div>
         )}
@@ -179,17 +179,17 @@ export default function LeadFilterBuilder() {
       {/* Preset Filter Library */}
       <div className="glass-card p-5">
         <div className="flex items-center gap-2 mb-3">
-          <Flame size={16} color="#f59e0b" />
-          <h3 className="font-semibold text-sm" style={{ color: '#fcd34d', fontFamily: 'Syne' }}>
+          <Flame size={16} color="#D08A3E" />
+          <h3 className="font-semibold text-sm" style={{ color: '#D08A3E', fontFamily: 'Syne' }}>
             High-Converting Presets
           </h3>
-          <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: 'rgba(245,158,11,0.15)', color: '#fcd34d' }}>
+          <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: 'rgba(208,138,62,0.15)', color: '#D08A3E' }}>
             Battle-tested
           </span>
         </div>
-        <p className="text-xs mb-4" style={{ color: '#475569' }}>
-          One-click filter templates for high-intent buyer personas. Click <strong style={{ color: '#94a3b8' }}>Apply</strong> to edit
-          first, or <strong style={{ color: '#94a3b8' }}>Open</strong> to jump straight to Sales Navigator.
+        <p className="text-xs mb-4" style={{ color: '#6E7F86' }}>
+          One-click filter templates for high-intent buyer personas. Click <strong style={{ color: '#6E7F86' }}>Apply</strong> to edit
+          first, or <strong style={{ color: '#6E7F86' }}>Open</strong> to jump straight to Sales Navigator.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -209,7 +209,7 @@ export default function LeadFilterBuilder() {
                     <div className="text-sm font-medium text-white" style={{ fontFamily: 'Syne' }}>
                       {preset.name}
                     </div>
-                    <div className="text-xs mt-0.5" style={{ color: '#64748b' }}>
+                    <div className="text-xs mt-0.5" style={{ color: '#6E7F86' }}>
                       {preset.description}
                     </div>
                   </div>
@@ -217,9 +217,9 @@ export default function LeadFilterBuilder() {
               </div>
 
               {/* Why it works */}
-              <div className="flex items-start gap-1.5 mb-3 px-2 py-1.5 rounded-lg" style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.12)' }}>
-                <Info size={11} color="#10b981" className="flex-shrink-0 mt-0.5" />
-                <span className="text-xs leading-relaxed" style={{ color: '#6ee7b7' }}>
+              <div className="flex items-start gap-1.5 mb-3 px-2 py-1.5 rounded-lg" style={{ background: 'rgba(30,111,112,0.06)', border: '1px solid rgba(30,111,112,0.12)' }}>
+                <Info size={11} color="#1E6F70" className="flex-shrink-0 mt-0.5" />
+                <span className="text-xs leading-relaxed" style={{ color: '#1E6F70' }}>
                   {preset.whyItWorks}
                 </span>
               </div>
@@ -308,7 +308,7 @@ export default function LeadFilterBuilder() {
 
           {/* Industries */}
           <div>
-            <label className="text-xs font-medium block mb-2" style={{ color: '#94a3b8', fontFamily: 'Syne' }}>Industries</label>
+            <label className="text-xs font-medium block mb-2" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>Industries</label>
             <div className="flex flex-wrap gap-1.5">
               {INDUSTRIES.map((ind) => (
                 <button
@@ -316,9 +316,9 @@ export default function LeadFilterBuilder() {
                   onClick={() => toggleOption('industries', ind)}
                   className="text-xs px-2.5 py-1 rounded-lg transition-all"
                   style={{
-                    background: current.industries.includes(ind) ? 'rgba(99,102,241,0.25)' : 'rgba(255,255,255,0.04)',
-                    border: `1px solid ${current.industries.includes(ind) ? 'rgba(99,102,241,0.5)' : 'rgba(255,255,255,0.08)'}`,
-                    color: current.industries.includes(ind) ? '#a5b4fc' : '#475569',
+                    background: current.industries.includes(ind) ? 'rgba(58,143,163,0.25)' : 'rgba(255,255,255,0.04)',
+                    border: `1px solid ${current.industries.includes(ind) ? 'rgba(58,143,163,0.5)' : 'rgba(255,255,255,0.08)'}`,
+                    color: current.industries.includes(ind) ? '#1E6F70' : '#6E7F86',
                   }}
                 >
                   {ind}
@@ -329,7 +329,7 @@ export default function LeadFilterBuilder() {
 
           {/* Seniority */}
           <div>
-            <label className="text-xs font-medium block mb-2" style={{ color: '#94a3b8', fontFamily: 'Syne' }}>Seniority Level</label>
+            <label className="text-xs font-medium block mb-2" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>Seniority Level</label>
             <div className="flex flex-wrap gap-1.5">
               {SENIORITY_LEVELS.map((s) => (
                 <button
@@ -337,9 +337,9 @@ export default function LeadFilterBuilder() {
                   onClick={() => toggleOption('seniorityLevels', s)}
                   className="text-xs px-2.5 py-1 rounded-lg transition-all"
                   style={{
-                    background: current.seniorityLevels.includes(s) ? 'rgba(6,182,212,0.2)' : 'rgba(255,255,255,0.04)',
-                    border: `1px solid ${current.seniorityLevels.includes(s) ? 'rgba(6,182,212,0.4)' : 'rgba(255,255,255,0.08)'}`,
-                    color: current.seniorityLevels.includes(s) ? '#67e8f9' : '#475569',
+                    background: current.seniorityLevels.includes(s) ? 'rgba(30,111,112,0.2)' : 'rgba(255,255,255,0.04)',
+                    border: `1px solid ${current.seniorityLevels.includes(s) ? 'rgba(30,111,112,0.4)' : 'rgba(255,255,255,0.08)'}`,
+                    color: current.seniorityLevels.includes(s) ? '#1E6F70' : '#6E7F86',
                   }}
                 >
                   {s}
@@ -350,7 +350,7 @@ export default function LeadFilterBuilder() {
 
           {/* Company Size */}
           <div>
-            <label className="text-xs font-medium block mb-2" style={{ color: '#94a3b8', fontFamily: 'Syne' }}>Company Size</label>
+            <label className="text-xs font-medium block mb-2" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>Company Size</label>
             <div className="flex flex-wrap gap-1.5">
               {COMPANY_SIZES.map((s) => (
                 <button
@@ -358,9 +358,9 @@ export default function LeadFilterBuilder() {
                   onClick={() => toggleOption('companySize', s)}
                   className="text-xs px-2.5 py-1 rounded-lg transition-all"
                   style={{
-                    background: current.companySize.includes(s) ? 'rgba(245,158,11,0.2)' : 'rgba(255,255,255,0.04)',
-                    border: `1px solid ${current.companySize.includes(s) ? 'rgba(245,158,11,0.4)' : 'rgba(255,255,255,0.08)'}`,
-                    color: current.companySize.includes(s) ? '#fcd34d' : '#475569',
+                    background: current.companySize.includes(s) ? 'rgba(208,138,62,0.2)' : 'rgba(255,255,255,0.04)',
+                    border: `1px solid ${current.companySize.includes(s) ? 'rgba(208,138,62,0.4)' : 'rgba(255,255,255,0.08)'}`,
+                    color: current.companySize.includes(s) ? '#D08A3E' : '#6E7F86',
                   }}
                 >
                   {s}
@@ -382,7 +382,7 @@ export default function LeadFilterBuilder() {
           </button>
           <button
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm transition-all"
-            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#475569' }}
+            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#6E7F86' }}
             onClick={() => { navigator.clipboard.writeText(buildSalesNavURL(current)); toast.success('URL copied!'); }}
           >
             <Copy size={14} />
@@ -394,7 +394,7 @@ export default function LeadFilterBuilder() {
       {/* Saved Filters */}
       {filters.length > 0 && (
         <div>
-          <h3 className="text-sm font-medium mb-3" style={{ color: '#64748b', fontFamily: 'Syne' }}>
+          <h3 className="text-sm font-medium mb-3" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>
             Saved Filters ({filters.length})
           </h3>
           <div className="space-y-2">
@@ -402,7 +402,7 @@ export default function LeadFilterBuilder() {
               <div key={f.id} className="glass-card p-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium text-white">{f.name}</div>
-                  <div className="text-xs mt-0.5 flex flex-wrap gap-1" style={{ color: '#475569' }}>
+                  <div className="text-xs mt-0.5 flex flex-wrap gap-1" style={{ color: '#6E7F86' }}>
                     {f.jobTitles.slice(0, 2).map((t) => (
                       <span key={t} className="tag tag-indigo">{t}</span>
                     ))}
@@ -425,9 +425,9 @@ export default function LeadFilterBuilder() {
                   <button
                     onClick={() => { deleteFilter(f.id); toast.success('Filter deleted'); }}
                     className="w-7 h-7 flex items-center justify-center rounded-lg transition-all"
-                    style={{ background: 'rgba(244,63,94,0.1)', border: '1px solid rgba(244,63,94,0.2)' }}
+                    style={{ background: 'rgba(176,67,42,0.1)', border: '1px solid rgba(176,67,42,0.2)' }}
                   >
-                    <Trash2 size={13} color="#f87171" />
+                    <Trash2 size={13} color="#CC6B4F" />
                   </button>
                 </div>
               </div>
@@ -447,7 +447,7 @@ function TagInput({
 }) {
   return (
     <div>
-      <label className="text-xs font-medium block mb-2" style={{ color: '#94a3b8', fontFamily: 'Syne' }}>{label}</label>
+      <label className="text-xs font-medium block mb-2" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>{label}</label>
       <div className="flex gap-2 mb-2">
         <input
           className="input-field text-sm flex-1"
