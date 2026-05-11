@@ -31,10 +31,10 @@ export default function ChannelCapture() {
   return (
     <div className="space-y-4">
       <div className="rounded-lg p-3" style={{
-        background: 'rgba(99,102,241,0.06)',
-        border: '1px solid rgba(99,102,241,0.18)',
+        background: 'rgba(58,143,163,0.06)',
+        border: '1px solid rgba(58,143,163,0.18)',
       }}>
-        <p className="text-xs leading-relaxed" style={{ color: '#a5b4fc' }}>
+        <p className="text-xs leading-relaxed" style={{ color: '#1E6F70' }}>
           <strong>Paste-and-classify, no scraping.</strong> Each channel has lightweight regex parsers. The user controls what makes it into the pipeline; the AI doesn't invent.
         </p>
       </div>
@@ -50,15 +50,15 @@ export default function ChannelCapture() {
               onClick={() => setChannel(c.id)}
               className="p-3 rounded-xl text-left transition-all"
               style={{
-                background: isActive ? 'rgba(99,102,241,0.18)' : 'rgba(255,255,255,0.03)',
-                border: `1px solid ${isActive ? 'rgba(99,102,241,0.5)' : 'rgba(255,255,255,0.07)'}`,
+                background: isActive ? 'rgba(58,143,163,0.18)' : 'rgba(255,255,255,0.03)',
+                border: `1px solid ${isActive ? 'rgba(58,143,163,0.5)' : 'rgba(255,255,255,0.07)'}`,
               }}
             >
-              <Icon size={13} color={isActive ? '#a5b4fc' : '#64748b'} className="mb-1.5" />
-              <p className="text-xs font-semibold" style={{ color: isActive ? '#a5b4fc' : '#cbd5e1' }}>
+              <Icon size={13} color={isActive ? '#1E6F70' : '#6E7F86'} className="mb-1.5" />
+              <p className="text-xs font-semibold" style={{ color: isActive ? '#1E6F70' : '#D6CCB6' }}>
                 {c.label}
               </p>
-              <p className="text-xs leading-relaxed mt-0.5" style={{ color: '#64748b' }}>
+              <p className="text-xs leading-relaxed mt-0.5" style={{ color: '#6E7F86' }}>
                 {c.description}
               </p>
             </button>
@@ -126,7 +126,7 @@ function JobCaptureForm({ channel }: { channel: 'yc' | 'wellfound' }) {
 
   return (
     <div className="glass-card p-4 space-y-3">
-      <p className="text-xs font-semibold" style={{ color: '#94a3b8' }}>
+      <p className="text-xs font-semibold" style={{ color: '#6E7F86' }}>
         Paste the {channel === 'yc' ? 'YC' : 'Wellfound'} job (URL + listing snippet)
       </p>
       <textarea
@@ -234,7 +234,7 @@ function SocialCaptureForm() {
 
   return (
     <div className="glass-card p-4 space-y-3">
-      <p className="text-xs font-semibold" style={{ color: '#94a3b8' }}>
+      <p className="text-xs font-semibold" style={{ color: '#6E7F86' }}>
         Paste a LinkedIn/X post where someone said they're hiring or struggling
       </p>
       <textarea
@@ -246,7 +246,7 @@ function SocialCaptureForm() {
       />
 
       {input.trim() && (
-        <div className="rounded-lg p-3 space-y-1.5" style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)' }}>
+        <div className="rounded-lg p-3 space-y-1.5" style={{ background: 'rgba(58,143,163,0.06)', border: '1px solid rgba(58,143,163,0.15)' }}>
           <Detected label="Author"  value={parsed.authorName} />
           <Detected label="Excerpt" value={parsed.excerpt} />
           <Detected label="URL"     value={parsed.url} />
@@ -257,7 +257,7 @@ function SocialCaptureForm() {
       {input.trim() && (
         <>
           <div>
-            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b' }}>Save to:</label>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86' }}>Save to:</label>
             <select
               className="input-field text-sm w-full"
               value={target}
@@ -335,7 +335,7 @@ function FundingCaptureForm() {
 
   return (
     <div className="glass-card p-4 space-y-3">
-      <p className="text-xs font-semibold" style={{ color: '#94a3b8' }}>
+      <p className="text-xs font-semibold" style={{ color: '#6E7F86' }}>
         Paste the funding announcement (Crunchbase, TechCrunch, press release)
       </p>
       <textarea
@@ -347,7 +347,7 @@ function FundingCaptureForm() {
       />
 
       {input.trim() && (
-        <div className="rounded-lg p-3 space-y-1.5" style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)' }}>
+        <div className="rounded-lg p-3 space-y-1.5" style={{ background: 'rgba(58,143,163,0.06)', border: '1px solid rgba(58,143,163,0.15)' }}>
           <Detected label="Company" value={parsed.company} />
           <Detected label="Amount"  value={parsed.amount ? `$${(parsed.amount / 1_000_000).toFixed(1)}M` : undefined} />
           <Detected label="Stage"   value={parsed.stage} />
@@ -371,12 +371,12 @@ function FundingCaptureForm() {
 function Detected({ label, value }: { label: string; value: string | undefined }) {
   return (
     <div className="flex items-center gap-2 text-xs">
-      <span className="w-20 flex-shrink-0" style={{ color: '#64748b' }}>{label}:</span>
+      <span className="w-20 flex-shrink-0" style={{ color: '#6E7F86' }}>{label}:</span>
       {value
-        ? <span style={{ color: '#cbd5e1' }} className="truncate">
+        ? <span style={{ color: '#D6CCB6' }} className="truncate">
             {value.startsWith('http') ? <a href={value} target="_blank" rel="noopener noreferrer" className="underline">{value} <ExternalLink size={9} className="inline" /></a> : value}
           </span>
-        : <span style={{ color: '#475569' }}>—</span>}
+        : <span style={{ color: '#6E7F86' }}>—</span>}
     </div>
   );
 }
