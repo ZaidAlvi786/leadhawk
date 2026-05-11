@@ -10,9 +10,9 @@ import { useStore } from '@/lib/store';
 import { channelMixSummary, IDEAL_CHANNEL_MIX, type ChannelGroup } from '@/lib/channels';
 
 const GROUP_META: Record<ChannelGroup, { label: string; color: string }> = {
-  cold:    { label: 'Cold outbound', color: '#06b6d4' },
-  warm:    { label: 'Warm intros',   color: '#f59e0b' },
-  inbound: { label: 'Inbound',       color: '#10b981' },
+  cold:    { label: 'Cold outbound', color: '#1E6F70' },
+  warm:    { label: 'Warm intros',   color: '#D08A3E' },
+  inbound: { label: 'Inbound',       color: '#1E6F70' },
 };
 
 export default function ChannelMixCoach() {
@@ -27,25 +27,25 @@ export default function ChannelMixCoach() {
     <div className="glass-card p-4">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <Scale size={14} color="#a5b4fc" />
-          <h3 className="text-sm font-semibold" style={{ color: '#a5b4fc', fontFamily: 'Syne' }}>
+          <Scale size={14} color="#1E6F70" />
+          <h3 className="text-sm font-semibold" style={{ color: '#1E6F70', fontFamily: 'Syne' }}>
             Channel Mix
           </h3>
         </div>
-        <span className="text-xs" style={{ color: '#64748b' }}>
+        <span className="text-xs" style={{ color: '#6E7F86' }}>
           {summary.total} lead{summary.total === 1 ? '' : 's'} · ideal: 30/30/40
         </span>
       </div>
 
       {/* Stacked bar — your actual mix */}
       <div>
-        <p className="text-xs mb-1" style={{ color: '#64748b' }}>You</p>
+        <p className="text-xs mb-1" style={{ color: '#6E7F86' }}>You</p>
         <MixBar ratios={summary.ratios} totals={summary.totals} />
       </div>
 
       {/* Stacked bar — ideal mix for reference */}
       <div className="mt-2">
-        <p className="text-xs mb-1" style={{ color: '#64748b' }}>Top operators</p>
+        <p className="text-xs mb-1" style={{ color: '#6E7F86' }}>Top operators</p>
         <MixBar
           ratios={IDEAL_CHANNEL_MIX}
           totals={{ cold: 0, warm: 0, inbound: 0 }}
@@ -58,7 +58,7 @@ export default function ChannelMixCoach() {
         {(['cold', 'warm', 'inbound'] as const).map((g) => (
           <div key={g} className="flex items-center gap-1.5">
             <div className="w-2.5 h-2.5 rounded-sm" style={{ background: GROUP_META[g].color }} />
-            <span className="text-xs" style={{ color: '#94a3b8' }}>{GROUP_META[g].label}</span>
+            <span className="text-xs" style={{ color: '#6E7F86' }}>{GROUP_META[g].label}</span>
           </div>
         ))}
       </div>
@@ -68,24 +68,24 @@ export default function ChannelMixCoach() {
         <div className="mt-3 space-y-1">
           {summary.warnings.map((w, i) => (
             <div key={i} className="flex items-start gap-2 p-2 rounded-lg" style={{
-              background: 'rgba(245,158,11,0.05)',
-              border: '1px solid rgba(245,158,11,0.18)',
+              background: 'rgba(208,138,62,0.05)',
+              border: '1px solid rgba(208,138,62,0.18)',
             }}>
-              <AlertCircle size={12} color="#fcd34d" className="flex-shrink-0 mt-0.5" />
-              <p className="text-xs" style={{ color: '#fcd34d' }}>{w}</p>
+              <AlertCircle size={12} color="#D08A3E" className="flex-shrink-0 mt-0.5" />
+              <p className="text-xs" style={{ color: '#D08A3E' }}>{w}</p>
             </div>
           ))}
         </div>
       )}
 
       {!summary.imbalanced && summary.total >= 5 && (
-        <p className="text-xs mt-3" style={{ color: '#6ee7b7' }}>
+        <p className="text-xs mt-3" style={{ color: '#1E6F70' }}>
           ✓ Mix looks balanced — keep diversifying as the pipeline grows.
         </p>
       )}
 
       {summary.total < 5 && (
-        <p className="text-xs mt-3" style={{ color: '#475569' }}>
+        <p className="text-xs mt-3" style={{ color: '#6E7F86' }}>
           Add at least 5 leads before the coach calls anything out — small samples lie.
         </p>
       )}
@@ -112,7 +112,7 @@ function MixBar({ ratios, totals, showCounts = true }: MixBarProps) {
             style={{
               background: GROUP_META[g].color,
               width: `${pct}%`,
-              color: '#0a1628',
+              color: '#0F3B47',
             }}
             title={`${GROUP_META[g].label}: ${pct.toFixed(0)}%${showCounts ? ` (${totals[g]} leads)` : ''}`}
           >
