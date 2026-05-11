@@ -8,10 +8,10 @@ import PositioningBanner from '@/components/positioning/PositioningBanner';
 import toast from 'react-hot-toast';
 
 const STEP_LABELS: Record<SequenceStepType, { label: string; color: string; bgColor: string }> = {
-  'intro': { label: 'Intro', color: '#6366f1', bgColor: 'rgba(99,102,241,0.15)' },
-  'value-add': { label: 'Value Add', color: '#10b981', bgColor: 'rgba(16,185,129,0.15)' },
-  'follow-up': { label: 'Follow-up', color: '#f59e0b', bgColor: 'rgba(245,158,11,0.15)' },
-  'breakup': { label: 'Breakup', color: '#ef4444', bgColor: 'rgba(239,68,68,0.15)' },
+  'intro': { label: 'Intro', color: '#3A8FA3', bgColor: 'rgba(58,143,163,0.15)' },
+  'value-add': { label: 'Value Add', color: '#1E6F70', bgColor: 'rgba(30,111,112,0.15)' },
+  'follow-up': { label: 'Follow-up', color: '#D08A3E', bgColor: 'rgba(208,138,62,0.15)' },
+  'breakup': { label: 'Breakup', color: '#B0432A', bgColor: 'rgba(176,67,42,0.15)' },
 };
 
 const DEFAULT_STEPS: { type: SequenceStepType; delay: number }[] = [
@@ -108,11 +108,11 @@ export default function SequencesPage() {
   return (
     <div className="flex-1 flex flex-col min-h-0">
       {/* Hero */}
-      <div className="px-4 md:px-8 py-5 border-b" style={{ borderColor: 'rgba(99,102,241,0.1)' }}>
+      <div className="px-4 md:px-8 py-5 border-b" style={{ borderColor: 'rgba(58,143,163,0.1)' }}>
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)' }}>
+              <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #3A8FA3, #B0432A)' }}>
                 <Mail size={13} color="white" />
               </div>
               <span className="text-xs font-medium tag tag-indigo">AI-Powered</span>
@@ -120,21 +120,21 @@ export default function SequencesPage() {
             <h2 className="text-lg font-semibold text-white mb-0.5" style={{ fontFamily: 'Syne' }}>
               Email Sequence Builder
             </h2>
-            <p className="text-sm" style={{ color: '#475569' }}>
+            <p className="text-sm" style={{ color: '#6E7F86' }}>
               Generate multi-step cold email sequences — intro, value-add, and breakup emails that actually get replies
             </p>
           </div>
           <div className="hidden lg:flex items-center gap-3">
             <div className="px-4 py-2.5 rounded-xl text-center" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
-              <div className="text-lg font-bold" style={{ color: '#8b5cf6', fontFamily: 'Syne' }}>{sequences.length}</div>
-              <div className="text-xs" style={{ color: '#334155' }}>Sequences</div>
+              <div className="text-lg font-bold" style={{ color: '#B0432A', fontFamily: 'Syne' }}>{sequences.length}</div>
+              <div className="text-xs" style={{ color: '#6E7F86' }}>Sequences</div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Strategy bar */}
-      <div className="px-4 md:px-8 py-4 border-b" style={{ borderColor: 'rgba(99,102,241,0.08)' }}>
+      <div className="px-4 md:px-8 py-4 border-b" style={{ borderColor: 'rgba(58,143,163,0.08)' }}>
         <div className="flex flex-wrap items-center gap-3 md:gap-6">
           {DEFAULT_STEPS.map((s, i) => {
             const meta = STEP_LABELS[s.type];
@@ -147,16 +147,16 @@ export default function SequencesPage() {
                   </div>
                   <div>
                     <div className="text-xs font-medium" style={{ color: meta.color }}>{meta.label}</div>
-                    <div className="text-xs" style={{ color: '#334155' }}>Day {s.delay}</div>
+                    <div className="text-xs" style={{ color: '#6E7F86' }}>Day {s.delay}</div>
                   </div>
                 </div>
                 {i < DEFAULT_STEPS.length - 1 && (
-                  <div className="hidden sm:block flex-1 h-px max-w-16" style={{ background: 'rgba(99,102,241,0.2)' }} />
+                  <div className="hidden sm:block flex-1 h-px max-w-16" style={{ background: 'rgba(58,143,163,0.2)' }} />
                 )}
               </React.Fragment>
             );
           })}
-          <div className="w-full md:w-auto md:ml-auto text-xs px-3 py-1.5 rounded-lg" style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981', border: '1px solid rgba(16,185,129,0.2)' }}>
+          <div className="w-full md:w-auto md:ml-auto text-xs px-3 py-1.5 rounded-lg" style={{ background: 'rgba(30,111,112,0.1)', color: '#1E6F70', border: '1px solid rgba(30,111,112,0.2)' }}>
             80% of replies come from follow-ups
           </div>
         </div>
@@ -168,15 +168,15 @@ export default function SequencesPage() {
         {/* Generator Form */}
         <div className="glass-card p-5">
           <div className="flex items-center gap-2 mb-4">
-            <Zap size={16} color="#8b5cf6" />
-            <h3 className="font-semibold text-sm" style={{ color: '#c4b5fd', fontFamily: 'Syne' }}>
+            <Zap size={16} color="#B0432A" />
+            <h3 className="font-semibold text-sm" style={{ color: '#CC6B4F', fontFamily: 'Syne' }}>
               Generate Sequence
             </h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>
+              <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>
                 Target Role *
               </label>
               <input
@@ -187,7 +187,7 @@ export default function SequencesPage() {
               />
             </div>
             <div>
-              <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>
+              <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>
                 Industry *
               </label>
               <input
@@ -198,7 +198,7 @@ export default function SequencesPage() {
               />
             </div>
             <div>
-              <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>
+              <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>
                 Sequence Name (optional)
               </label>
               <input
@@ -209,7 +209,7 @@ export default function SequencesPage() {
               />
             </div>
             <div>
-              <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b', fontFamily: 'Syne' }}>
+              <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>
                 Tone
               </label>
               <select
@@ -226,16 +226,16 @@ export default function SequencesPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2 mb-4">
-            <label className="text-xs font-medium" style={{ color: '#64748b', fontFamily: 'Syne' }}>Steps:</label>
+            <label className="text-xs font-medium" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>Steps:</label>
             {[3, 4, 5].map((n) => (
               <button
                 key={n}
                 onClick={() => setForm({ ...form, stepCount: n })}
                 className="text-xs px-3 py-1.5 rounded-lg transition-all"
                 style={{
-                  background: form.stepCount === n ? 'rgba(139,92,246,0.2)' : 'rgba(255,255,255,0.04)',
-                  border: `1px solid ${form.stepCount === n ? 'rgba(139,92,246,0.4)' : 'rgba(255,255,255,0.08)'}`,
-                  color: form.stepCount === n ? '#c4b5fd' : '#475569',
+                  background: form.stepCount === n ? 'rgba(176,67,42,0.2)' : 'rgba(255,255,255,0.04)',
+                  border: `1px solid ${form.stepCount === n ? 'rgba(176,67,42,0.4)' : 'rgba(255,255,255,0.08)'}`,
+                  color: form.stepCount === n ? '#CC6B4F' : '#6E7F86',
                 }}
               >
                 {n} emails
@@ -259,11 +259,11 @@ export default function SequencesPage() {
 
         {/* Generated Sequence Preview */}
         {generatedSteps.length > 0 && (
-          <div className="glass-card p-5 animate-fadeUp" style={{ border: '1px solid rgba(139,92,246,0.2)' }}>
+          <div className="glass-card p-5 animate-fadeUp" style={{ border: '1px solid rgba(176,67,42,0.2)' }}>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <Mail size={15} color="#8b5cf6" />
-                <span className="text-sm font-medium" style={{ color: '#c4b5fd', fontFamily: 'Syne' }}>
+                <Mail size={15} color="#B0432A" />
+                <span className="text-sm font-medium" style={{ color: '#CC6B4F', fontFamily: 'Syne' }}>
                   Generated Sequence — {generatedSteps.length} Steps
                 </span>
               </div>
@@ -282,20 +282,20 @@ export default function SequencesPage() {
                       <div className="text-xs font-bold px-2 py-0.5 rounded" style={{ background: meta.bgColor, color: meta.color }}>
                         {meta.label}
                       </div>
-                      <div className="flex items-center gap-1 text-xs" style={{ color: '#475569' }}>
+                      <div className="flex items-center gap-1 text-xs" style={{ color: '#6E7F86' }}>
                         <Clock size={10} />
                         Day {step.delayDays}
                       </div>
                       <div className="ml-auto flex items-center gap-2">
                         <button
                           className="text-xs px-2 py-1 rounded-lg"
-                          style={{ background: 'rgba(255,255,255,0.04)', color: '#64748b' }}
+                          style={{ background: 'rgba(255,255,255,0.04)', color: '#6E7F86' }}
                           onClick={() => setEditingStep(isEditing ? null : step.id)}
                         >
                           {isEditing ? 'Preview' : 'Edit'}
                         </button>
                         <button onClick={() => { navigator.clipboard.writeText(`Subject: ${step.subject}\n\n${step.body}`); toast.success('Copied!'); }}>
-                          <Copy size={12} color="#64748b" />
+                          <Copy size={12} color="#6E7F86" />
                         </button>
                       </div>
                     </div>
@@ -315,7 +315,7 @@ export default function SequencesPage() {
                           onChange={(e) => updateStep(step.id, { body: e.target.value })}
                         />
                         <div className="flex items-center gap-2">
-                          <label className="text-xs" style={{ color: '#64748b' }}>Delay (days):</label>
+                          <label className="text-xs" style={{ color: '#6E7F86' }}>Delay (days):</label>
                           <input
                             type="number"
                             className="input-field text-sm w-20"
@@ -327,10 +327,10 @@ export default function SequencesPage() {
                       </div>
                     ) : (
                       <>
-                        <div className="text-xs font-medium mb-1" style={{ color: '#94a3b8' }}>
+                        <div className="text-xs font-medium mb-1" style={{ color: '#6E7F86' }}>
                           Subject: {step.subject}
                         </div>
-                        <div className="text-sm whitespace-pre-wrap leading-relaxed" style={{ color: '#cbd5e1' }}>
+                        <div className="text-sm whitespace-pre-wrap leading-relaxed" style={{ color: '#D6CCB6' }}>
                           {step.body}
                         </div>
                       </>
@@ -345,7 +345,7 @@ export default function SequencesPage() {
         {/* Saved Sequences */}
         {sequences.length > 0 && (
           <div>
-            <h3 className="text-sm font-medium mb-3" style={{ color: '#64748b', fontFamily: 'Syne' }}>
+            <h3 className="text-sm font-medium mb-3" style={{ color: '#6E7F86', fontFamily: 'Syne' }}>
               Saved Sequences ({sequences.length})
             </h3>
             <div className="space-y-2">
@@ -360,7 +360,7 @@ export default function SequencesPage() {
                           <span className="tag tag-indigo text-xs">{seq.tone}</span>
                           <span className="tag tag-cyan text-xs">{seq.steps.length} steps</span>
                         </div>
-                        <div className="text-xs mt-0.5" style={{ color: '#475569' }}>
+                        <div className="text-xs mt-0.5" style={{ color: '#6E7F86' }}>
                           {seq.targetRole} in {seq.industry}
                         </div>
                       </div>
@@ -371,13 +371,13 @@ export default function SequencesPage() {
                         </button>
                         <button onClick={() => setExpandedSeq(isExpanded ? null : seq.id)}
                           className="w-7 h-7 flex items-center justify-center rounded-lg"
-                          style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.2)' }}>
-                          {isExpanded ? <ChevronUp size={12} color="#a5b4fc" /> : <ChevronDown size={12} color="#a5b4fc" />}
+                          style={{ background: 'rgba(58,143,163,0.1)', border: '1px solid rgba(58,143,163,0.2)' }}>
+                          {isExpanded ? <ChevronUp size={12} color="#1E6F70" /> : <ChevronDown size={12} color="#1E6F70" />}
                         </button>
                         <button onClick={() => { deleteSequence(seq.id); toast.success('Deleted'); }}
                           className="w-7 h-7 flex items-center justify-center rounded-lg"
-                          style={{ background: 'rgba(244,63,94,0.1)', border: '1px solid rgba(244,63,94,0.2)' }}>
-                          <Trash2 size={12} color="#f87171" />
+                          style={{ background: 'rgba(176,67,42,0.1)', border: '1px solid rgba(176,67,42,0.2)' }}>
+                          <Trash2 size={12} color="#CC6B4F" />
                         </button>
                       </div>
                     </div>
@@ -393,15 +393,15 @@ export default function SequencesPage() {
                                 <span className="text-xs font-bold px-2 py-0.5 rounded" style={{ background: meta.bgColor, color: meta.color }}>
                                   {meta.label}
                                 </span>
-                                <span className="text-xs flex items-center gap-1" style={{ color: '#475569' }}>
+                                <span className="text-xs flex items-center gap-1" style={{ color: '#6E7F86' }}>
                                   <Clock size={9} /> Day {step.delayDays}
                                 </span>
                                 <button className="ml-auto" onClick={() => { navigator.clipboard.writeText(`Subject: ${step.subject}\n\n${step.body}`); toast.success('Copied!'); }}>
-                                  <Copy size={11} color="#64748b" />
+                                  <Copy size={11} color="#6E7F86" />
                                 </button>
                               </div>
-                              <div className="text-xs font-medium mb-1" style={{ color: '#94a3b8' }}>Subject: {step.subject}</div>
-                              <div className="text-xs whitespace-pre-wrap leading-relaxed" style={{ color: '#94a3b8' }}>{step.body}</div>
+                              <div className="text-xs font-medium mb-1" style={{ color: '#6E7F86' }}>Subject: {step.subject}</div>
+                              <div className="text-xs whitespace-pre-wrap leading-relaxed" style={{ color: '#6E7F86' }}>{step.body}</div>
                             </div>
                           );
                         })}
