@@ -80,15 +80,15 @@ export default function TwitterThreadBuilder() {
       {/* Generator */}
       <div className="glass-card p-5">
         <div className="flex items-center gap-2 mb-4">
-          <Zap size={16} color="#06b6d4" />
-          <h3 className="font-semibold text-sm" style={{ color: '#06b6d4', fontFamily: 'Syne' }}>
+          <Zap size={16} color="#1E6F70" />
+          <h3 className="font-semibold text-sm" style={{ color: '#1E6F70', fontFamily: 'Syne' }}>
             Thread Builder
           </h3>
         </div>
 
         <div className="space-y-4 mb-4">
           <div>
-            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b' }}>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86' }}>
               Thread Topic
             </label>
             <textarea
@@ -101,7 +101,7 @@ export default function TwitterThreadBuilder() {
           </div>
 
           <div>
-            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b' }}>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86' }}>
               Thread Type
             </label>
             <div className="grid grid-cols-5 gap-2">
@@ -111,11 +111,11 @@ export default function TwitterThreadBuilder() {
                   onClick={() => setForm({ ...form, threadType: t.value as TwitterThread['threadType'] })}
                   className="p-2 rounded-lg text-left transition-all text-xs"
                   style={{
-                    background: form.threadType === t.value ? 'rgba(6,182,212,0.15)' : 'rgba(255,255,255,0.03)',
-                    border: `1px solid ${form.threadType === t.value ? 'rgba(6,182,212,0.3)' : 'rgba(255,255,255,0.1)'}`,
+                    background: form.threadType === t.value ? 'rgba(30,111,112,0.15)' : 'rgba(255,255,255,0.03)',
+                    border: `1px solid ${form.threadType === t.value ? 'rgba(30,111,112,0.3)' : 'rgba(255,255,255,0.1)'}`,
                   }}
                 >
-                  <div className="font-medium" style={{ color: form.threadType === t.value ? '#06b6d4' : '#64748b', fontSize: '11px' }}>
+                  <div className="font-medium" style={{ color: form.threadType === t.value ? '#1E6F70' : '#6E7F86', fontSize: '11px' }}>
                     {t.label}
                   </div>
                 </button>
@@ -125,7 +125,7 @@ export default function TwitterThreadBuilder() {
 
           {/* ICP tag — Phase 4 */}
           <div>
-            <label className="text-xs font-medium block mb-1.5" style={{ color: '#64748b' }}>
+            <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86' }}>
               Target ICP
             </label>
             <IcpTagPicker
@@ -147,17 +147,17 @@ export default function TwitterThreadBuilder() {
 
       {/* Generated Thread */}
       {generated && (
-        <div className="glass-card p-5 animate-fadeUp" style={{ border: '1px solid rgba(6,182,212,0.2)' }}>
+        <div className="glass-card p-5 animate-fadeUp" style={{ border: '1px solid rgba(30,111,112,0.2)' }}>
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-medium" style={{ color: '#06b6d4' }}>
+            <span className="text-sm font-medium" style={{ color: '#1E6F70' }}>
               🧵 {fullThread.length} Tweets
             </span>
           </div>
 
           <div className="space-y-2 mb-4">
             {fullThread.map((tweet, i) => (
-              <div key={i} className="p-3 rounded-lg text-sm" style={{ background: 'rgba(6,182,212,0.05)', border: '1px solid rgba(6,182,212,0.1)', color: '#cbd5e1' }}>
-                <span className="text-xs font-bold" style={{ color: '#06b6d4' }}>{i + 1}/</span> {tweet}
+              <div key={i} className="p-3 rounded-lg text-sm" style={{ background: 'rgba(30,111,112,0.05)', border: '1px solid rgba(30,111,112,0.1)', color: '#D6CCB6' }}>
+                <span className="text-xs font-bold" style={{ color: '#1E6F70' }}>{i + 1}/</span> {tweet}
               </div>
             ))}
           </div>
@@ -181,12 +181,12 @@ export default function TwitterThreadBuilder() {
       {/* Saved Threads */}
       {twitterThreads.length > 0 && (
         <div>
-          <h3 className="text-sm font-medium mb-3" style={{ color: '#64748b' }}>
+          <h3 className="text-sm font-medium mb-3" style={{ color: '#6E7F86' }}>
             Saved Threads ({twitterThreads.length})
           </h3>
           <div className="space-y-2">
             {twitterThreads.map((thread) => (
-              <div key={thread.id} className="glass-card p-3" style={{ border: '1px solid rgba(6,182,212,0.1)' }}>
+              <div key={thread.id} className="glass-card p-3" style={{ border: '1px solid rgba(30,111,112,0.1)' }}>
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1">
                     <p className="text-xs font-semibold text-gray-300 mb-1">{thread.hook}</p>
@@ -195,9 +195,9 @@ export default function TwitterThreadBuilder() {
                   <button
                     onClick={() => { deleteTwitterThread(thread.id); toast.success('Deleted'); }}
                     className="p-1.5 flex-shrink-0"
-                    style={{ background: 'rgba(244,63,94,0.1)', border: '1px solid rgba(244,63,94,0.2)', borderRadius: '6px' }}
+                    style={{ background: 'rgba(176,67,42,0.1)', border: '1px solid rgba(176,67,42,0.2)', borderRadius: '6px' }}
                   >
-                    <Trash2 size={12} color="#f87171" />
+                    <Trash2 size={12} color="#CC6B4F" />
                   </button>
                 </div>
               </div>
