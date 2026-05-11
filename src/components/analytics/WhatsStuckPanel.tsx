@@ -23,13 +23,13 @@ export default function WhatsStuckPanel() {
 
   if (items.length === 0) {
     return (
-      <div className="glass-card p-4 flex items-center gap-3" style={{ borderColor: 'rgba(16,185,129,0.25)' }}>
-        <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: 'rgba(16,185,129,0.12)' }}>
-          <Clock size={16} color="#10b981" />
+      <div className="glass-card p-4 flex items-center gap-3" style={{ borderColor: 'rgba(30,111,112,0.25)' }}>
+        <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: 'rgba(30,111,112,0.12)' }}>
+          <Clock size={16} color="#1E6F70" />
         </div>
         <div>
-          <p className="text-sm font-semibold" style={{ color: '#6ee7b7', fontFamily: 'Syne' }}>Nothing's stuck</p>
-          <p className="text-xs" style={{ color: '#64748b' }}>
+          <p className="text-sm font-semibold" style={{ color: '#1E6F70', fontFamily: 'Syne' }}>Nothing's stuck</p>
+          <p className="text-xs" style={{ color: '#6E7F86' }}>
             Pipeline is moving and you've posted recently. Keep going.
           </p>
         </div>
@@ -40,10 +40,10 @@ export default function WhatsStuckPanel() {
   return (
     <div className="glass-card p-4">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold" style={{ color: '#fcd34d', fontFamily: 'Syne' }}>
+        <h3 className="text-sm font-semibold" style={{ color: '#D08A3E', fontFamily: 'Syne' }}>
           What's Stuck
         </h3>
-        <span className="text-xs" style={{ color: '#64748b' }}>
+        <span className="text-xs" style={{ color: '#6E7F86' }}>
           {items.length} item{items.length === 1 ? '' : 's'} need{items.length === 1 ? 's' : ''} a move
         </span>
       </div>
@@ -52,9 +52,9 @@ export default function WhatsStuckPanel() {
         {items.map((item, i) => {
           const Icon = KIND_ICONS[item.kind];
           const isCritical = item.severity === 'critical';
-          const color = isCritical ? '#ef4444' : '#f59e0b';
-          const bg = isCritical ? 'rgba(239,68,68,0.06)' : 'rgba(245,158,11,0.05)';
-          const border = isCritical ? 'rgba(239,68,68,0.25)' : 'rgba(245,158,11,0.22)';
+          const color = isCritical ? '#B0432A' : '#D08A3E';
+          const bg = isCritical ? 'rgba(176,67,42,0.06)' : 'rgba(208,138,62,0.05)';
+          const border = isCritical ? 'rgba(176,67,42,0.25)' : 'rgba(208,138,62,0.22)';
 
           return (
             <button
@@ -65,7 +65,7 @@ export default function WhatsStuckPanel() {
             >
               <Icon size={13} color={color} className="flex-shrink-0 mt-0.5" />
               <div className="flex-1 min-w-0">
-                <p className="text-sm leading-relaxed" style={{ color: '#e2e8f0' }}>
+                <p className="text-sm leading-relaxed" style={{ color: '#E6DCC8' }}>
                   {item.message}
                 </p>
               </div>
