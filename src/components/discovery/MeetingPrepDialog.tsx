@@ -106,26 +106,26 @@ export default function MeetingPrepDialog({ lead, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{
-      background: 'rgba(0,0,0,0.85)',
+      background: 'rgba(15,59,71,0.55)',
       backdropFilter: 'blur(8px)',
     }}>
       <div className="relative w-full max-w-3xl rounded-2xl overflow-hidden flex flex-col max-h-[92vh]" style={{
-        background: 'linear-gradient(180deg, #0a1628 0%, #050a14 100%)',
-        border: '1px solid rgba(99,102,241,0.3)',
-        boxShadow: '0 0 80px rgba(99,102,241,0.15)',
+        background: 'linear-gradient(180deg, #F7F2E7 0%, #F2EBDD 100%)',
+        border: '1px solid rgba(58,143,163,0.3)',
+        boxShadow: '0 0 80px rgba(58,143,163,0.15)',
       }}>
         <button
           onClick={onClose}
           className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center z-10"
-          style={{ background: '#1e293b', border: '1px solid rgba(255,255,255,0.1)' }}
+          style={{ background: '#0F3B47', border: '1px solid rgba(255,255,255,0.1)' }}
         >
-          <X size={14} color="#64748b" />
+          <X size={14} color="#6E7F86" />
         </button>
 
         {/* Header */}
-        <div className="px-6 py-4 flex items-center gap-3" style={{ borderBottom: '1px solid rgba(99,102,241,0.12)' }}>
+        <div className="px-6 py-4 flex items-center gap-3" style={{ borderBottom: '1px solid rgba(58,143,163,0.12)' }}>
           <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{
-            background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+            background: 'linear-gradient(135deg, #D08A3E, #B0432A)',
           }}>
             <Mic size={18} color="white" />
           </div>
@@ -133,7 +133,7 @@ export default function MeetingPrepDialog({ lead, onClose }: Props) {
             <h2 className="text-base font-semibold text-white" style={{ fontFamily: 'Syne' }}>
               Meeting Prep · {fullName}
             </h2>
-            <p className="text-xs" style={{ color: '#64748b' }}>
+            <p className="text-xs" style={{ color: '#6E7F86' }}>
               {lead.company}{lead.title ? ` · ${lead.title}` : ''}
             </p>
           </div>
@@ -154,15 +154,15 @@ export default function MeetingPrepDialog({ lead, onClose }: Props) {
                   onClick={() => setStep(s.id)}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition-all"
                   style={{
-                    background: isActive ? 'rgba(99,102,241,0.18)' : s.done ? 'rgba(16,185,129,0.08)' : 'rgba(255,255,255,0.03)',
-                    border: `1px solid ${isActive ? 'rgba(99,102,241,0.4)' : s.done ? 'rgba(16,185,129,0.2)' : 'rgba(255,255,255,0.06)'}`,
-                    color: isActive ? '#a5b4fc' : s.done ? '#6ee7b7' : '#64748b',
+                    background: isActive ? 'rgba(58,143,163,0.18)' : s.done ? 'rgba(30,111,112,0.08)' : 'rgba(255,255,255,0.03)',
+                    border: `1px solid ${isActive ? 'rgba(58,143,163,0.4)' : s.done ? 'rgba(30,111,112,0.2)' : 'rgba(255,255,255,0.06)'}`,
+                    color: isActive ? '#1E6F70' : s.done ? '#1E6F70' : '#6E7F86',
                   }}
                 >
                   {s.done && !isActive ? <Check size={11} /> : <Icon size={11} />}
                   {s.label}
                 </button>
-                {i < 2 && <ArrowRight size={11} color="#334155" />}
+                {i < 2 && <ArrowRight size={11} color="#6E7F86" />}
               </React.Fragment>
             );
           })}
@@ -212,11 +212,11 @@ function PrepSection({ lead, loading, onRegenerate, hasResearch, hasSignals }: {
     return (
       <div className="space-y-4">
         <div className="rounded-lg p-3 flex items-start gap-2" style={{
-          background: 'rgba(245,158,11,0.06)',
-          border: '1px solid rgba(245,158,11,0.22)',
+          background: 'rgba(208,138,62,0.06)',
+          border: '1px solid rgba(208,138,62,0.22)',
         }}>
-          <AlertCircle size={13} color="#fcd34d" className="flex-shrink-0 mt-0.5" />
-          <div className="text-xs" style={{ color: '#fcd34d' }}>
+          <AlertCircle size={13} color="#D08A3E" className="flex-shrink-0 mt-0.5" />
+          <div className="text-xs" style={{ color: '#D08A3E' }}>
             <strong>Thin sources.</strong> No research or intent signals are attached to this lead. The AI will produce a generic brief — paste real artifacts on the lead first for a sharper one.
           </div>
         </div>
@@ -234,7 +234,7 @@ function PrepSection({ lead, loading, onRegenerate, hasResearch, hasSignals }: {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="w-6 h-6 rounded-full border-2 border-indigo-400 border-t-transparent animate-spin" />
-        <p className="ml-3 text-sm" style={{ color: '#94a3b8' }}>Composing pre-call brief…</p>
+        <p className="ml-3 text-sm" style={{ color: '#6E7F86' }}>Composing pre-call brief…</p>
       </div>
     );
   }
@@ -252,45 +252,45 @@ function PrepSection({ lead, loading, onRegenerate, hasResearch, hasSignals }: {
   return (
     <div className="space-y-5">
       {/* Top priorities */}
-      <Section icon={<Sparkles size={13} color="#06b6d4" />} title="Top priorities" color="#06b6d4">
+      <Section icon={<Sparkles size={13} color="#1E6F70" />} title="Top priorities" color="#1E6F70">
         {brief.topPriorities.length === 0
-          ? <p className="text-xs" style={{ color: '#475569' }}>No priorities surfaced — sources too thin.</p>
+          ? <p className="text-xs" style={{ color: '#6E7F86' }}>No priorities surfaced — sources too thin.</p>
           : (
             <ul className="space-y-1">
               {brief.topPriorities.map((p, i) => (
-                <li key={i} className="text-sm leading-relaxed" style={{ color: '#cbd5e1' }}>• {p}</li>
+                <li key={i} className="text-sm leading-relaxed" style={{ color: '#D6CCB6' }}>• {p}</li>
               ))}
             </ul>
           )}
       </Section>
 
       {/* Discovery questions */}
-      <Section icon={<FileText size={13} color="#a5b4fc" />} title={`Discovery questions (${brief.discoveryQuestions.length})`} color="#a5b4fc">
+      <Section icon={<FileText size={13} color="#1E6F70" />} title={`Discovery questions (${brief.discoveryQuestions.length})`} color="#1E6F70">
         {brief.discoveryQuestions.length === 0
-          ? <p className="text-xs" style={{ color: '#475569' }}>No questions — try regenerating with sources.</p>
+          ? <p className="text-xs" style={{ color: '#6E7F86' }}>No questions — try regenerating with sources.</p>
           : (
             <ol className="space-y-2 list-decimal list-inside">
               {brief.discoveryQuestions.map((q, i) => (
-                <li key={i} className="text-sm leading-relaxed" style={{ color: '#cbd5e1' }}>{q}</li>
+                <li key={i} className="text-sm leading-relaxed" style={{ color: '#D6CCB6' }}>{q}</li>
               ))}
             </ol>
           )}
       </Section>
 
       {/* Likely objections */}
-      <Section icon={<AlertCircle size={13} color="#f59e0b" />} title="Likely objections" color="#f59e0b">
+      <Section icon={<AlertCircle size={13} color="#D08A3E" />} title="Likely objections" color="#D08A3E">
         {brief.likelyObjections.length === 0
-          ? <p className="text-xs" style={{ color: '#475569' }}>—</p>
+          ? <p className="text-xs" style={{ color: '#6E7F86' }}>—</p>
           : (
             <div className="space-y-3">
               {brief.likelyObjections.map((o, i) => (
                 <div key={i} className="rounded-lg p-3" style={{
-                  background: 'rgba(245,158,11,0.04)',
-                  border: '1px solid rgba(245,158,11,0.15)',
+                  background: 'rgba(208,138,62,0.04)',
+                  border: '1px solid rgba(208,138,62,0.15)',
                 }}>
-                  <p className="text-sm font-medium mb-1" style={{ color: '#fcd34d' }}>"{o.objection}"</p>
-                  <p className="text-xs leading-relaxed" style={{ color: '#cbd5e1' }}>
-                    <span style={{ color: '#94a3b8' }}>Handling: </span>
+                  <p className="text-sm font-medium mb-1" style={{ color: '#D08A3E' }}>"{o.objection}"</p>
+                  <p className="text-xs leading-relaxed" style={{ color: '#D6CCB6' }}>
+                    <span style={{ color: '#6E7F86' }}>Handling: </span>
                     {o.handling}
                   </p>
                 </div>
@@ -300,21 +300,21 @@ function PrepSection({ lead, loading, onRegenerate, hasResearch, hasSignals }: {
       </Section>
 
       {/* Mechanism connection */}
-      <Section icon={<Sparkles size={13} color="#10b981" />} title="Mechanism → their pain" color="#10b981">
-        <p className="text-sm leading-relaxed" style={{ color: '#cbd5e1' }}>
+      <Section icon={<Sparkles size={13} color="#1E6F70" />} title="Mechanism → their pain" color="#1E6F70">
+        <p className="text-sm leading-relaxed" style={{ color: '#D6CCB6' }}>
           {brief.mechanismConnection || '—'}
         </p>
       </Section>
 
       {/* Call structure */}
-      <Section icon={<Clock size={13} color="#a78bfa" />} title={`Call structure (${totalMin} min)`} color="#a78bfa">
+      <Section icon={<Clock size={13} color="#CC6B4F" />} title={`Call structure (${totalMin} min)`} color="#CC6B4F">
         <div className="space-y-1.5">
           {brief.callStructure.map((p, i) => (
             <div key={i} className="flex items-start gap-2 text-xs">
-              <span className="font-mono" style={{ color: '#a78bfa', minWidth: '40px' }}>{p.minutes}m</span>
+              <span className="font-mono" style={{ color: '#CC6B4F', minWidth: '40px' }}>{p.minutes}m</span>
               <div className="flex-1">
-                <p className="font-medium" style={{ color: '#cbd5e1' }}>{p.phase}</p>
-                <p style={{ color: '#64748b' }}>{p.goal}</p>
+                <p className="font-medium" style={{ color: '#D6CCB6' }}>{p.phase}</p>
+                <p style={{ color: '#6E7F86' }}>{p.goal}</p>
               </div>
             </div>
           ))}
@@ -348,11 +348,11 @@ function DebriefSection({ lead, onSave }: { lead: PipelineLead; onSave: (d: Call
   const verdict = bantVerdict(score);
   const ready = isDebriefReady(form);
 
-  const verdictColor = { good: '#10b981', warn: '#fcd34d', bad: '#ef4444' }[verdict.tone];
+  const verdictColor = { good: '#1E6F70', warn: '#D08A3E', bad: '#B0432A' }[verdict.tone];
 
   return (
     <div className="space-y-4">
-      <p className="text-xs" style={{ color: '#94a3b8' }}>
+      <p className="text-xs" style={{ color: '#6E7F86' }}>
         Capture the truth, not the wish. Tick what was actually confirmed; write notes for what was hinted.
       </p>
 
@@ -363,12 +363,12 @@ function DebriefSection({ lead, onSave }: { lead: PipelineLead; onSave: (d: Call
         const notesKey = `${pillar}Notes` as const;
         return (
           <div key={pillar} className="rounded-lg p-3" style={{
-            background: status === 'confirmed' ? 'rgba(16,185,129,0.05)'
-              : status === 'noted' ? 'rgba(245,158,11,0.04)'
+            background: status === 'confirmed' ? 'rgba(30,111,112,0.05)'
+              : status === 'noted' ? 'rgba(208,138,62,0.04)'
               : 'rgba(255,255,255,0.02)',
             border: `1px solid ${
-              status === 'confirmed' ? 'rgba(16,185,129,0.2)'
-              : status === 'noted' ? 'rgba(245,158,11,0.2)'
+              status === 'confirmed' ? 'rgba(30,111,112,0.2)'
+              : status === 'noted' ? 'rgba(208,138,62,0.2)'
               : 'rgba(255,255,255,0.05)'
             }`,
           }}>
@@ -378,11 +378,11 @@ function DebriefSection({ lead, onSave }: { lead: PipelineLead; onSave: (d: Call
                 checked={form[confirmedKey] as boolean}
                 onChange={(e) => setForm({ ...form, [confirmedKey]: e.target.checked } as CallDebrief)}
               />
-              <span className="text-sm font-medium" style={{ color: '#e2e8f0' }}>
+              <span className="text-sm font-medium" style={{ color: '#E6DCC8' }}>
                 {BANT_LABELS[pillar]} confirmed
               </span>
               {status === 'noted' && (
-                <span className="text-xs ml-auto" style={{ color: '#fcd34d' }}>noted but not confirmed</span>
+                <span className="text-xs ml-auto" style={{ color: '#D08A3E' }}>noted but not confirmed</span>
               )}
             </label>
             <textarea
@@ -398,7 +398,7 @@ function DebriefSection({ lead, onSave }: { lead: PipelineLead; onSave: (d: Call
 
       {/* Objection */}
       <div>
-        <label className="text-xs font-medium block mb-1.5" style={{ color: '#94a3b8' }}>
+        <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86' }}>
           Objection raised (optional)
         </label>
         <input
@@ -411,7 +411,7 @@ function DebriefSection({ lead, onSave }: { lead: PipelineLead; onSave: (d: Call
 
       {/* Next step — required */}
       <div>
-        <label className="text-xs font-medium block mb-1.5" style={{ color: '#94a3b8' }}>
+        <label className="text-xs font-medium block mb-1.5" style={{ color: '#6E7F86' }}>
           Next step agreed *
         </label>
         <input
@@ -432,7 +432,7 @@ function DebriefSection({ lead, onSave }: { lead: PipelineLead; onSave: (d: Call
             BANT · {score}/4 · {verdict.label}
           </span>
         </div>
-        <p className="text-xs leading-relaxed" style={{ color: '#cbd5e1' }}>{verdict.advice}</p>
+        <p className="text-xs leading-relaxed" style={{ color: '#D6CCB6' }}>{verdict.advice}</p>
       </div>
 
       <button
@@ -462,7 +462,7 @@ function ProposalSection({ lead, loading, onGenerate }: {
   if (!debrief) {
     return (
       <div className="text-center py-12">
-        <p className="text-sm mb-3" style={{ color: '#94a3b8' }}>
+        <p className="text-sm mb-3" style={{ color: '#6E7F86' }}>
           Complete the debrief first — proposals depend on what got confirmed.
         </p>
       </div>
@@ -474,19 +474,19 @@ function ProposalSection({ lead, loading, onGenerate }: {
     const verdict = bantVerdict(score);
     return (
       <div className="rounded-lg p-4" style={{
-        background: 'rgba(245,158,11,0.06)',
-        border: '1px solid rgba(245,158,11,0.22)',
+        background: 'rgba(208,138,62,0.06)',
+        border: '1px solid rgba(208,138,62,0.22)',
       }}>
         <div className="flex items-start gap-2 mb-2">
-          <AlertCircle size={14} color="#fcd34d" className="flex-shrink-0 mt-0.5" />
+          <AlertCircle size={14} color="#D08A3E" className="flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm font-semibold" style={{ color: '#fcd34d', fontFamily: 'Syne' }}>
+            <p className="text-sm font-semibold" style={{ color: '#D08A3E', fontFamily: 'Syne' }}>
               BANT verdict: {verdict.label} ({score}/4)
             </p>
-            <p className="text-xs mt-1" style={{ color: '#cbd5e1' }}>{verdict.advice}</p>
+            <p className="text-xs mt-1" style={{ color: '#D6CCB6' }}>{verdict.advice}</p>
           </div>
         </div>
-        <p className="text-xs italic" style={{ color: '#94a3b8' }}>
+        <p className="text-xs italic" style={{ color: '#6E7F86' }}>
           Proposal is gated until pain is confirmed AND a next step is set. Edit the debrief above.
         </p>
       </div>
@@ -497,10 +497,10 @@ function ProposalSection({ lead, loading, onGenerate }: {
     return (
       <div className="space-y-4">
         <div className="rounded-lg p-3" style={{
-          background: 'rgba(16,185,129,0.06)',
-          border: '1px solid rgba(16,185,129,0.2)',
+          background: 'rgba(30,111,112,0.06)',
+          border: '1px solid rgba(30,111,112,0.2)',
         }}>
-          <p className="text-xs" style={{ color: '#6ee7b7' }}>
+          <p className="text-xs" style={{ color: '#1E6F70' }}>
             Debrief is solid. Generating the proposal will use ONLY what's in the debrief — no invented capabilities.
           </p>
         </div>
@@ -523,29 +523,29 @@ function ProposalSection({ lead, loading, onGenerate }: {
     <div className="space-y-4">
       {/* Quick stats row */}
       <div className="grid grid-cols-3 gap-2">
-        <Stat label="Price"     value={`$${proposal.price.toLocaleString()}`} color="#10b981" />
-        <Stat label="Milestones" value={proposal.milestones.length.toString()}  color="#06b6d4" />
-        <Stat label="Timeline"  value={proposal.timeline || '—'}                color="#a78bfa" />
+        <Stat label="Price"     value={`$${proposal.price.toLocaleString()}`} color="#1E6F70" />
+        <Stat label="Milestones" value={proposal.milestones.length.toString()}  color="#1E6F70" />
+        <Stat label="Timeline"  value={proposal.timeline || '—'}                color="#CC6B4F" />
       </div>
 
       {/* Risk reversal */}
       {proposal.riskReversal && (
         <div className="rounded-lg p-3" style={{
-          background: 'rgba(99,102,241,0.06)',
-          border: '1px solid rgba(99,102,241,0.18)',
+          background: 'rgba(58,143,163,0.06)',
+          border: '1px solid rgba(58,143,163,0.18)',
         }}>
-          <p className="text-xs font-semibold mb-1" style={{ color: '#a5b4fc' }}>Risk reversal</p>
-          <p className="text-xs" style={{ color: '#cbd5e1' }}>{proposal.riskReversal}</p>
+          <p className="text-xs font-semibold mb-1" style={{ color: '#1E6F70' }}>Risk reversal</p>
+          <p className="text-xs" style={{ color: '#D6CCB6' }}>{proposal.riskReversal}</p>
         </div>
       )}
 
       {/* Markdown preview */}
       <div>
-        <p className="text-xs font-semibold mb-2" style={{ color: '#94a3b8' }}>Markdown preview</p>
+        <p className="text-xs font-semibold mb-2" style={{ color: '#6E7F86' }}>Markdown preview</p>
         <pre className="text-xs p-4 rounded-lg whitespace-pre-wrap leading-relaxed font-mono overflow-x-auto" style={{
           background: 'rgba(0,0,0,0.4)',
           border: '1px solid rgba(255,255,255,0.05)',
-          color: '#cbd5e1',
+          color: '#D6CCB6',
           maxHeight: '400px',
         }}>
           {proposal.markdown}
@@ -561,7 +561,7 @@ function ProposalSection({ lead, loading, onGenerate }: {
         </button>
       </div>
 
-      <p className="text-xs text-center" style={{ color: '#475569' }}>
+      <p className="text-xs text-center" style={{ color: '#6E7F86' }}>
         Paste into Notion, Google Docs, or your proposal tool of choice
         <ExternalLink size={9} className="inline ml-1" />
       </p>
@@ -591,7 +591,7 @@ function Stat({ label, value, color }: { label: string; value: string; color: st
       background: 'rgba(255,255,255,0.02)',
       border: '1px solid rgba(255,255,255,0.05)',
     }}>
-      <p className="text-xs" style={{ color: '#64748b' }}>{label}</p>
+      <p className="text-xs" style={{ color: '#6E7F86' }}>{label}</p>
       <p className="text-base font-bold" style={{ color, fontFamily: 'Syne' }}>{value}</p>
     </div>
   );
