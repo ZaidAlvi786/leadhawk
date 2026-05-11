@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 import type { LeadFilter, LinkedInPost, GrowthPlan, NavPage, EmailSequence, PipelineLead, PipelineStage, LeadResearch, IntentSignal, WatchlistAccount, Tweet, TwitterThread, TwitterGrowthPlan, MessageOutcome, UserPositioning, WarmContact } from './types';
 import { emptyPositioning, POSITIONING_SCHEMA_VERSION } from './positioning';
 
-interface AppState {
+export interface AppState {
   // Navigation
   currentPage: NavPage;
   setCurrentPage: (page: NavPage) => void;
