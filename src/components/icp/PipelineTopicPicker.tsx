@@ -123,7 +123,7 @@ export default function PipelineTopicPicker({ onPick }: Props) {
             >
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
-                  <span className="text-xs font-medium" style={{ color: '#D6CCB6' }}>
+                  <span className="text-xs font-medium" style={{ color: 'var(--text-primary)' }}>
                     {topic.leadName}
                   </span>
                   <span className="text-xs px-1.5 py-0.5 rounded" style={{
