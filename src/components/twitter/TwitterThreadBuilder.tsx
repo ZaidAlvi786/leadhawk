@@ -156,7 +156,7 @@ export default function TwitterThreadBuilder() {
 
           <div className="space-y-2 mb-4">
             {fullThread.map((tweet, i) => (
-              <div key={i} className="p-3 rounded-lg text-sm" style={{ background: 'rgba(30,111,112,0.05)', border: '1px solid rgba(30,111,112,0.1)', color: '#D6CCB6' }}>
+              <div key={i} className="p-3 rounded-lg text-sm" style={{ background: 'rgba(30,111,112,0.05)', border: '1px solid rgba(30,111,112,0.1)', color: 'var(--text-primary)' }}>
                 <span className="text-xs font-bold" style={{ color: '#1E6F70' }}>{i + 1}/</span> {tweet}
               </div>
             ))}
