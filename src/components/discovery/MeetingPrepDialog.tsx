@@ -258,7 +258,7 @@ function PrepSection({ lead, loading, onRegenerate, hasResearch, hasSignals }: {
           : (
             <ul className="space-y-1">
               {brief.topPriorities.map((p, i) => (
-                <li key={i} className="text-sm leading-relaxed" style={{ color: '#D6CCB6' }}>• {p}</li>
+                <li key={i} className="text-sm leading-relaxed" style={{ color: 'var(--text-primary)' }}>• {p}</li>
               ))}
             </ul>
           )}
@@ -271,7 +271,7 @@ function PrepSection({ lead, loading, onRegenerate, hasResearch, hasSignals }: {
           : (
             <ol className="space-y-2 list-decimal list-inside">
               {brief.discoveryQuestions.map((q, i) => (
-                <li key={i} className="text-sm leading-relaxed" style={{ color: '#D6CCB6' }}>{q}</li>
+                <li key={i} className="text-sm leading-relaxed" style={{ color: 'var(--text-primary)' }}>{q}</li>
               ))}
             </ol>
           )}
@@ -289,7 +289,7 @@ function PrepSection({ lead, loading, onRegenerate, hasResearch, hasSignals }: {
                   border: '1px solid rgba(208,138,62,0.15)',
                 }}>
                   <p className="text-sm font-medium mb-1" style={{ color: '#D08A3E' }}>"{o.objection}"</p>
-                  <p className="text-xs leading-relaxed" style={{ color: '#D6CCB6' }}>
+                  <p className="text-xs leading-relaxed" style={{ color: 'var(--text-primary)' }}>
                     <span style={{ color: '#6E7F86' }}>Handling: </span>
                     {o.handling}
                   </p>
@@ -301,7 +301,7 @@ function PrepSection({ lead, loading, onRegenerate, hasResearch, hasSignals }: {
 
       {/* Mechanism connection */}
       <Section icon={<Sparkles size={13} color="#1E6F70" />} title="Mechanism → their pain" color="#1E6F70">
-        <p className="text-sm leading-relaxed" style={{ color: '#D6CCB6' }}>
+        <p className="text-sm leading-relaxed" style={{ color: 'var(--text-primary)' }}>
           {brief.mechanismConnection || '—'}
         </p>
       </Section>
@@ -313,7 +313,7 @@ function PrepSection({ lead, loading, onRegenerate, hasResearch, hasSignals }: {
             <div key={i} className="flex items-start gap-2 text-xs">
               <span className="font-mono" style={{ color: '#CC6B4F', minWidth: '40px' }}>{p.minutes}m</span>
               <div className="flex-1">
-                <p className="font-medium" style={{ color: '#D6CCB6' }}>{p.phase}</p>
+                <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{p.phase}</p>
                 <p style={{ color: '#6E7F86' }}>{p.goal}</p>
               </div>
             </div>
@@ -432,7 +432,7 @@ function DebriefSection({ lead, onSave }: { lead: PipelineLead; onSave: (d: Call
             BANT · {score}/4 · {verdict.label}
           </span>
         </div>
-        <p className="text-xs leading-relaxed" style={{ color: '#D6CCB6' }}>{verdict.advice}</p>
+        <p className="text-xs leading-relaxed" style={{ color: 'var(--text-primary)' }}>{verdict.advice}</p>
       </div>
 
       <button
@@ -483,7 +483,7 @@ function ProposalSection({ lead, loading, onGenerate }: {
             <p className="text-sm font-semibold" style={{ color: '#D08A3E', fontFamily: 'Syne' }}>
               BANT verdict: {verdict.label} ({score}/4)
             </p>
-            <p className="text-xs mt-1" style={{ color: '#D6CCB6' }}>{verdict.advice}</p>
+            <p className="text-xs mt-1" style={{ color: 'var(--text-primary)' }}>{verdict.advice}</p>
           </div>
         </div>
         <p className="text-xs italic" style={{ color: '#6E7F86' }}>
@@ -535,7 +535,7 @@ function ProposalSection({ lead, loading, onGenerate }: {
           border: '1px solid rgba(58,143,163,0.18)',
         }}>
           <p className="text-xs font-semibold mb-1" style={{ color: '#1E6F70' }}>Risk reversal</p>
-          <p className="text-xs" style={{ color: '#D6CCB6' }}>{proposal.riskReversal}</p>
+          <p className="text-xs" style={{ color: 'var(--text-primary)' }}>{proposal.riskReversal}</p>
         </div>
       )}
 
@@ -545,7 +545,7 @@ function ProposalSection({ lead, loading, onGenerate }: {
         <pre className="text-xs p-4 rounded-lg whitespace-pre-wrap leading-relaxed font-mono overflow-x-auto" style={{
           background: 'rgba(0,0,0,0.4)',
           border: '1px solid rgba(255,255,255,0.05)',
-          color: '#D6CCB6',
+          color: 'var(--text-primary)',
           maxHeight: '400px',
         }}>
           {proposal.markdown}
