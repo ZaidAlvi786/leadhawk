@@ -174,7 +174,7 @@ export const STRATEGIC_POST_TYPES: Partial<Record<LinkedInPostType, PostTypeMeta
     label: 'Pain-naming',
     emoji: '😣',
     funnelObjective: 'Drives DMs from people who feel that exact pain',
-    promptGuidance: `Name a SPECIFIC problem the ICP feels and is too proud to admit out loud. The post is essentially "I see you. This is the thing nobody says." Open with the symptom, not the diagnosis. End with a question that asks them to name what's making it worse — DMs are the conversion mechanism, not likes.`,
+    promptGuidance: `Name a SPECIFIC TECHNICAL or PROCESS failure the ICP recognizes — not a feeling. The pain is "Stripe drops metered events at 100 req/s per object" or "our Vercel build pipeline OOMs at 4GB of generated routes" — NOT "that pit in your stomach when the CEO asks again." Open with the precise mechanism of the failure (a number, a tool name, a config quirk, a race condition). Therapy-talk language is BANNED here — never write "pit in your stomach", "silent struggle", "burnout", "you've got a talented team but...", "your CEO asks... again", "It's Monday morning". These are AI tells that mark the post as auto-generated within 2 seconds. End with an ask that invites someone to share THEIR specific failure mode — "What's the equivalent in YOUR stack?" — not a generic "what's your experience?".`,
   },
   'mechanism-reveal': {
     label: 'Mechanism reveal',
