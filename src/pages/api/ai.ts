@@ -22,11 +22,20 @@ async function callGemini(
 
   // When `json` is true, ask Gemini for structured JSON directly — avoids markdown
   // code fences and truncation surprises. Otherwise free-form text.
+  //
+  // Gemini 2.5 Flash spends part of `maxOutputTokens` on internal "thinking"
+  // before emitting visible output, which silently truncates JSON responses
+  // mid-string. For structured JSON the prompt already encodes the schema, so
+  // thinking adds noise without value — we turn it off and reclaim the whole
+  // budget for the actual answer. Free-form text keeps thinking on by default.
   const generationConfig: Record<string, unknown> = {
     maxOutputTokens: maxTokens,
     temperature: 0.7,
   };
-  if (json) generationConfig.responseMimeType = 'application/json';
+  if (json) {
+    generationConfig.responseMimeType = 'application/json';
+    generationConfig.thinkingConfig = { thinkingBudget: 0 };
+  }
 
   const response = await fetch(url, {
     method: 'POST',
