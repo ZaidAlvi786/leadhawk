@@ -281,7 +281,10 @@ export interface LeadResearchSource {
   field: ResearchField;
   content: string;     // user-pasted text or URL
   url?: string;        // canonical URL when applicable
-  capturedAt: string;
+  capturedAt: string;  // when the user pasted this source
+  postedAt?: string;   // when the underlying content was published (LinkedIn post date,
+                       // article date, etc.). Drives recency filtering in the composer —
+                       // sources older than ~30 days get deprioritised.
 }
 
 export interface LeadResearchHook {
@@ -410,13 +413,26 @@ export interface TwitterAction {
 // being given a single opaque blob with no failure mode.
 // =============================================
 
+// 'product' = classic 4-component DM with an earned-right pitch line. Good for
+//              SaaS / product-led sales.
+// 'services' = help-shaped opener — acknowledge what they're building and offer
+//              concrete free value (teardown, second pair of eyes). Better fit
+//              for agencies, freelancers, consultants where the product IS the
+//              help. Same 4 fields but the model fills them very differently.
+export type OutreachMode = 'product' | 'services';
+
 export interface OutreachComponents {
   specificReference: string;     // grounded in a real research source
   patternInterrupt: string;      // a question, admission, or sharp observation
+                                 // (services mode: warm acknowledgement of what they're building)
   earnedRight: string;           // one sentence of proof (positioning + proof asset)
+                                 // (services mode: concrete help offer / free value)
   lowFrictionAsk: string;        // small ask — NOT "hop on a 30-min call"
+                                 // (services mode: permission-framed ask, "if useful", "no pressure")
   sourceFieldIds: string[];      // research source IDs the reference cites
   assembledMessage: string;      // the four parts joined into a sendable message
+  mode?: OutreachMode;           // which prompt produced this — drives label rendering
+                                 // and allows future re-generation in the same mode
 }
 
 // =============================================
