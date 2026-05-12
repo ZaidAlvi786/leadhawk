@@ -16,7 +16,7 @@ const TONE_STYLES = {
   good:    { bg: 'rgba(30,111,112,0.12)', color: '#1E6F70', border: 'rgba(30,111,112,0.3)' },
   warn:    { bg: 'rgba(208,138,62,0.12)', color: '#D08A3E', border: 'rgba(208,138,62,0.3)' },
   bad:     { bg: 'rgba(176,67,42,0.12)',  color: '#fca5a5', border: 'rgba(176,67,42,0.3)' },
-  neutral: { bg: 'rgba(148,163,184,0.1)', color: '#D6CCB6', border: 'rgba(148,163,184,0.25)' },
+  neutral: { bg: 'rgba(148,163,184,0.1)', color: 'var(--text-primary)', border: 'rgba(148,163,184,0.25)' },
 } as const;
 
 export default function ReplyCoach() {
@@ -157,7 +157,7 @@ export default function ReplyCoach() {
               </span>
             </div>
             {analysis.reasoning && (
-              <p className="text-xs leading-relaxed" style={{ color: '#D6CCB6' }}>
+              <p className="text-xs leading-relaxed" style={{ color: 'var(--text-primary)' }}>
                 {analysis.reasoning}
               </p>
             )}
@@ -220,7 +220,7 @@ function PlaybookCard({ option, idx }: { option: { label: string; approach: stri
         </span>
       </div>
 
-      <p className="text-xs leading-relaxed" style={{ color: '#D6CCB6' }}>
+      <p className="text-xs leading-relaxed" style={{ color: 'var(--text-primary)' }}>
         <strong style={{ color: '#6E7F86' }}>Approach: </strong>
         {option.approach}
       </p>
