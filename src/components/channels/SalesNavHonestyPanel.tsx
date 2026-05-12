@@ -54,13 +54,13 @@ export default function SalesNavHonestyPanel() {
           <div className="pt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="p-3 rounded-lg" style={{ background: 'rgba(30,111,112,0.06)', border: '1px solid rgba(30,111,112,0.18)' }}>
               <p className="text-xs font-semibold mb-1" style={{ color: '#1E6F70' }}>✓ Sales Nav is good for</p>
-              <p className="text-xs" style={{ color: '#D6CCB6' }}>
+              <p className="text-xs" style={{ color: 'var(--text-primary)' }}>
                 Enterprise SDR motions, large TAMs (1000+ companies in the niche), well-funded ICPs that staff dedicated buyers.
               </p>
             </div>
             <div className="p-3 rounded-lg" style={{ background: 'rgba(176,67,42,0.06)', border: '1px solid rgba(176,67,42,0.18)' }}>
               <p className="text-xs font-semibold mb-1" style={{ color: '#fca5a5' }}>✗ Sales Nav is weak for</p>
-              <p className="text-xs" style={{ color: '#D6CCB6' }}>
+              <p className="text-xs" style={{ color: 'var(--text-primary)' }}>
                 Indie consultants, AI-services boutiques, intent-driven outreach. The signal-to-noise is too low when your TAM is &lt;500.
               </p>
             </div>
