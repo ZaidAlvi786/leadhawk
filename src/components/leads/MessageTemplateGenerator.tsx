@@ -15,7 +15,7 @@ import { useStore } from '@/lib/store';
 import { useTemplates } from '@/lib/useTemplates';
 import { generateOutreachComponents } from '@/lib/ai';
 import { runSendReadinessChecks, assembleComponents } from '@/lib/outreach';
-import type { OutreachComponents } from '@/lib/types';
+import type { OutreachComponents, OutreachMode } from '@/lib/types';
 import OutreachComponentDisplay from '@/components/outreach/OutreachComponentDisplay';
 import SendReadinessPanel from '@/components/outreach/SendReadinessPanel';
 import toast from 'react-hot-toast';
@@ -28,6 +28,7 @@ export default function MessageTemplateGenerator() {
   const [loading, setLoading] = useState(false);
   const [editing, setEditing] = useState(false);
   const [templateName, setTemplateName] = useState('');
+  const [mode, setMode] = useState<OutreachMode>('product');
 
   const selectedResearch = selectedResearchId ? leadResearch.find((x) => x.id === selectedResearchId) : null;
 
@@ -57,15 +58,20 @@ export default function MessageTemplateGenerator() {
         research: selectedResearch,
         positioning: userPositioning,
         yourName: userProfile.name || 'your name',
+        mode,
       });
       setComponents(result);
       if (!result.specificReference) {
-        toast.error('AI returned empty components — sources may be too thin');
+        // generateOutreachComponents now throws on network / truncation /
+        // parse failures, so reaching this branch means the model actually
+        // returned valid JSON with empty strings — a deliberate refusal.
+        toast.error('AI returned empty components — sources may be too thin, or your positioning is incomplete');
       } else {
         toast.success('Components generated — review the 5 checks below');
       }
-    } catch {
-      toast.error('Generation failed — check API keys');
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Unknown error';
+      toast.error(`Generation failed: ${msg}`);
     }
     setLoading(false);
   };
@@ -147,7 +153,15 @@ export default function MessageTemplateGenerator() {
         border: '1px solid rgba(58,143,163,0.18)',
       }}>
         <p className="text-xs leading-relaxed" style={{ color: '#1E6F70' }}>
-          <strong>Structure beats tone.</strong> Every message gets 4 components: a specific reference (cited from research), a pattern interrupt, an earned right, and a low-friction ask. The 5 checks below tell you when it's ready.
+          {mode === 'services' ? (
+            <>
+              <strong>One builder helping another.</strong> Every services-mode message gets 4 components: a specific reference (cited from research), a builder acknowledgement, a concrete help offer (free, no strings), and a permission-framed ask. No pitch lines, no meeting asks.
+            </>
+          ) : (
+            <>
+              <strong>Structure beats tone.</strong> Every message gets 4 components: a specific reference (cited from research), a pattern interrupt, an earned right, and a low-friction ask. The 5 checks below tell you when it&apos;s ready.
+            </>
+          )}
         </p>
       </div>
 
@@ -158,6 +172,43 @@ export default function MessageTemplateGenerator() {
           <h3 className="text-sm font-semibold" style={{ color: '#1E6F70', fontFamily: 'Syne' }}>
             Outreach Composer
           </h3>
+        </div>
+
+        {/* Mode toggle — drives a different prompt shape for product vs services
+            sellers. Services mode swaps the pitch line for a concrete help
+            offer and the ask for a permission-framed one. */}
+        <div>
+          <label className="text-xs font-medium block mb-1.5" style={{ color: 'var(--text-muted)' }}>
+            Message mode
+          </label>
+          <div className="grid grid-cols-2 gap-2">
+            {([
+              { id: 'product',  label: 'Product / SaaS',  sub: 'Pitch a product. Earned-right line + low-friction ask.' },
+              { id: 'services', label: 'Services / Help', sub: 'Offer concrete free value. No pitch, no meeting ask.' },
+            ] as const).map((opt) => {
+              const active = mode === opt.id;
+              return (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => { setMode(opt.id); setComponents(null); }}
+                  className="text-left rounded-lg p-3 transition-all"
+                  style={{
+                    background: active ? 'rgba(58,143,163,0.15)' : 'var(--bg-secondary)',
+                    border: `1px solid ${active ? 'rgba(58,143,163,0.45)' : 'var(--line)'}`,
+                    color: 'var(--text-primary)',
+                  }}
+                >
+                  <div className="text-xs font-semibold" style={{ color: active ? '#1E6F70' : 'var(--text-primary)' }}>
+                    {opt.label}
+                  </div>
+                  <div className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                    {opt.sub}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         <div>
@@ -182,7 +233,7 @@ export default function MessageTemplateGenerator() {
           <div className="rounded-lg p-3 text-xs" style={{
             background: 'rgba(58,143,163,0.08)',
             border: '1px solid rgba(58,143,163,0.15)',
-            color: '#D6CCB6',
+            color: 'var(--text-primary)',
           }}>
             <p className="font-semibold mb-1" style={{ color: '#1E6F70' }}>
               {selectedResearch.leadName}
