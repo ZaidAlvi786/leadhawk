@@ -113,8 +113,8 @@ export default function SyncPanel() {
       </div>
 
       <p className="text-xs leading-relaxed" style={{ color: '#6E7F86' }}>
-        Phase 8 migration is manual on purpose. <strong style={{ color: '#D6CCB6' }}>Push</strong> uploads your local data to cloud (safe to run anytime — uses upsert).
-        {' '}<strong style={{ color: '#D6CCB6' }}>Pull</strong> replaces your local state with the cloud copy (use on a fresh device).
+        Phase 8 migration is manual on purpose. <strong style={{ color: 'var(--text-primary)' }}>Push</strong> uploads your local data to cloud (safe to run anytime — uses upsert).
+        {' '}<strong style={{ color: 'var(--text-primary)' }}>Pull</strong> replaces your local state with the cloud copy (use on a fresh device).
       </p>
 
       {/* Buttons */}
