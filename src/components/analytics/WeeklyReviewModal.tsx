@@ -203,7 +203,7 @@ function WeekColumn({ title, m, highlights }: WeekColumnProps) {
     <div className="flex items-baseline justify-between text-xs">
       <span style={{ color: '#6E7F86' }}>{label}</span>
       <span className="flex items-baseline gap-1">
-        <span style={{ color: '#D6CCB6' }}>{value}</span>
+        <span style={{ color: 'var(--text-primary)' }}>{value}</span>
         {delta !== undefined && delta !== null && delta !== 0 && (
           <span style={{ color: delta >= 0 ? '#1E6F70' : '#B0432A', fontSize: '10px' }}>
             {formatDelta(delta)}
