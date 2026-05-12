@@ -28,10 +28,17 @@ interface DraftSource {
   field: ResearchField;
   content: string;
   url: string;
+  postedAt: string; // YYYY-MM-DD from <input type="date">; empty = unknown
 }
 
 function newDraftSource(field: ResearchField): DraftSource {
-  return { id: `src_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`, field, content: '', url: '' };
+  return {
+    id: `src_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+    field,
+    content: '',
+    url: '',
+    postedAt: '',
+  };
 }
 
 export default function LeadResearchPanel() {
@@ -72,6 +79,8 @@ export default function LeadResearchPanel() {
       content: d.content.trim(),
       url: d.url.trim() || undefined,
       capturedAt: now,
+      // YYYY-MM-DD → ISO at start of UTC day so age math is consistent
+      postedAt: d.postedAt ? new Date(d.postedAt + 'T00:00:00Z').toISOString() : undefined,
     }));
 
     const research: LeadResearch = {
@@ -172,8 +181,8 @@ export default function LeadResearchPanel() {
 
       {isOpen && (
         <div className="p-4 rounded-lg space-y-4 border" style={{
-          background: 'rgba(15,23,42,0.8)',
-          borderColor: 'rgba(58,143,163,0.2)',
+          background: 'var(--bg-card)',
+          borderColor: 'rgba(58,143,163,0.25)',
         }}>
           {/* Lead meta */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -217,15 +226,15 @@ export default function LeadResearchPanel() {
 
           {/* Source drafts */}
           <div className="space-y-2">
-            <p className="text-xs font-semibold" style={{ color: '#6E7F86' }}>
+            <p className="text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>
               Paste real sources ({validDrafts.length} ready)
             </p>
             {drafts.map((draft) => {
               const fieldDef = FIELD_PROMPTS.find((f) => f.field === draft.field) || FIELD_PROMPTS[0];
               return (
                 <div key={draft.id} className="rounded-lg p-3 space-y-2" style={{
-                  background: 'rgba(255,255,255,0.02)',
-                  border: '1px solid rgba(255,255,255,0.06)',
+                  background: 'var(--bg-secondary)',
+                  border: '1px solid var(--line)',
                 }}>
                   <div className="flex items-center gap-2">
                     <select
@@ -267,6 +276,21 @@ export default function LeadResearchPanel() {
                       d.id === draft.id ? { ...d, url: e.target.value } : d
                     ))}
                   />
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="date"
+                      className="input-field text-xs flex-1"
+                      title="When was this content posted? (optional, but recommended — keeps the AI from opening with stale posts)"
+                      max={new Date().toISOString().slice(0, 10)}
+                      value={draft.postedAt}
+                      onChange={(e) => setDrafts((prev) => prev.map((d) =>
+                        d.id === draft.id ? { ...d, postedAt: e.target.value } : d
+                      ))}
+                    />
+                    <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                      Posted date — leave blank if unknown
+                    </span>
+                  </div>
                 </div>
               );
             })}
@@ -302,7 +326,7 @@ export default function LeadResearchPanel() {
       {/* Saved research list */}
       <div className="space-y-2 max-h-[600px] overflow-y-auto">
         {leadResearch.length === 0 ? (
-          <p className="text-sm text-gray-500 p-3 text-center">
+          <p className="text-sm p-3 text-center" style={{ color: 'var(--text-muted)' }}>
             No research yet. Add a lead to start.
           </p>
         ) : (
@@ -314,8 +338,8 @@ export default function LeadResearchPanel() {
                 key={r.id}
                 className="rounded-lg border"
                 style={{
-                  background: 'rgba(30,41,59,0.6)',
-                  borderColor: 'rgba(58,143,163,0.2)',
+                  background: 'var(--bg-card)',
+                  borderColor: 'rgba(58,143,163,0.25)',
                 }}
               >
                 <div
@@ -323,7 +347,7 @@ export default function LeadResearchPanel() {
                   onClick={() => setExpanded(isExpanded ? null : r.id)}
                 >
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm flex items-center gap-2">
+                    <p className="font-semibold text-sm flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
                       {r.leadName}
                       <span className="px-2 py-0.5 rounded text-xs font-medium" style={{
                         background: 'rgba(58,143,163,0.2)',
@@ -331,11 +355,11 @@ export default function LeadResearchPanel() {
                       }}>
                         {ARCHETYPE_PROFILES[r.archetype]?.label || 'Other'}
                       </span>
-                      <span className="text-xs" style={{ color: '#6E7F86' }}>
+                      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
                         {r.sources.length} source{r.sources.length === 1 ? '' : 's'} · {r.hooks.length} hook{r.hooks.length === 1 ? '' : 's'}
                       </span>
                     </p>
-                    {r.leadCompany && <p className="text-xs text-gray-400">{r.leadCompany}</p>}
+                    {r.leadCompany && <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{r.leadCompany}</p>}
                   </div>
                   <div className="flex items-center gap-1">
                     <button
@@ -360,37 +384,37 @@ export default function LeadResearchPanel() {
                 </div>
 
                 {isExpanded && (
-                  <div className="px-3 pb-3 space-y-3 border-t" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
+                  <div className="px-3 pb-3 space-y-3 border-t" style={{ borderColor: 'var(--line)' }}>
                     {/* Summary */}
                     {r.summary && (
                       <div className="pt-3">
-                        <p className="text-xs font-semibold text-gray-400 mb-1">Summary</p>
-                        <p className="text-sm text-gray-300">{r.summary}</p>
+                        <p className="text-xs font-semibold mb-1" style={{ color: 'var(--text-secondary)' }}>Summary</p>
+                        <p className="text-sm" style={{ color: 'var(--text-primary)' }}>{r.summary}</p>
                       </div>
                     )}
 
                     {/* Sources */}
                     {r.sources.length > 0 && (
                       <div>
-                        <p className="text-xs font-semibold text-gray-400 mb-1">Sources</p>
+                        <p className="text-xs font-semibold mb-1" style={{ color: 'var(--text-secondary)' }}>Sources</p>
                         <div className="space-y-1">
                           {r.sources.map((s) => (
                             <div key={s.id} className="px-2 py-1 rounded text-xs" style={{
-                              background: 'rgba(255,255,255,0.03)',
-                              border: '1px solid rgba(255,255,255,0.05)',
+                              background: 'var(--bg-secondary)',
+                              border: '1px solid var(--line)',
                             }}>
                               <div className="flex items-center gap-1.5 mb-0.5">
-                                <Tag size={9} color="#6E7F86" />
-                                <span style={{ color: '#6E7F86', fontSize: '10px' }}>
+                                <Tag size={9} color="var(--text-muted)" />
+                                <span style={{ color: 'var(--text-muted)', fontSize: '10px' }}>
                                   {FIELD_PROMPTS.find((f) => f.field === s.field)?.label || s.field}
                                 </span>
                                 {s.url && (
                                   <a href={s.url} target="_blank" rel="noopener noreferrer" className="ml-auto" title={s.url}>
-                                    <ExternalLink size={9} color="#6E7F86" />
+                                    <ExternalLink size={9} color="var(--text-muted)" />
                                   </a>
                                 )}
                               </div>
-                              <p className="text-xs" style={{ color: '#D6CCB6' }}>{s.content.slice(0, 200)}{s.content.length > 200 ? '…' : ''}</p>
+                              <p className="text-xs" style={{ color: 'var(--text-primary)' }}>{s.content.slice(0, 200)}{s.content.length > 200 ? '…' : ''}</p>
                             </div>
                           ))}
                         </div>
@@ -400,7 +424,7 @@ export default function LeadResearchPanel() {
                     {/* Hooks */}
                     {r.hooks.length > 0 && (
                       <div>
-                        <p className="text-xs font-semibold text-gray-400 mb-1">
+                        <p className="text-xs font-semibold mb-1" style={{ color: 'var(--text-secondary)' }}>
                           Hooks (each cites a source on hover)
                         </p>
                         <div className="space-y-1">
@@ -413,7 +437,12 @@ export default function LeadResearchPanel() {
                             return (
                               <div
                                 key={i}
-                                className="flex items-start justify-between gap-2 px-2 py-1.5 rounded bg-surface-900 text-xs text-gray-300 group hover:bg-surface-800"
+                                className="flex items-start justify-between gap-2 px-2 py-1.5 rounded text-xs group"
+                                style={{
+                                  background: 'var(--bg-secondary)',
+                                  border: '1px solid var(--line)',
+                                  color: 'var(--text-primary)',
+                                }}
                                 title={`Cites: ${cited}`}
                               >
                                 <span className="flex-1">• {hook.text}</span>
@@ -426,7 +455,8 @@ export default function LeadResearchPanel() {
                                 </span>
                                 <button
                                   onClick={() => copy(hook.text)}
-                                  className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 hover:bg-surface-700 rounded"
+                                  className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded"
+                                  style={{ color: 'var(--text-secondary)' }}
                                 >
                                   <Copy size={11} />
                                 </button>
@@ -439,17 +469,17 @@ export default function LeadResearchPanel() {
 
                     {r.bestApproach && (
                       <div>
-                        <p className="text-xs font-semibold text-gray-400 mb-1">Recommended approach</p>
-                        <p className="text-xs text-gray-300">{r.bestApproach}</p>
+                        <p className="text-xs font-semibold mb-1" style={{ color: 'var(--text-secondary)' }}>Recommended approach</p>
+                        <p className="text-xs" style={{ color: 'var(--text-primary)' }}>{r.bestApproach}</p>
                       </div>
                     )}
 
                     {r.redFlags.length > 0 && (
                       <div>
-                        <p className="text-xs font-semibold" style={{ color: '#CC6B4F' }}>⚠️ Red flags (avoid)</p>
+                        <p className="text-xs font-semibold" style={{ color: '#B0432A' }}>⚠️ Red flags (avoid)</p>
                         <div className="space-y-1">
                           {r.redFlags.map((flag, i) => (
-                            <p key={i} className="text-xs text-gray-400">• {flag}</p>
+                            <p key={i} className="text-xs" style={{ color: 'var(--text-secondary)' }}>• {flag}</p>
                           ))}
                         </div>
                       </div>

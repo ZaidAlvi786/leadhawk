@@ -4,13 +4,13 @@
 // mechanism-reveal, proof, take) and a pipeline-driven topic picker that
 // replaces the killed trending-topics engine.
 
-import React, { useState } from 'react';
-import { Wand2, ExternalLink, Copy, Trash2, Hash, Eye, Image, Download, Lightbulb } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Wand2, ExternalLink, Copy, Trash2, Hash, Eye, Image, Download, Lightbulb, RefreshCw } from 'lucide-react';
 import { useStore } from '@/lib/store';
-import { generateLinkedInPost } from '@/lib/ai';
+import { generateLinkedInPost, generateLibraryTopics } from '@/lib/ai';
 import { buildLinkedInPostURL, isPostTooLongForURL, INDUSTRIES } from '@/lib/utils';
 import { generatePostImage, downloadImage, IMAGE_STYLE_OPTIONS, IMAGE_FAMILIES, type ImageStyle } from '@/lib/postImage';
-import { TOPIC_SUGGESTIONS, TOPIC_CATEGORIES } from '@/lib/postTopics';
+import { TOPIC_SUGGESTIONS, TOPIC_CATEGORIES, type TopicSuggestion } from '@/lib/postTopics';
 import { STRATEGIC_POST_TYPES, primaryIcpLabel } from '@/lib/icp';
 import type { LinkedInPost, LinkedInPostType } from '@/lib/types';
 import IcpTagPicker from '@/components/icp/IcpTagPicker';
@@ -19,8 +19,14 @@ import toast from 'react-hot-toast';
 
 const STRATEGIC_TYPES: LinkedInPostType[] = ['pain-naming', 'mechanism-reveal', 'proof', 'take'];
 
+// 48h cache TTL — matches the project-wide pattern for AI-generated content.
+const LIBRARY_TTL_MS = 48 * 60 * 60 * 1000;
+
 export default function LinkedInPostGenerator() {
-  const { posts, addPost, deletePost, userProfile, userPositioning } = useStore();
+  const {
+    posts, addPost, deletePost, userProfile, userPositioning,
+    libraryTopics, libraryTopicsGeneratedAt, setLibraryTopics,
+  } = useStore();
   const defaultIcp = primaryIcpLabel(userPositioning);
   const [form, setForm] = useState({
     topic: '',
@@ -40,6 +46,56 @@ export default function LinkedInPostGenerator() {
   const [topicCategory, setTopicCategory] = useState<string>('trending');
   const [topicSearch, setTopicSearch] = useState('');
   const [imageFamily, setImageFamily] = useState<string>('all');
+  const [libraryLoading, setLibraryLoading] = useState(false);
+
+  // Cached AI topics are the primary library; hardcoded TOPIC_SUGGESTIONS is
+  // the offline fallback. The shape matches TopicSuggestion (minus the id,
+  // which we synthesize from index since IDs aren't load-bearing here).
+  const displayedLibrary: TopicSuggestion[] = useMemo(() => {
+    if (libraryTopics.length > 0) {
+      return libraryTopics.map((t, i) => ({
+        id: `ai-topic-${i}`,
+        topic: t.topic,
+        postType: t.postType,
+        category: t.category,
+        emoji: t.emoji,
+        trending: t.trending,
+      }));
+    }
+    return TOPIC_SUGGESTIONS;
+  }, [libraryTopics]);
+
+  const isLibraryStale = useMemo(() => {
+    if (!libraryTopicsGeneratedAt) return true;
+    return Date.now() - new Date(libraryTopicsGeneratedAt).getTime() > LIBRARY_TTL_MS;
+  }, [libraryTopicsGeneratedAt]);
+
+  const refreshLibrary = async () => {
+    setLibraryLoading(true);
+    try {
+      const topics = await generateLibraryTopics(userPositioning, 70);
+      if (topics.length === 0) {
+        toast.error('AI returned no topics — falling back to the curated list');
+        return;
+      }
+      setLibraryTopics(topics);
+      toast.success(`Generated ${topics.length} fresh topics`);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Unknown error';
+      toast.error(`Topic refresh failed: ${msg}`);
+    } finally {
+      setLibraryLoading(false);
+    }
+  };
+
+  // Auto-generate on first library open when the cache is empty or expired.
+  // Keeps the UX smooth without forcing the user to hit refresh manually.
+  useEffect(() => {
+    if (showLibrary && libraryTopics.length === 0 && !libraryLoading) {
+      refreshLibrary();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showLibrary]);
 
   const handleGenerate = async () => {
     if (!form.topic) { toast.error('Pick a prospect pain or write your own topic first'); return; }
@@ -163,28 +219,51 @@ export default function LinkedInPostGenerator() {
           />
         </div>
 
-        {/* Static topic library — collapsed by default, opt-in */}
+        {/* AI-generated topic library — primary path, hardcoded list is fallback */}
         <div className="mb-4">
-          <button
-            onClick={() => setShowLibrary(!showLibrary)}
-            className="text-xs flex items-center gap-1 px-2 py-1 rounded-lg"
-            style={{
-              background: showLibrary ? 'rgba(58,143,163,0.12)' : 'rgba(255,255,255,0.03)',
-              color: showLibrary ? '#1E6F70' : '#6E7F86',
-              border: '1px solid rgba(58,143,163,0.15)',
-            }}
-          >
-            <Lightbulb size={11} />
-            {showLibrary ? 'Hide' : 'Browse'} curated topic library ({TOPIC_SUGGESTIONS.length})
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowLibrary(!showLibrary)}
+              className="text-xs flex items-center gap-1 px-2 py-1 rounded-lg"
+              style={{
+                background: showLibrary ? 'rgba(58,143,163,0.12)' : 'rgba(255,255,255,0.03)',
+                color: showLibrary ? '#1E6F70' : '#6E7F86',
+                border: '1px solid rgba(58,143,163,0.15)',
+              }}
+            >
+              <Lightbulb size={11} />
+              {showLibrary ? 'Hide' : 'Browse'} {libraryTopics.length > 0 ? 'AI topic library' : 'topic library'} ({displayedLibrary.length})
+            </button>
+            {showLibrary && (
+              <button
+                onClick={refreshLibrary}
+                disabled={libraryLoading}
+                className="text-xs flex items-center gap-1 px-2 py-1 rounded-lg transition-all"
+                style={{
+                  background: 'rgba(58,143,163,0.08)',
+                  color: '#1E6F70',
+                  border: '1px solid rgba(58,143,163,0.2)',
+                  opacity: libraryLoading ? 0.5 : 1,
+                }}
+                title={libraryTopicsGeneratedAt
+                  ? `Last generated ${new Date(libraryTopicsGeneratedAt).toLocaleString()}`
+                  : 'Generate fresh topics with AI'}
+              >
+                <RefreshCw size={11} className={libraryLoading ? 'animate-spin' : ''} />
+                {libraryLoading ? 'Generating…' : (libraryTopics.length === 0 ? 'Generate with AI' : 'Refresh')}
+              </button>
+            )}
+          </div>
 
           {showLibrary && (
             <div className="mt-2 p-4 rounded-xl" style={{
               background: 'rgba(58,143,163,0.04)',
               border: '1px solid rgba(58,143,163,0.12)',
             }}>
-              <p className="text-xs mb-2" style={{ color: '#6E7F86' }}>
-                Generic prompts when your pipeline is too thin to inspire one. Topics from your actual prospects (above) almost always perform better.
+              <p className="text-xs mb-2" style={{ color: 'var(--text-muted)' }}>
+                {libraryTopics.length > 0
+                  ? <>AI-generated and tailored to your positioning. {isLibraryStale && <span style={{ color: '#D08A3E' }}>(Cache is &gt;48h old — refresh for fresh ideas.)</span>} Topics from your actual prospects (above) still perform better.</>
+                  : <>Generic prompts when your pipeline is too thin to inspire one. Topics from your actual prospects (above) almost always perform better.</>}
               </p>
               <input
                 className="input-field text-sm w-full mb-3"
@@ -195,10 +274,10 @@ export default function LinkedInPostGenerator() {
               <div className="flex flex-wrap gap-1.5 mb-3">
                 {TOPIC_CATEGORIES.map((cat) => {
                   const count = cat.id === 'all'
-                    ? TOPIC_SUGGESTIONS.length
+                    ? displayedLibrary.length
                     : cat.id === 'trending'
-                      ? TOPIC_SUGGESTIONS.filter((t) => t.trending).length
-                      : TOPIC_SUGGESTIONS.filter((t) => t.category === cat.id).length;
+                      ? displayedLibrary.filter((t) => t.trending).length
+                      : displayedLibrary.filter((t) => t.category === cat.id).length;
                   return (
                     <button
                       key={cat.id}
@@ -218,7 +297,13 @@ export default function LinkedInPostGenerator() {
                 })}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-72 overflow-y-auto pr-1">
-                {TOPIC_SUGGESTIONS
+                {libraryLoading && displayedLibrary === TOPIC_SUGGESTIONS && libraryTopics.length === 0 ? (
+                  <div className="col-span-full flex items-center justify-center py-10 gap-2" style={{ color: 'var(--text-muted)' }}>
+                    <RefreshCw size={14} className="animate-spin" />
+                    <span className="text-xs">Generating topics tailored to your positioning…</span>
+                  </div>
+                ) : null}
+                {displayedLibrary
                   .filter((t) => {
                     if (topicCategory === 'trending') return t.trending;
                     if (topicCategory !== 'all' && t.category !== topicCategory) return false;
@@ -237,7 +322,7 @@ export default function LinkedInPostGenerator() {
                       }}
                     >
                       <span className="text-sm flex-shrink-0 mt-0.5">{suggestion.emoji}</span>
-                      <div className="text-xs leading-relaxed" style={{ color: '#D6CCB6' }}>
+                      <div className="text-xs leading-relaxed" style={{ color: 'var(--text-primary)' }}>
                         {suggestion.topic}
                       </div>
                     </button>
@@ -331,7 +416,7 @@ export default function LinkedInPostGenerator() {
             <div className="text-sm p-4 rounded-xl mb-3 whitespace-pre-wrap leading-relaxed" style={{
               background: 'rgba(30,111,112,0.04)',
               border: '1px solid rgba(30,111,112,0.1)',
-              color: '#D6CCB6',
+              color: 'var(--text-primary)',
             }}>
               {generated.content}
             </div>

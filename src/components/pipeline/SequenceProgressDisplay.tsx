@@ -78,7 +78,7 @@ export default function SequenceProgressDisplay({
 
       {/* Current step info */}
       {step && (
-        <div className="text-xs" style={{ color: '#D6CCB6' }}>
+        <div className="text-xs" style={{ color: 'var(--text-primary)' }}>
           <span className="font-medium">{step.subject}</span>
           <span className="text-gray-500"> — in {step.delayDays}d</span>
         </div>

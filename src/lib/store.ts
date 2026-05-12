@@ -68,6 +68,15 @@ export interface AppState {
   addPost: (post: LinkedInPost) => void;
   deletePost: (id: string) => void;
 
+  // AI-generated topic library — cached for 48h, refreshed on demand.
+  // Replaces the static 300-topic list as the primary source; the static
+  // list is now only the offline fallback. Persisted so users don't pay
+  // the generation cost every page load.
+  libraryTopics: import('./ai').GeneratedLibraryTopic[];
+  libraryTopicsGeneratedAt: string | null;
+  setLibraryTopics: (topics: import('./ai').GeneratedLibraryTopic[]) => void;
+  clearLibraryTopics: () => void;
+
   // Growth Plans
   growthPlans: GrowthPlan[];
   activePlan: GrowthPlan | null;
@@ -189,6 +198,11 @@ export const useStore = create<AppState>()(
       addPost: (post: LinkedInPost) => set((s) => ({ posts: [post, ...s.posts] })),
       deletePost: (id: string) => set((s) => ({ posts: s.posts.filter((p) => p.id !== id) })),
 
+      libraryTopics: [],
+      libraryTopicsGeneratedAt: null,
+      setLibraryTopics: (topics) => set({ libraryTopics: topics, libraryTopicsGeneratedAt: new Date().toISOString() }),
+      clearLibraryTopics: () => set({ libraryTopics: [], libraryTopicsGeneratedAt: null }),
+
       growthPlans: [] as GrowthPlan[],
       activePlan: null as GrowthPlan | null,
       addGrowthPlan: (plan: GrowthPlan) => set((s) => ({ growthPlans: [...s.growthPlans, plan] })),
@@ -270,6 +284,8 @@ export const useStore = create<AppState>()(
         sequences: state.sequences,                     // ~60KB at 20 sequences
         pipelineLeads: state.pipelineLeads,             // ~600KB at 1k leads. Per-lead intent signals live in `intentSignals` (above), not on the lead itself, to keep the leads collection compact.
         outcomes: state.outcomes,                       // ~200KB at 1k outcomes (Phase 5 will populate)
+        libraryTopics: state.libraryTopics,             // ~10KB at 70 topics — cached AI library, refreshed manually or after 48h
+        libraryTopicsGeneratedAt: state.libraryTopicsGeneratedAt,
       }),
     }
   )

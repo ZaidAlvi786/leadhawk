@@ -308,7 +308,7 @@ export default function BulkImportDialog({ onClose }: BulkImportDialogProps) {
             <div className="font-medium mb-1.5" style={{ color: '#1E6F70' }}>
               CSV Template:
             </div>
-            <code style={{ color: '#D6CCB6', fontSize: '11px', lineHeight: '1.5' }}>
+            <code style={{ color: 'var(--text-primary)', fontSize: '11px', lineHeight: '1.5' }}>
               firstName,lastName,email,title,company,industry
               <br />
               John,Doe,john@example.com,CEO,Acme,Tech

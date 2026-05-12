@@ -289,7 +289,7 @@ export default function TemplatesPage() {
                     </div>
                   )}
 
-                  <div className="p-2 rounded text-xs whitespace-pre-wrap leading-relaxed" style={{ background: 'rgba(255,255,255,0.02)', color: '#D6CCB6' }}>
+                  <div className="p-2 rounded text-xs whitespace-pre-wrap leading-relaxed" style={{ background: 'rgba(255,255,255,0.02)', color: 'var(--text-primary)' }}>
                     {template.body}
                   </div>
                 </div>

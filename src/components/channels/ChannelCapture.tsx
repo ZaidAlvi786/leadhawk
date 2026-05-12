@@ -373,7 +373,7 @@ function Detected({ label, value }: { label: string; value: string | undefined }
     <div className="flex items-center gap-2 text-xs">
       <span className="w-20 flex-shrink-0" style={{ color: '#6E7F86' }}>{label}:</span>
       {value
-        ? <span style={{ color: '#D6CCB6' }} className="truncate">
+        ? <span style={{ color: 'var(--text-primary)' }} className="truncate">
             {value.startsWith('http') ? <a href={value} target="_blank" rel="noopener noreferrer" className="underline">{value} <ExternalLink size={9} className="inline" /></a> : value}
           </span>
         : <span style={{ color: '#6E7F86' }}>—</span>}

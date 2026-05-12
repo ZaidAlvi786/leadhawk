@@ -4,7 +4,7 @@
 
 import type {
   LeadResearch, LeadResearchSource, LeadArchetype, UserPositioning,
-  OutreachComponents, ReplyAnalysis, ReplyClassification, ReplyPlaybookOption,
+  OutreachComponents, OutreachMode, ReplyAnalysis, ReplyClassification, ReplyPlaybookOption,
   LinkedInPostType, IntentSignal,
   DiscoveryBrief, DiscoveryCallPhase, CallDebrief, Proposal,
 } from './types';
@@ -51,6 +51,7 @@ export interface GenerateOutreachComponentsParams {
   research: LeadResearch;             // REQUIRED — no research, no message
   positioning?: UserPositioning;
   yourName: string;
+  mode?: OutreachMode;                // defaults to 'product' for back-compat
 }
 
 /**
@@ -60,16 +61,88 @@ export interface GenerateOutreachComponentsParams {
  * ID — uncited references are filtered out at the boundary.
  */
 export async function generateOutreachComponents(params: GenerateOutreachComponentsParams): Promise<OutreachComponents> {
+  // Annotate sources with age so the model can prefer fresh content. Sources
+  // without postedAt fall back to capturedAt (still useful — at minimum tells
+  // the model "this is what the user could find," which is itself signal).
+  const now = Date.now();
   const sourceList = params.research.sources
-    .map((s) => `[${s.id}] ${s.field}: ${s.content.slice(0, 400)}`)
+    .map((s) => {
+      const dateStr = s.postedAt || s.capturedAt;
+      const ageDays = Math.floor((now - new Date(dateStr).getTime()) / (1000 * 60 * 60 * 24));
+      const ageTag = s.postedAt
+        ? (ageDays > 60 ? `STALE (posted ${ageDays}d ago)` : `posted ${ageDays}d ago`)
+        : '(post date unknown)';
+      return `[${s.id}] ${s.field} — ${ageTag}: ${s.content.slice(0, 400)}`;
+    })
     .join('\n');
 
-  const baseSystem = `You write cold outreach DMs that survive a saturated inbox. Every message you produce has FOUR mandatory components:
+  const mode: OutreachMode = params.mode || 'product';
 
-1. SPECIFIC REFERENCE — names something real about the prospect, drawn ONLY from the RESEARCH SOURCES below. Cite the source ID(s). If sources are empty, refuse: return all components as empty strings.
-2. PATTERN INTERRUPT — a question, an admission, or a sharp observation that breaks the "another sales DM" frame. NOT flattery, NOT a setup line.
-3. EARNED RIGHT — one sentence of relevant proof connected to the user's POSITIONING above. Reference the user's mechanism or proof asset; do not invent past clients.
-4. LOW-FRICTION ASK — a small ask. Examples of GOOD asks: ${LOW_FRICTION_CTA_EXAMPLES.map((e) => `"${e}"`).join(', ')}. NEVER use any of these high-friction phrases: ${HIGH_FRICTION_CTA_PHRASES.join(', ')}.
+  // Mode-specific instructions for components 2-4. Component 1 (specific
+  // reference) and the universal rules (length, citations, banned phrases)
+  // are identical regardless of mode — only the *content shape* of the body
+  // and ask differs. Keeping the same 4-field schema means the UI, send-
+  // readiness checks, and assembled message logic stay untouched.
+  const PRODUCT_BODY = `2. PATTERN INTERRUPT — must STAND ALONE as a thought worth replying to. NOT a connector to your offer, NOT a rhetorical question that routes to your service, NOT a reflection on their feelings.
+
+   BANNED PIVOT-QUESTION FORMS: "Is shipping X ever held up by [my-product-category]?", "Does [my-product-area] ever slow you down?", "When you [their work], is [my topic] a pain?" — every cold outreach AI writes these and readers spot them instantly.
+
+   BANNED COMMENT-STYLE / VALIDATION FORMS (these make it read like a LinkedIn comment, not a DM):
+   - "That [feeling/observation] is something I deeply understand"
+   - "[X] really resonates with me" / "still resonates"
+   - "Love how you..." / "Your perspective on X is brilliant"
+   - "I get it" / "I feel this" / "Couldn't agree more"
+   - Mirroring their emotion back at them ("the protectiveness...", "the excitement of...")
+   - Any sentence that ENDS the thought instead of inviting a reply
+
+   INSTEAD do ONE of these — pick whichever fits the source:
+   - Ask a real, specific question about their work that they would actually want to answer ("Curious how you're handling [concrete thing from the post] when [edge case] hits?")
+   - Add a sharp, contrarian, or non-obvious observation that earns a reply ("Most teams doing X end up tripping on Y — wondering if you've hit that yet")
+   - State a one-line micro-take that sits next to their post rather than under it ("Saw three of your competitors ship the same thing this month — yours is the only version that [specific differentiator]")
+
+3. EARNED RIGHT — one sentence of relevant proof connected to the user's POSITIONING above. Reference the user's mechanism or proof asset; do not invent past clients. Keep it factual, not boastful. "I help [ICP] [outcome] by [mechanism]" — not "I specialize in" or "I'm passionate about."
+
+4. LOW-FRICTION ASK — a small ask. Examples of GOOD asks: ${LOW_FRICTION_CTA_EXAMPLES.map((e) => `"${e}"`).join(', ')}. NEVER use any of these high-friction phrases: ${HIGH_FRICTION_CTA_PHRASES.join(', ')}.`;
+
+  const SERVICES_BODY = `2. BUILDER ACKNOWLEDGEMENT — one short, factual recognition of what they're actually building or shipping (drawn from the cited source). Builders respect direct recognition; they do NOT respect gushing. Good: "Looks like you're putting real bets on agentic systems." Bad: "Your vision is inspiring" / "I love what you're building" / mirroring their emotion. NO validation phrases, NO commentary on their feelings — just acknowledge the substance of the work.
+
+3. HELP OFFER — a CONCRETE, FREE piece of value tailored to what you noticed in the research. This is the heart of services-mode outreach: you're not pitching, you're offering hands-on help. Examples:
+   - "If useful, happy to do a quick teardown of [specific thing from their post] — no strings."
+   - "Built a similar [feature/system] last quarter — could share the post-mortem if it'd save you a few weeks."
+   - "Spent 20 min looking at [their public artifact] and have 2 concrete suggestions if you want them."
+
+   ABSOLUTE RULES for this line:
+   - Must be a SPECIFIC offer (a teardown, a code review, a doc, a 30-min look) — not "I help VPs of Engineering achieve X."
+   - Must be FREE / no-strings. The phrase "no pitch" / "no strings" / "happy to" should appear naturally.
+   - Must NOT use the pitch formula "I help [ICP] [outcome] by [mechanism]" — that's product-mode language, not services-mode.
+   - Must NOT invent past clients. If you reference past work, it must be in general terms ("ran into the same problem at a previous client" — not "helped Acme Co reduce onboarding by 40%").
+
+4. PERMISSION-FRAMED ASK — a one-line ask that gives them an easy out. The aim is "low-pressure, builder-to-builder." Examples:
+   - "Want me to send it?"
+   - "Worth a quick reply if useful, otherwise no worries."
+   - "Happy to share — say the word."
+   - "If now isn't the time, no stress."
+   NEVER use any of these high-friction phrases: ${HIGH_FRICTION_CTA_PHRASES.join(', ')}. The ask must NOT request a meeting, a call, or "15 minutes" — services mode earns the call AFTER the help has been delivered, never before.`;
+
+  const baseSystem = `You write cold outreach DMs that survive a saturated inbox.
+
+CONTEXT: This is a 1:1 DM to a stranger. It is NOT a comment under their post. The reader will see your message as the FIRST sentence in a brand-new inbox thread — they have no idea who you are. The job is to INITIATE a conversation, not REACT to theirs. A great DM feels like "a thoughtful stranger noticed something specific and wants to ask you one question." A bad DM feels like a LinkedIn comment that got copy-pasted into someone's DMs.
+
+MODE: ${mode === 'services' ? `SERVICES — the sender offers hands-on services (consulting, agency work, freelance development, code reviews, audits). The product IS the help. The opener should acknowledge what the prospect is building and offer concrete free value, NOT pitch a product or push for a meeting. Treat the message as "one builder helping another," not "salesperson chasing a deal."` : `PRODUCT — the sender has a product/SaaS/tool to sell. The opener should establish a specific reference, deliver a real pattern-breaker, prove the right to be in the inbox (positioning + proof), and end with a low-friction ask.`}
+
+Every message has FOUR mandatory components:
+
+1. SPECIFIC REFERENCE — names something real about the prospect, drawn ONLY from the RESEARCH SOURCES below. Cite the source ID(s). PREFER sources posted within the last 30 days. If a source is marked STALE, only use it as a last resort and never as the opener — stale references signal scraping, not engagement. Keep this line FACTUAL and brief — no gushing, no admiration. "Saw your post on X" or "Read your piece on X" — not "Your post on X still resonates with me." If sources are empty, refuse: return all components as empty strings.
+
+${mode === 'services' ? SERVICES_BODY : PRODUCT_BODY}
+
+ANTI-TEMPLATING (most important rule):
+The Specific Reference + ${mode === 'services' ? 'Builder Acknowledgement' : 'Pattern Interrupt'} MUST read like they could only have been written for THIS prospect after actually reading their post. Failure modes to avoid:
+- COMMENT MODE — message validates the prospect's feelings or mirrors their emotion. Wrong audience. A comment lives under their post; a DM lives in their inbox.
+- PIVOT MODE — message uses their content as a doorway to your pitch ("Is X ever held up by Y?"). Lazy and obvious.
+${mode === 'services' ? '- SALES MODE — message reads like a sales pitch instead of an offer of help. If the third line could be lifted verbatim into a SaaS landing page hero, rewrite it as a specific offer of hands-on help.' : ''}
+
+Before emitting, mentally check: would this read fine as the FIRST line in their inbox to a complete stranger? If it feels like it should have an upvote button next to it, rewrite it.${mode === 'services' ? ` And: would a senior engineer reading this think "ah, a helpful peer" or "ugh, another sales DM"? If the latter, rewrite.` : ''}
 
 ABSOLUTE RULES (these will be machine-checked):
 - Whole assembled message MUST be under 300 characters total.
@@ -93,7 +166,7 @@ Return ONLY this JSON shape (no preamble, no markdown):
 - Role: ${params.leadTitle || 'unknown'}
 - Company: ${params.leadCompany || 'unknown'}
 
-RESEARCH SOURCES (cite these IDs — never reference anything outside this list):
+RESEARCH SOURCES (cite these IDs — never reference anything outside this list. Each entry shows how old the underlying content is; prefer recent ones):
 ${sourceList || '(none — refuse to generate; return empty strings)'}
 
 Sender's name: ${params.yourName}
@@ -101,23 +174,27 @@ Sender's name: ${params.yourName}
 Return ONLY the JSON.`;
 
   const validIds = new Set(params.research.sources.map((s) => s.id));
-  let parsed: Partial<OutreachComponents> = {};
 
-  try {
-    const raw = await callAI(system, user, { responseFormat: 'json', maxTokens: 1000 });
-    const obj = JSON.parse(extractJSON(raw));
-    parsed = {
-      specificReference: typeof obj.specificReference === 'string' ? obj.specificReference : '',
-      patternInterrupt: typeof obj.patternInterrupt === 'string' ? obj.patternInterrupt : '',
-      earnedRight: typeof obj.earnedRight === 'string' ? obj.earnedRight : '',
-      lowFrictionAsk: typeof obj.lowFrictionAsk === 'string' ? obj.lowFrictionAsk : '',
-      sourceFieldIds: Array.isArray(obj.sourceFieldIds)
-        ? obj.sourceFieldIds.filter((id: unknown) => typeof id === 'string' && validIds.has(id))
-        : [],
-    };
-  } catch {
-    // fall through with empty parsed → caller sees blank components and can retry
-  }
+  // 2500 tokens because Gemini 2.5 Flash spends a chunk of `maxOutputTokens` on
+  // internal "thinking" before emitting visible output. 1000 was tight enough
+  // that the visible JSON got truncated mid-string, which then surfaced to the
+  // user as "sources may be too thin" — totally misleading.
+  const raw = await callAI(system, user, { responseFormat: 'json', maxTokens: 2500 });
+
+  // Let JSON.parse throw on its own — the caller distinguishes "AI threw"
+  // (network / truncation / malformed JSON) from "AI returned valid empties"
+  // (deliberate refusal because sources were insufficient). The previous
+  // silent catch collapsed both into the same blank-components state.
+  const obj = JSON.parse(extractJSON(raw));
+  const parsed: Partial<OutreachComponents> = {
+    specificReference: typeof obj.specificReference === 'string' ? obj.specificReference : '',
+    patternInterrupt: typeof obj.patternInterrupt === 'string' ? obj.patternInterrupt : '',
+    earnedRight: typeof obj.earnedRight === 'string' ? obj.earnedRight : '',
+    lowFrictionAsk: typeof obj.lowFrictionAsk === 'string' ? obj.lowFrictionAsk : '',
+    sourceFieldIds: Array.isArray(obj.sourceFieldIds)
+      ? obj.sourceFieldIds.filter((id: unknown) => typeof id === 'string' && validIds.has(id))
+      : [],
+  };
 
   const components: OutreachComponents = {
     specificReference: parsed.specificReference || '',
@@ -126,6 +203,7 @@ Return ONLY the JSON.`;
     lowFrictionAsk: parsed.lowFrictionAsk || '',
     sourceFieldIds: parsed.sourceFieldIds || [],
     assembledMessage: '',
+    mode,
   };
   components.assembledMessage = assembleComponents(components);
   return components;
@@ -553,8 +631,65 @@ export async function callAI(systemPrompt: string, userPrompt: string, options: 
   return data.result;
 }
 
+// Repair unescaped double quotes INSIDE string values. Gemini (even in JSON
+// mode) occasionally emits things like:
+//   "specificReference": "Saw your post about "Billie the Bear" today."
+// which is invalid JSON — the second `"` closes the string prematurely. We
+// walk char-by-char and disambiguate a real closing quote from an inner
+// unescaped one by looking at the next non-whitespace char: if it's one of
+// `, } ] :` (or EOF), the quote is structural; otherwise it's textual and
+// gets escaped. Robust against nested quotes anywhere in the value.
+function repairUnescapedQuotes(json: string): string {
+  let out = '';
+  let inString = false;
+  let escaping = false;
+
+  for (let i = 0; i < json.length; i++) {
+    const ch = json[i];
+
+    if (escaping) {
+      out += ch;
+      escaping = false;
+      continue;
+    }
+
+    if (ch === '\\') {
+      out += ch;
+      escaping = true;
+      continue;
+    }
+
+    if (ch === '"') {
+      if (!inString) {
+        out += ch;
+        inString = true;
+      } else {
+        // Peek past whitespace for the next meaningful char
+        let j = i + 1;
+        while (j < json.length && /\s/.test(json[j])) j++;
+        const next = json[j];
+        if (next === ',' || next === '}' || next === ']' || next === ':' || j >= json.length) {
+          out += ch;
+          inString = false;
+        } else {
+          out += '\\"';
+        }
+      }
+      continue;
+    }
+
+    out += ch;
+  }
+
+  return out;
+}
+
 // Sanitize common LLM JSON errors
 function sanitizeJSON(json: string): string {
+  // Repair unescaped inner double quotes BEFORE the simpler fixes, since
+  // trailing-comma stripping etc. don't help if the JSON is unparseable
+  // due to bad string termination.
+  json = repairUnescapedQuotes(json);
   // Remove trailing commas before } or ]
   json = json.replace(/,(\s*[}\]])/g, '$1');
   // Replace single quotes with double quotes in property names (simple heuristic)
@@ -669,21 +804,94 @@ export async function generateLinkedInPost(params: GeneratePostParams): Promise<
     ? `\n\nThe topic came from a real prospect in the user's pipeline. Their pain, in their words:\n"${params.pipelineContext}"\nLet this ground the post — write as if the prospect is one of many feeling this, not as if it's the only example.`
     : '';
 
-  const baseSystem = `You are a LinkedIn content strategist who writes posts that reinforce the user's POSITIONING above and drive a specific funnel objective.${typeGuidance}${icpLine}${pipelineLine}
+  const baseSystem = `You are a LinkedIn content strategist who writes posts that reinforce the user's POSITIONING above and drive a specific funnel objective.
+
+PRIORITY ORDER: The UNIVERSAL RULES below (hook, banned openers, specificity, ending) take priority over EVERY other instruction in this prompt, including the strategy-specific guidance further down. If the strategy guidance says to "open with the symptom" but the hook rule requires a specific claim, follow the HOOK rule. The strategy guidance specializes the universal rules — it does NOT override them.
+
+HOOK (FIRST 2 LINES — most important rule):
+The first 2 lines are the entire post for most readers (everything else collapses behind "see more"). They MUST contain a SPECIFIC, FALSIFIABLE CLAIM — not a relatable scenario. A great hook makes the reader either think "wait, is that true?" or "yes, finally someone said it." A bad hook describes a feeling.
+
+Good hook patterns:
+- A specific technical claim: "Stripe's metered billing API silently drops events at 100 req/s per object."
+- A surprising number: "We lost $34K in MRR to a single race condition in our usage pipeline."
+- A contrarian one-liner: "Usage-based pricing isn't broken — your reconciliation pipeline is."
+- A specific named-tool observation: "Cursor at $200/mo isn't the problem. The 50 other AI SaaS subscriptions on the same card are."
+
+BANNED OPENER PATTERNS (these mark a post as AI-generated within 2 seconds):
+- "It's [day of week] morning/afternoon..."  (Monday morning, Friday afternoon — every AI post starts here)
+- "Imagine this:" / "Picture this:" / "Picture the scene"
+- "You know the [one/feeling/drill]" / "You know how when..."
+- "Let me tell you about [the time when]..."
+- "Most [VPs / founders / engineers] don't realize..."  (vague-audience opener)
+- "Your CEO asks for [X]. Again." (second-person manufactured-pain opener — extremely common AI tell)
+- ANY opener that describes a relatable workplace scene without a specific number, tool, or claim in it
+If you're tempted by these, rewrite the opener with a concrete claim instead.
+
+SPECIFICITY REQUIREMENT:
+Every post MUST contain at least TWO of the following anchors (more is better):
+- A real number or metric (req/s, $ amount, % delta, latency figure, count)
+- A named tool, API, framework, or company (Stripe, Cursor, LangGraph, Anthropic, etc.)
+- A specific technical detail (rate limit, schema quirk, race condition, retry behavior)
+- A falsifiable claim someone could argue with ("X is wrong because Y")
+- A contrarian opinion that names the conventional view AND dismantles it
+Posts that fail the specificity test — pure vibes / pure empathy / pure "we feel your pain" — never get reach. Engineering audiences trade specifics, not sympathy.
 
 WRITING STYLE:
-- Sound like a real person sharing a real experience or insight — never like a copywriter
-- Open with a strong hook in the first 2 lines (everything else is hidden behind "see more")
-- Use SHORT paragraphs — 1-2 sentences each, separated by blank lines
-- Use emojis sparingly to break up sections (one per major section is plenty)
-- If you reference a "story" or "number" or "example", it MUST come from the user's prompt/pipelineContext above or be labeled "(hypothetical)". Do not invent past clients or wins.
-- Avoid sales-bot phrases: "revolutionize", "game-changing", "unlock", "leverage", "synergy"
-- Vary sentence length — mix short punchy lines with longer ones
-- End with a thought-provoking question that invites comments (the comments ARE the conversion mechanism for this post type)
+- Sound like a real practitioner sharing a real experience — never like a copywriter or AI assistant.
+- Use SHORT paragraphs — 1-2 sentences each, separated by blank lines.
+- NO emojis as section dividers. Emojis are allowed ONLY if they're naturally embedded in a sentence and serve a purpose (e.g., a specific reaction). The 😩/🚀/💡-as-paragraph-separator pattern is an AI-tell.
+- Vary sentence length — mix short punchy lines with longer ones.
+- If you reference a story, number, or example, it MUST be one of: drawn from the user's pipelineContext above, drawn from the AUTHOR'S EXPERTISE, or labeled "(hypothetical)". Do not invent past clients, named customers, or specific revenue wins.
+- Avoid these sales-bot phrases: "revolutionize", "game-changing", "unlock", "leverage", "synergy", "10x", "secret sauce" (unless naming it ironically), "is something I deeply".
+
+ENDING (pick ONE of these, NOT a generic "thought-provoking question"):
+- A specific, answerable ask: "If you've shipped usage-based pricing, what was YOUR $34K bug?"
+- A stated next step: "Going deeper on the reconciliation pipeline next week — DMs open if you're mid-migration."
+- A challenge: "Disagree? Tell me which of these you've actually seen NOT bite a team."
+- A clean drop-mic: a strong final line that doesn't need a question (let the take stand).
+NEVER end with: "What do you think?", "What's your experience?", "What am I missing?" — these are the lazy AI defaults and signal you didn't have anything specific to say.
 
 LENGTH: 150-300 words total.
 
-HASHTAGS: End the post with 5-10 relevant hashtags on their own line(s) at the very bottom. No spaces inside tags.`;
+HASHTAGS: End the post with 5-10 relevant hashtags on their own line(s) at the very bottom. No spaces inside tags.
+
+BEFORE / AFTER REWRITE EXAMPLES (learn from these — they show the exact transformations you must do):
+
+❌ BEFORE (auto-rejected — narrative opener, no specifics, therapy-talk):
+"It's Monday again. Your CEO asks about the analytics dashboard, and you're still saying 'it's coming'. That pit in your stomach? It's not just the deadline. It's the silent struggle of not knowing why it's stuck."
+
+✅ AFTER (passes — specific failure mode named in line 1, falsifiable claim, named tool):
+"The 'almost done' analytics dashboard isn't a velocity problem — it's a schema problem. Specifically: every event your team logs is keyed off user_id, but the CFO wants slices by account_id. The aggregation rewrite is the actual ship date. Most teams discover this at week 6."
+
+---
+
+❌ BEFORE (auto-rejected — second-person manufactured pain):
+"You know the feeling. Three sprints in. The dashboard still isn't shipping. Your team is talented, but something is off."
+
+✅ AFTER (passes — names the technical thing, drops the empathy, has a take):
+"Three sprints into a usage dashboard that won't ship usually means one thing: your event schema was designed for the product, not for billing. Different shape. Different cardinality. Different reconciliation guarantees. Most teams discover this at week 4 and blame engineering velocity instead of the data model."
+
+---
+
+❌ BEFORE (auto-rejected — vibes about pain, no specifics):
+"Your team is burning cycles, wrestling with inconsistent data sources. Every time you think you're close, another edge case appears."
+
+✅ AFTER (passes — names what the edge cases actually ARE):
+"The edge cases that kill usage-dashboard ship dates, in order of how many times I've watched them: 1) trial-to-paid conversion events firing twice, 2) refunds rewriting historical aggregates, 3) timezone math on the daily rollup. The dashboard isn't 'almost done' — it's blocked on #2."
+
+---
+
+SELF-CHECK BEFORE EMITTING:
+Read your first 2 lines back. If they:
+- Mention a day of the week ("Monday", "Friday")
+- Start with "It's [time]..." / "You know..." / "Picture..." / "Imagine..."
+- Contain ANY second-person emotional language ("pit in your stomach", "silent struggle", "you've got a talented team")
+- Describe a workplace scene without ALSO containing a number, tool name, or technical claim
+... DELETE the post and write a new one with a specific-claim opener instead. Do not emit a draft that fails this check.
+
+---
+
+STRATEGY GUIDANCE (specializes the universal rules above — never overrides them):${typeGuidance}${icpLine}${pipelineLine}`;
   const system = withPositioning(baseSystem, params.positioning);
 
   const user = `Write a LinkedIn post on this topic:
@@ -737,6 +945,144 @@ function parseLinkedInPost(raw: string): { content: string; hashtags: string[]; 
   const hook = contentLines.slice(0, 2).join('\n').trim();
 
   return { content, hashtags, hook };
+}
+
+// =============================================
+// AI-generated topic library
+//
+// Replaces the static 300-topic hardcoded list with a positioning-aware set
+// the model produces on demand. The hardcoded `TOPIC_SUGGESTIONS` is kept as
+// a fallback only — the AI path runs first and only falls back on failure.
+// Caller caches the result with a 48h TTL.
+// =============================================
+
+export interface GeneratedLibraryTopic {
+  topic: string;
+  postType: 'pain-naming' | 'mechanism-reveal' | 'proof' | 'take';
+  category: 'trending' | 'ai-automation' | 'llms' | 'dev-lessons' | 'freelance' | 'hot-takes' | 'case-studies';
+  emoji: string;
+  trending?: boolean;
+}
+
+export async function generateLibraryTopics(
+  positioning: UserPositioning | undefined,
+  count: number = 70,
+): Promise<GeneratedLibraryTopic[]> {
+  const baseSystem = `You generate trending LinkedIn post-topic ideas the user can write about to attract their ICP. These are topics their PROSPECTS would stop scrolling for — NOT pitches for the user's own service. The user's positioning is context for the AUDIENCE (who reads these), not the SUBJECT (what every topic must be about).
+
+MOST IMPORTANT RULE: TOPICS RIDE CURRENT TRENDS IN THE ICP'S WORLD.
+Imagine you are scrolling LinkedIn in the user's ICP's timeline TODAY. What are people talking about, debating, complaining about, celebrating? Recent model releases (Claude 4.7, GPT-5, Opus, Sonnet), framework wars (LangGraph vs CrewAI vs DSPy), industry shifts (Series A fundraising climate, layoffs, hiring freezes), tooling debates (Cursor vs Windsurf, MCP servers, Cline), business model shifts (usage-based pricing, AI-priced contracts), team dynamics (eng/PM tension, AI replacing JD requirements). Generate topics that NAME these current conversations and let the user weigh in.
+
+WHAT BAD LOOKS LIKE (DO NOT DO THIS):
+- "Why Your CEO Yells: The Hidden Cost of Undiagnosed Funnel Drop-offs" → just a re-skin of the user's pitch
+- "From 5 Weeks Behind to 40% Faster Onboarding" → user's own case study, not a trend
+- "The Einstein-AI Approach" → name-dropping the user's project; nobody in their ICP cares
+- "Why 'More Engineers' Won't Fix Your Onboarding Bottleneck" → reads as a sales angle dressed up as a take
+These topics fail because they put the USER at the center. Reverse it: put the ICP's current world at the center.
+
+WHAT GOOD LOOKS LIKE (assuming ICP = "Series A SaaS VPs of Engineering"):
+- "Claude 4.7 vs Opus 4.6 for code review at scale — which is winning in your team?"
+- "Cursor charging $200/mo: when does an AI dev tool become a line item the CFO asks about?"
+- "Why every Series A I've seen this year is sitting on a 14-person eng team and saying it's not enough"
+- "The unsexy reason agentic coding is failing in B2B — and what it has to do with codebase size"
+- "Hot take: the 'AI engineer' job title is dead by EOY 2026"
+These ride current discussions, name specific tools/companies/dynamics, and invite a real reply. NOTICE: none of them mention the user's mechanism, service, or positioning directly. The positioning shapes WHO the audience is — it does not shape WHAT every topic is about.
+
+SCHEMA (read carefully — two separate fields, do NOT confuse them):
+
+  "topic"     = the post idea itself (string, max 90 chars)
+  "strategy"  = HOW the post is written. ONLY one of these four words:
+                  • "pain-naming"        — names an ICP pain ("The hidden cost of X when you're at Y")
+                  • "mechanism-reveal"   — shows HOW something works ("Inside the 3-step process for...")
+                  • "proof"              — case study / before-after ("How [Company] cut Z by 40% in 2 weeks")
+                  • "take"               — contrarian opinion ("Why everyone is wrong about X")
+                ⚠ STRATEGY IS NEVER: "ai-automation", "dev-lessons", "freelance", "llms", "hot-takes",
+                  "case-studies", or "trending" — those are CATEGORIES, not strategies.
+                ⚠ If you find yourself wanting to write strategy="ai-automation", you mean category="ai-automation".
+                  Pick the actual strategy from the 4 words above based on HOW the post is written.
+
+  "category"  = the topic's theme. ONLY one of these seven words:
+                  • "trending"        — riding a current debate / news / launch happening RIGHT NOW
+                  • "ai-automation"   — AI tooling, agents, automations
+                  • "llms"            — LLM models, prompts, evals
+                  • "dev-lessons"     — engineering practice, codebases, team dynamics
+                  • "freelance"       — solo / consulting / agency work
+                  • "hot-takes"       — controversial opinions on industry topics
+                  • "case-studies"    — real outcomes / before-after stories (about ANY company, not just the user's)
+                ⚠ CATEGORY IS NEVER: "pain-naming", "mechanism-reveal", "proof", or "take" — those are strategies.
+
+  "emoji"     = ONE relevant emoji.
+  "trending"  = true (boolean) for AT LEAST 40% of topics — these are the ones tied to a current event, model launch,
+                framework debate, or industry shift. Omit on the rest. The user's UI specifically surfaces trending
+                topics first, so this field carries weight.
+
+OUTPUT CONSTRAINTS:
+- Exactly ${count} topic objects.
+- Distribute across the 7 categories: aim for ~${Math.ceil((count * 0.4))} in "trending" (high priority) and ~${Math.ceil((count * 0.6) / 6)} in each of the other 6.
+- Use all 4 strategies, mixed: roughly 30% take, 25% pain-naming, 25% mechanism-reveal, 20% proof.
+- No duplicate topics. No near-duplicates of the user's own positioning ("My 2-week diagnostic", "Einstein-AI", "code-level fixes" are FORBIDDEN words — they belong in their outreach, not their post library).
+- No emoji in the topic text (emoji goes in its own field).
+
+Return ONLY valid JSON of this shape (no markdown, no preamble):
+{
+  "topics": [
+    { "topic": "string", "strategy": "pain-naming|mechanism-reveal|proof|take", "category": "trending|ai-automation|llms|dev-lessons|freelance|hot-takes|case-studies", "emoji": "🚀", "trending": true }
+  ]
+}`;
+
+  const system = withPositioning(baseSystem, positioning);
+  const user = `Generate ${count} trending LinkedIn post-topic ideas my ICP would stop scrolling for. Return ONLY the JSON.`;
+
+  const raw = await callAI(system, user, { responseFormat: 'json', maxTokens: 4500 });
+  const parsed = JSON.parse(extractJSON(raw));
+
+  if (!Array.isArray(parsed?.topics)) return [];
+
+  const VALID_TYPES = new Set(['pain-naming', 'mechanism-reveal', 'proof', 'take']);
+  const VALID_CATS = new Set(['trending', 'ai-automation', 'llms', 'dev-lessons', 'freelance', 'hot-takes', 'case-studies']);
+
+  // Defensive repair: the model frequently confuses postType and category
+  // since both fields share the same "tag-like" shape. If they're swapped,
+  // unscrew them. If one is missing and the other names a category that
+  // CAN'T be a strategy (or vice versa), use that to disambiguate. Anything
+  // that still can't be salvaged falls back to ('take', 'hot-takes') so
+  // the topic still renders instead of being silently dropped.
+  return parsed.topics
+    .filter((t: unknown) => t && typeof (t as { topic?: unknown }).topic === 'string' && (t as { topic: string }).topic.trim().length > 0)
+    .map((t: unknown): GeneratedLibraryTopic => {
+      const raw = t as { topic: string; postType?: string; strategy?: string; category?: string; emoji?: string; trending?: boolean };
+
+      // Accept either `strategy` (new prompt) or `postType` (legacy) — the
+      // model is told to emit `strategy` but may still produce `postType`.
+      let strat = (raw.strategy || raw.postType || '').trim();
+      let cat = (raw.category || '').trim();
+
+      // Case 1: values swapped — strat is a category name, cat is a strategy name
+      if (!VALID_TYPES.has(strat) && VALID_CATS.has(strat) && VALID_TYPES.has(cat)) {
+        [strat, cat] = [cat, strat];
+      }
+      // Case 2: strat invalid but cat is also a strategy — model duplicated. Promote cat-as-strat, infer cat.
+      else if (!VALID_TYPES.has(strat) && VALID_TYPES.has(cat)) {
+        strat = cat;
+        cat = 'hot-takes';
+      }
+      // Case 3: cat invalid but is actually a strategy — keep strat, default category
+      else if (VALID_TYPES.has(strat) && !VALID_CATS.has(cat) && VALID_TYPES.has(cat)) {
+        cat = 'hot-takes';
+      }
+      // Case 4: strat invalid and unrepairable → default to 'take' (contrarian — the safest fallback for a stray topic)
+      if (!VALID_TYPES.has(strat)) strat = 'take';
+      // Case 5: cat invalid and unrepairable → default to 'trending' if marked trending, else 'hot-takes'
+      if (!VALID_CATS.has(cat)) cat = raw.trending ? 'trending' : 'hot-takes';
+
+      return {
+        topic: raw.topic.trim(),
+        postType: strat as GeneratedLibraryTopic['postType'],
+        category: cat as GeneratedLibraryTopic['category'],
+        emoji: (raw.emoji || '✨').trim(),
+        trending: raw.trending === true || cat === 'trending',
+      };
+    });
 }
 
 export async function generateGrowthPlan(params: GeneratePlanParams): Promise<object> {
@@ -1195,10 +1541,22 @@ OUTPUT: Return ONLY valid JSON matching this structure (no markdown, no preamble
 If sources are entirely empty, return summary="No sources provided yet — paste a recent post, news link, or job posting to enable hook generation.", hooks=[], bestApproach="Gather research first.", redFlags=[].`;
   const system = withPositioning(baseSystem, params.positioning);
 
+  // Same recency-tagging approach as the composer — hooks should prefer
+  // sources posted within ~30 days. Without this the synthesis happily
+  // generates hooks from posts that are months old, which then become the
+  // opener in outreach.
+  const synthNow = Date.now();
   const sourcesBlock = params.sources.length === 0
     ? '(no sources provided yet)'
     : params.sources
-        .map((s) => `[${s.id}] field=${s.field}${s.url ? ` url=${s.url}` : ''}\n  content: ${s.content.replace(/\n+/g, ' ').slice(0, 800)}`)
+        .map((s) => {
+          const dateStr = s.postedAt || s.capturedAt;
+          const ageDays = Math.floor((synthNow - new Date(dateStr).getTime()) / (1000 * 60 * 60 * 24));
+          const ageTag = s.postedAt
+            ? (ageDays > 60 ? `STALE — posted ${ageDays}d ago` : `posted ${ageDays}d ago`)
+            : 'post date unknown';
+          return `[${s.id}] field=${s.field} (${ageTag})${s.url ? ` url=${s.url}` : ''}\n  content: ${s.content.replace(/\n+/g, ' ').slice(0, 800)}`;
+        })
         .join('\n\n');
 
   const user = `Synthesize research for:

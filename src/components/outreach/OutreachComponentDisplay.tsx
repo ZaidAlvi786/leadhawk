@@ -14,22 +14,36 @@ interface Props {
   editable?: boolean;
 }
 
-const PARTS: { key: keyof Omit<OutreachComponents, 'sourceFieldIds' | 'assembledMessage'>; label: string; subtitle: string; icon: typeof MapPin; color: string }[] = [
+type PartKey = keyof Omit<OutreachComponents, 'sourceFieldIds' | 'assembledMessage' | 'mode'>;
+
+// Same 4 fields, different labels per mode. Services mode reframes components
+// 2-4 as builder-acknowledgement / help-offer / permission-ask so the UI
+// matches what the model was actually asked to produce.
+const PARTS_PRODUCT: { key: PartKey; label: string; subtitle: string; icon: typeof MapPin; color: string }[] = [
   { key: 'specificReference', label: 'Specific reference', subtitle: 'sourced from real research', icon: MapPin, color: '#1E6F70' },
   { key: 'patternInterrupt', label: 'Pattern interrupt',  subtitle: 'breaks the "another DM" frame', icon: Zap, color: '#D08A3E' },
   { key: 'earnedRight',      label: 'Earned right',       subtitle: 'one line of relevant proof',   icon: Award, color: '#1E6F70' },
   { key: 'lowFrictionAsk',   label: 'Low-friction ask',   subtitle: 'small ask, NOT "30-min call"', icon: MousePointer, color: '#CC6B4F' },
 ];
 
+const PARTS_SERVICES: { key: PartKey; label: string; subtitle: string; icon: typeof MapPin; color: string }[] = [
+  { key: 'specificReference', label: 'Specific reference',      subtitle: 'sourced from real research',          icon: MapPin, color: '#1E6F70' },
+  { key: 'patternInterrupt', label: 'Builder acknowledgement',  subtitle: 'recognize the substance, not feelings', icon: Zap, color: '#D08A3E' },
+  { key: 'earnedRight',      label: 'Help offer',               subtitle: 'concrete free value — not a pitch',    icon: Award, color: '#1E6F70' },
+  { key: 'lowFrictionAsk',   label: 'Permission-framed ask',    subtitle: 'easy out — never a meeting request',   icon: MousePointer, color: '#CC6B4F' },
+];
+
 export default function OutreachComponentDisplay({ components, onChange, editable = false }: Props) {
-  const update = (key: typeof PARTS[number]['key'], value: string) => {
+  const parts = components.mode === 'services' ? PARTS_SERVICES : PARTS_PRODUCT;
+
+  const update = (key: PartKey, value: string) => {
     if (!onChange) return;
     onChange({ ...components, [key]: value });
   };
 
   return (
     <div className="space-y-2">
-      {PARTS.map((p) => {
+      {parts.map((p) => {
         const Icon = p.icon;
         const value = components[p.key] || '';
         return (

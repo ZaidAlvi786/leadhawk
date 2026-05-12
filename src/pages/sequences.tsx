@@ -330,7 +330,7 @@ export default function SequencesPage() {
                         <div className="text-xs font-medium mb-1" style={{ color: '#6E7F86' }}>
                           Subject: {step.subject}
                         </div>
-                        <div className="text-sm whitespace-pre-wrap leading-relaxed" style={{ color: '#D6CCB6' }}>
+                        <div className="text-sm whitespace-pre-wrap leading-relaxed" style={{ color: 'var(--text-primary)' }}>
                           {step.body}
                         </div>
                       </>

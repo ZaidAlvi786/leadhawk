@@ -356,7 +356,7 @@ function Step4Outcome({ draft, setDraft }: StepProps) {
           className="mt-0.5"
         />
         <div>
-          <p className="text-xs" style={{ color: '#D6CCB6' }}>
+          <p className="text-xs" style={{ color: 'var(--text-primary)' }}>
             This outcome is projected — I haven't measured it on a real client yet.
           </p>
           <p className="text-xs" style={{ color: '#6E7F86' }}>
@@ -505,7 +505,7 @@ function Step6NotFor({ draft, setDraft }: StepProps) {
           background: 'rgba(58,143,163,0.08)', border: '1px solid rgba(58,143,163,0.2)',
         }}>
           <p className="text-xs font-semibold" style={{ color: '#1E6F70' }}>Your positioning preview</p>
-          <p className="text-xs" style={{ color: '#D6CCB6' }}>
+          <p className="text-xs" style={{ color: 'var(--text-primary)' }}>
             <strong>I help</strong> {draft.targetRole} at {draft.targetCompanyType} <strong>solve</strong> {truncate(draft.painfulProblem, 80)} <strong>by</strong> {truncate(draft.mechanism, 80)} <strong>achieving</strong> {draft.outcomeMetric}{draft.outcomeIsProjected ? ' (projected)' : ''} {draft.outcomeTimeframe}.
           </p>
         </div>
@@ -522,13 +522,13 @@ function ExamplesBox({ good, bad }: { good: string; bad: string }) {
         background: 'rgba(30,111,112,0.06)', border: '1px solid rgba(30,111,112,0.18)',
       }}>
         <p className="text-xs font-semibold mb-1" style={{ color: '#1E6F70' }}>✓ Good</p>
-        <p className="text-xs" style={{ color: '#D6CCB6' }}>{good}</p>
+        <p className="text-xs" style={{ color: 'var(--text-primary)' }}>{good}</p>
       </div>
       <div className="p-3 rounded-lg" style={{
         background: 'rgba(176,67,42,0.06)', border: '1px solid rgba(176,67,42,0.18)',
       }}>
         <p className="text-xs font-semibold mb-1" style={{ color: '#B0432A' }}>✗ Bad</p>
-        <p className="text-xs" style={{ color: '#D6CCB6' }}>{bad}</p>
+        <p className="text-xs" style={{ color: 'var(--text-primary)' }}>{bad}</p>
       </div>
     </div>
   );

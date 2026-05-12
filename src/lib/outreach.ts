@@ -26,6 +26,19 @@ export const BANNED_PHRASES = [
   'touch base',
   'low-hanging fruit',
   'move the needle',
+  // Comment-style validation phrases. These read like a LinkedIn comment, not
+  // a DM — the message reflects the prospect's emotion back at them instead of
+  // initiating a conversation. See generateOutreachComponents prompt for the
+  // longer explanation of "comment mode" vs "DM mode."
+  'still resonates',
+  'really resonates',
+  'deeply understand',
+  'i deeply',
+  'i get it',
+  'i feel this',
+  'couldn\'t agree more',
+  'love how you',
+  'is something i',     // catches "X is something I deeply understand" / "I genuinely"
 ];
 
 /**

@@ -222,7 +222,7 @@ export default function TweetGenerator() {
             <div className="text-sm p-4 rounded-lg mb-3 whitespace-pre-wrap leading-relaxed" style={{
               background: 'rgba(30,111,112,0.05)',
               border: '1px solid rgba(30,111,112,0.1)',
-              color: '#D6CCB6',
+              color: 'var(--text-primary)',
             }}>
               {generated.content}
             </div>

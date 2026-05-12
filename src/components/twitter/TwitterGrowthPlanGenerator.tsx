@@ -129,7 +129,7 @@ export default function TwitterGrowthPlanGenerator() {
         <div className="glass-card p-5 animate-fadeUp" style={{ border: '1px solid rgba(30,111,112,0.2)' }}>
           {generated.overview && (
             <div className="mb-4">
-              <p className="text-sm" style={{ color: '#D6CCB6' }}>{generated.overview}</p>
+              <p className="text-sm" style={{ color: 'var(--text-primary)' }}>{generated.overview}</p>
             </div>
           )}
 
