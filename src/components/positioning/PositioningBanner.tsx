@@ -23,7 +23,7 @@ export default function PositioningBanner() {
     >
       <Crosshair size={14} color="#1E6F70" className="flex-shrink-0" />
       <div className="flex-1 min-w-0">
-        <p className="text-xs truncate" style={{ color: '#D6CCB6' }}>
+        <p className="text-xs truncate" style={{ color: 'var(--text-primary)' }}>
           <span style={{ color: '#1E6F70' }}>{p.targetRole}</span> @ {p.targetCompanyType} · {p.outcomeMetric}{p.outcomeIsProjected ? ' (projected)' : ''}
         </p>
       </div>
