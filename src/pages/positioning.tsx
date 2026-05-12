@@ -51,17 +51,17 @@ export default function PositioningPage() {
 
           <div className="glass-card p-5">
             <p className="text-xs font-semibold mb-2" style={{ color: '#D08A3E' }}>Painful problem</p>
-            <p className="text-sm leading-relaxed" style={{ color: '#D6CCB6' }}>{p.painfulProblem}</p>
+            <p className="text-sm leading-relaxed" style={{ color: 'var(--text-primary)' }}>{p.painfulProblem}</p>
           </div>
 
           <div className="glass-card p-5">
             <p className="text-xs font-semibold mb-2" style={{ color: '#1E6F70' }}>Mechanism</p>
-            <p className="text-sm leading-relaxed" style={{ color: '#D6CCB6' }}>{p.mechanism}</p>
+            <p className="text-sm leading-relaxed" style={{ color: 'var(--text-primary)' }}>{p.mechanism}</p>
           </div>
 
           <div className="glass-card p-5">
             <p className="text-xs font-semibold mb-2" style={{ color: '#1E6F70' }}>Outcome</p>
-            <p className="text-sm leading-relaxed" style={{ color: '#D6CCB6' }}>
+            <p className="text-sm leading-relaxed" style={{ color: 'var(--text-primary)' }}>
               {p.outcomeMetric} — {p.outcomeTimeframe}
               {p.outcomeIsProjected && (
                 <span className="ml-2 tag tag-amber text-xs">projected</span>
@@ -82,7 +82,7 @@ export default function PositioningPage() {
                   style={{ background: 'rgba(255,255,255,0.02)' }}
                 >
                   <ExternalLink size={12} color="#6E7F86" />
-                  <span className="text-xs font-medium" style={{ color: '#D6CCB6' }}>{a.label}</span>
+                  <span className="text-xs font-medium" style={{ color: 'var(--text-primary)' }}>{a.label}</span>
                   <span className="text-xs ml-auto" style={{ color: '#6E7F86' }}>{a.type}</span>
                 </a>
               ))}
@@ -91,7 +91,7 @@ export default function PositioningPage() {
 
           <div className="glass-card p-5">
             <p className="text-xs font-semibold mb-2" style={{ color: '#CC6B4F' }}>NOT for</p>
-            <p className="text-sm leading-relaxed" style={{ color: '#D6CCB6' }}>{p.notFor}</p>
+            <p className="text-sm leading-relaxed" style={{ color: 'var(--text-primary)' }}>{p.notFor}</p>
           </div>
 
           {lastUpdated && (
